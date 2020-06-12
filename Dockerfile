@@ -1,4 +1,4 @@
-FROM nikolaik/python-nodejs:python3.8-nodejs12
+FROM python3.8-alpine
 
 ENV PYTHONUNBUFFERED 1
 
