@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: ..
+      args:
+          SECRET_KEY: ${SECRET_KEY}
+          DEBUG: ${DEBUG}
+          DB_HOST_ARG: ${DB_HOST}
+          DB_NAME_ARG: ${DB_NAME}
+          DB_USER_ARG: ${DB_USER}
+          DB_PASS_ARG: ${DB_PASS}
+    ports:
+      - "8000:8000"

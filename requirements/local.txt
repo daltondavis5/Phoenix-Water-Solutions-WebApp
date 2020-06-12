@@ -1,0 +1,5 @@
+-r base.txt
+
+#Python-PostgreSQL Database Adapter
+psycopg2==2.8.5
+django-environ==0.4.5

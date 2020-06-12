@@ -5,7 +5,8 @@ import sys
 
 
 def main():
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'web_app.settings')
+    # setting the DJANGO_SETTINGS_MODULE variable in dockerfile.
+    # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.base')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

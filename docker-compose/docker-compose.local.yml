@@ -3,16 +3,18 @@ version: "3"
 services:
   app:
     build:
-      context: .
+      context: ..
       args:
+          DEBUG_ARG: 'True'
           DB_HOST_ARG: db
           DB_NAME_ARG: local-db
           DB_USER_ARG: local-postgres
           DB_PASS_ARG: local-password
+          ENV_ARG: 'local'
     ports:
       - "8000:8000"
     volumes:
-      - ./django-project:/django-project
+      - ../django-project:/django-project
     depends_on:
       - db
 
