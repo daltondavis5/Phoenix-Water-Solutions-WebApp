@@ -5,11 +5,12 @@ services:
     build:
       context: ..
       args:
-          DEBUG: True
+          DEBUG_ARG: 'True'
           DB_HOST_ARG: db
           DB_NAME_ARG: local-db
           DB_USER_ARG: local-postgres
           DB_PASS_ARG: local-password
+          ENV_ARG: 'local'
     ports:
       - "8000:8000"
     volumes:
