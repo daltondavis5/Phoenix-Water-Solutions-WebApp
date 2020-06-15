@@ -3,7 +3,7 @@ name: Pre-Staging
 # only run on pull requests from another branch into staging, not from staging into master
 on:
   pull_request:
-    branches: [ '!master', staging ]
+    branches: [ '!master', '!production', staging ]
 
 jobs:
 
