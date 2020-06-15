@@ -1,14 +1,19 @@
-FROM nikolaik/python-nodejs:python3.8-nodejs12
+FROM python:3.8-alpine
 
 ENV PYTHONUNBUFFERED 1
 
 ARG ENV_ARG
 COPY requirements/$ENV_ARG.txt /requirements.txt
 COPY requirements/base.txt /base.txt
+RUN apk add --update --no-cache postgresql-client
+RUN apk add --update --no-cache --virtual .tmp-build-deps \
+    gcc libc-dev linux-headers postgresql-dev
 RUN pip install -r /requirements.txt
+RUN apk del .tmp-build-deps
 
 # Install Front-end dependencies
 COPY ./package.json /package.json
+RUN apk add --update npm
 RUN npm install
 
 RUN mkdir /django-project
