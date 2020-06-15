@@ -7,9 +7,19 @@ COPY requirements/$ENV_ARG.txt /requirements.txt
 COPY requirements/base.txt /base.txt
 RUN pip install -r /requirements.txt
 
+# Install Front-end dependencies
+COPY ./package.json /package.json
+RUN npm install
+
 RUN mkdir /django-project
 WORKDIR /django-project
 COPY ./django-project /django-project
+
+# build static files
+WORKDIR /
+COPY ./webpack.config.js ./.babelrc /
+RUN npm run build
+WORKDIR /django-project
 
 ARG DB_HOST_ARG
 ARG DB_NAME_ARG
