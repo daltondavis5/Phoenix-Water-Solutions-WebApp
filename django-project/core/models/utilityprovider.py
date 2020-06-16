@@ -10,7 +10,8 @@ class Utility(models.Model):
 
 class Provider(models.Model):
     name = models.CharField(max_length=50)
-    utility = models.ManyToManyField(Utility, through='UtilityProvider')
+    utility_provider = models.ManyToManyField(
+        Utility, through='UtilityProvider')
 
     def __str__(self):
         return self.name
