@@ -1,0 +1,39 @@
+version: "3"
+
+services:
+  nginx:
+    build:
+      context: ../
+      dockerfile: ./nginx/Dockerfile
+      args:
+          ENV_ARG: 'local-staging'
+          #TODO replace SECRET_KEY_ARG
+          SECRET_KEY_ARG: 'wrongkey'
+    env_file:
+      - ../django-project/config/settings/.env
+    depends_on:
+    - app
+    network_mode: 'service:app' # use network interface of app container to simulate awsvpc network mode
+  app:
+    build:
+      context: ..
+      args:
+          DEBUG_ARG: 'False'
+          DB_HOST_ARG: db
+          DB_NAME_ARG: local-db
+          DB_USER_ARG: local-postgres
+          DB_PASS_ARG: local-password
+          ENV_ARG: 'local-staging'
+    ports:
+      - '8080:80' # forwards port of nginx container
+    env_file:
+      - ../django-project/config/settings/.env
+    depends_on:
+      - db
+
+  db:
+    image: postgres:10-alpine
+    environment:
+      - POSTGRES_DB=local-db
+      - POSTGRES_USER=local-postgres
+      - POSTGRES_PASSWORD=local-password

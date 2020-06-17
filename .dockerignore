@@ -3,3 +3,7 @@ README.md
 .dockerignore
 Dockerfile
 docker-compose
+.git
+.github
+
+#TODO: put the main Dockerfile into the django-project folder and add nginx/ to Dockerignore
