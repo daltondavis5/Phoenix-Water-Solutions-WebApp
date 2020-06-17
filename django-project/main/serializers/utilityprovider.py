@@ -32,7 +32,8 @@ class ProviderSerializer(serializers.ModelSerializer):
         fields = ['name', 'utility_provider']
 
     def create(self, validated_data):
-        # print("Data: ", validated_data)
+
+        #print("Data: ", validated_data)
         utility_provider_data = validated_data.pop('utilityprovider_set')
         provider = Provider.objects.create(**validated_data)
 

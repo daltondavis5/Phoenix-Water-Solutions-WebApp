@@ -1,7 +1,7 @@
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 from core.models.utilityprovider import UtilityProvider, Utility, Provider
-from .serializers import UtilityProviderSerializer, UtilitySerializer, ProviderSerializer
+from main.serializers.utilityprovider import UtilityProviderSerializer, UtilitySerializer, ProviderSerializer
 
 
 class UtilityProviderViewSet(viewsets.ModelViewSet):
