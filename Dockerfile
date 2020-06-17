@@ -26,18 +26,24 @@ COPY ./package.json /package.json
 RUN apk add --update npm
 RUN npm install
 
-# build static files
+# Build static files
 COPY ./webpack.config.js ./.babelrc /
 RUN npm run build
 
 WORKDIR /django-project
 
-# copy the entrypoint script into the image and get executable permissions
+# Copy the entrypoint script into the image and get executable permissions
 COPY ./scripts/entrypoint.$ENV_ARG.sh /scripts/entrypoint.sh
 RUN chmod +x /scripts/*
 
-# create user
+# Create two new directories inside the container
+RUN mkdir -p /vol/web/media
+RUN mkdir -p /vol/web/static
+
+# Create user that will run the application and give them permissions
 RUN adduser -D user
+RUN chown -R user:user /vol
+RUN chmod -R 755 /vol/web
 USER user
 
 ARG DB_HOST_ARG
@@ -55,7 +61,6 @@ ENV DEBUG=$DEBUG_ARG
 ENV SECRET_KEY=$SECRET_KEY_ARG
 ENV DJANGO_SETTINGS_MODULE=config.settings.$ENV_ARG
 
-EXPOSE 8000
 ENTRYPOINT [ "entrypoint.sh" ]
 
 # CMD python manage.py wait_for_db && \
