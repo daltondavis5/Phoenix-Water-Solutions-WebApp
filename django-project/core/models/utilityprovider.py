@@ -11,7 +11,8 @@ class Utility(models.Model):
 class Provider(models.Model):
     name = models.CharField(max_length=50)
     utility_provider = models.ManyToManyField(
-        Utility, through='UtilityProvider')
+        Utility,
+        through='UtilityProvider')
 
     def __str__(self):
         return self.name
@@ -30,3 +31,7 @@ class UtilityProvider(models.Model):
     provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     unit_measurement = models.FloatField()
+
+    def __str__(self):
+        return str(self.provider) + " supplies " + str(self.utility) + \
+            " in " + str(self.location)
