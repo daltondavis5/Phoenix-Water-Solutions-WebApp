@@ -4,8 +4,6 @@ services:
   nginx:
     build:
       context: ../nginx/
-      args:
-          ENV_ARG: 'local-staging'
     volumes:
       - static_data:/vol/static
     ports:
@@ -17,7 +15,6 @@ services:
     build:
       context: ..
       args:
-          DEBUG_ARG: 'False'
           DB_HOST_ARG: db
           DB_NAME_ARG: local-db
           DB_USER_ARG: local-postgres
