@@ -1,9 +1,12 @@
-from django.urls import path, include
+from django.conf.urls import url
 from rest_framework.routers import DefaultRouter
-from .views import UtilityProviderViewSet, ProviderViewSet
+from .views import ProviderViewSet, ListUtilities
 
 router = DefaultRouter()
-router.register('utilityprovider', UtilityProviderViewSet)
 router.register('provider', ProviderViewSet)
 
-urlpatterns = router.urls
+urlpatterns = [
+  url('utility', ListUtilities.as_view(), name='utility-list')
+]
+
+urlpatterns += router.urls

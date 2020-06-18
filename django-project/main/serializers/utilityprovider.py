@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from core.models.utilityprovider import *
+from core.models.utilityprovider import Utility, Location, UtilityProvider, \
+    Provider
 
 
 class UtilitySerializer(serializers.ModelSerializer):
@@ -33,7 +34,6 @@ class ProviderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
 
-        #print("Data: ", validated_data)
         utility_provider_data = validated_data.pop('utilityprovider_set')
         provider = Provider.objects.create(**validated_data)
 
