@@ -1,0 +1,2 @@
+export const FETCH_UTILITIES = "FETCH_UTILITIES";
+export const NEW_PROVIDER = "NEW_PROVIDER";
