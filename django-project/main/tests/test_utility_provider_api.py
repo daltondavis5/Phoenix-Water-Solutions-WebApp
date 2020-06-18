@@ -21,14 +21,10 @@ class ProviderViewSetTestCase(APITestCase):
             "name": "Test Provider",
             "utility_provider": [
                 {
-                    "utility": {
-                        "utility_type": "Water"
-                    },
-                    "location": {
-                        "city": "Phoenix",
-                        "state": "AZ"
-                    },
-                    "unit_measurement": 900.0
+                    "utility_type": "Water",
+                    "city": "Phoenix",
+                    "state": "AZ",
+                    "unit_measurement": 748.0
                 }
             ]
         }

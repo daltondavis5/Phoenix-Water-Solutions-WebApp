@@ -22,7 +22,6 @@ class ProviderViewSet(viewsets.ModelViewSet):
 
 
 class ListUtilities(APIView):
-
     def get(self, request):
         utilities = Utility.objects.all()
         serializer = UtilitySerializer(utilities, many=True)
