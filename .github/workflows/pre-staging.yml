@@ -43,11 +43,11 @@ jobs:
           id: build-app-image
           env:
             ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-            ECR_REPOSITORY: ${{ secrets.STAGING_ECR_APP_REPO }}
-            IMAGE_TAG: ${{ secrets.STAGING_APP_IMAGE_TAG }}
+            ECR_REPOSITORY: pws-app-staging-ecr
+            IMAGE_TAG: v0.1
           run: |
             docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
-            --build-arg ENV_ARG='staging' \
+            --build-arg ENV_ARG=staging \
             --build-arg SECRET_KEY_ARG=${{ secrets.DJANGO_SECRET_KEY }} \
             --build-arg DB_HOST_ARG=${{ secrets.STAGING_DB_HOST }} \
             --build-arg DB_NAME_ARG=${{ secrets.STAGING_DB_NAME }} \
