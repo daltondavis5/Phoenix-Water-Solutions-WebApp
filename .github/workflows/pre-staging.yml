@@ -15,18 +15,18 @@ jobs:
         - name: Check out code
           uses: actions/checkout@v2
 
-        # Build and test the application
-        - name: Build the image and run unit tests
-          env:
-            ENV_ARG: staging
-            SECRET_KEY_ARG: ${{ secrets.DJANGO_SECRET_KEY }}
-            DB_HOST_ARG: ${{ secrets.STAGING_DB_HOST }}
-            DB_NAME_ARG: ${{ secrets.STAGING_DB_NAME }}
-            DB_USER_ARG: ${{ secrets.STAGING_DB_USER }}
-            DB_PASS_ARG: ${{ secrets.STAGING_DB_PASS }}
-          run: |
-            docker-compose -f docker-compose/docker-compose.staging.yml \
-            run app sh -c "python manage.py test"
+        # # Build and test the application
+        # - name: Build the image and run unit tests
+        #   env:
+        #     ENV_ARG: staging
+        #     SECRET_KEY_ARG: ${{ secrets.DJANGO_SECRET_KEY }}
+        #     DB_HOST_ARG: ${{ secrets.STAGING_DB_HOST }}
+        #     DB_NAME_ARG: ${{ secrets.STAGING_DB_NAME }}
+        #     DB_USER_ARG: ${{ secrets.STAGING_DB_USER }}
+        #     DB_PASS_ARG: ${{ secrets.STAGING_DB_PASS }}
+        #   run: |
+        #     docker-compose -f docker-compose/docker-compose.staging.yml \
+        #     run app sh -c "python manage.py test"
 
         - name: Configure AWS credentials
           uses: aws-actions/configure-aws-credentials@v1
