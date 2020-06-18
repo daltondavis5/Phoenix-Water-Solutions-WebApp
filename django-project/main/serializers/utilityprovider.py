@@ -36,7 +36,6 @@ class ProviderSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         utility_provider_data = validated_data.pop('utilityprovider_set')
         provider = Provider.objects.create(**validated_data)
-        print(utility_provider_data)
         for utility in utility_provider_data:
             utility_type = utility.get('utility').get('utility_type')
             state = utility.get('location').get('state')

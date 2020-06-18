@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import Dashboard from "./dashboard/dashboard";
+import Dashboard from "./dashboard/Dashboard";
 
 class App extends Component {
   render() {

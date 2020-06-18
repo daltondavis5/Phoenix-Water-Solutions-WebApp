@@ -11,18 +11,9 @@ class ProviderViewSet(viewsets.ModelViewSet):
     serializer_class = ProviderSerializer
     permission_classes = [permissions.AllowAny, ]
 
-    def create(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        provider = serializer.save()
-        return Response({
-            "provider": ProviderSerializer(provider,
-                        context=self.get_serializer_context()).data
-        })
-
 
 class ListUtilities(APIView):
     def get(self, request):
         utilities = Utility.objects.all()
         serializer = UtilitySerializer(utilities, many=True)
-        return Response({"utilities": serializer.data})
+        return Response(serializer.data)
