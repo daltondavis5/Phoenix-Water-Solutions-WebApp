@@ -23,3 +23,6 @@ services:
           ENV_ARG: ${ENV_ARG}
     volumes:
       - static_data:/vol/web
+
+volumes:
+  static_data:
