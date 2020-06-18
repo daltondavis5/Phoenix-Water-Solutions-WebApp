@@ -4,8 +4,7 @@ import environ
 env = environ.Env()
 env.read_env()
 
-if env('SECRET_KEY'):
-    SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = env('SECRET_KEY')
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]"]
 
