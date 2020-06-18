@@ -48,7 +48,7 @@ jobs:
           run: |
             docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
             --build-arg ENV_ARG=staging \
-            --build-arg SECRET_KEY_ARG=${{ secrets.DJANGO_SECRET_KEY }}
+            --build-arg SECRET_KEY_ARG=${{ secrets.DJANGO_SECRET_KEY }} \
             --build-arg DB_HOST_ARG=${{ secrets.STAGING_DB_HOST }} \
             --build-arg DB_NAME_ARG=${{ secrets.STAGING_DB_NAME }} \
             --build-arg DB_USER_ARG=${{ secrets.STAGING_DB_USER }} \
@@ -64,5 +64,5 @@ jobs:
             IMAGE_TAG: ${{ secrets.NGINX_IMAGE_TAG }}
           run: |
             docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
-            ./nginx/ \
+            ./nginx/
             docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
