@@ -61,6 +61,7 @@ ENV DEBUG=$DEBUG_ARG
 ENV SECRET_KEY=$SECRET_KEY_ARG
 ENV DJANGO_SETTINGS_MODULE=config.settings.$ENV_ARG
 
+EXPOSE 8000
 ENTRYPOINT [ "entrypoint.sh" ]
 
 # CMD python manage.py wait_for_db && \
