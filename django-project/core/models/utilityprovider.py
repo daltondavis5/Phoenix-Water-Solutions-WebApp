@@ -32,6 +32,6 @@ class UtilityProvider(models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     unit_measurement = models.FloatField()
 
-    def __str__(self):
-        return str(self.provider) + " supplies " + str(self.utility) + \
-            " in " + str(self.location)
+    # def __str__(self):
+    #     return str(self.provider) + " supplies " + str(self.utility) + \
+    #         " in " + str(self.location)
