@@ -1,8 +1,6 @@
 import React, { Component } from "react";
-import axios from "axios";
 
 export class UtilityProviderItem extends Component {
-  
   render() {
     const {
       utility_type,
@@ -14,7 +12,7 @@ export class UtilityProviderItem extends Component {
     return (
       <>
         <div className="form-group">
-          <label>Utility Type:</label>
+          <label>Utility Type</label>
           <select
             className="form-control"
             name="utility_type"
@@ -24,7 +22,10 @@ export class UtilityProviderItem extends Component {
             <option value="Default">Choose a utility</option>
             {this.props.utilities.map((utility) => {
               return (
-                <option key={utility["utility_type"]} value={utility["utility_type"]}>
+                <option
+                  key={utility["utility_type"]}
+                  value={utility["utility_type"]}
+                >
                   {utility["utility_type"]}
                 </option>
               );

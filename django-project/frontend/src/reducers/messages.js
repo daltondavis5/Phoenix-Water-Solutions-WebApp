@@ -1,0 +1,13 @@
+import { CREATE_MESSAGE } from "../actions/types";
+
+const initialState = {};
+
+export default function (state = initialState, action) {
+  switch (action.type) {
+    case CREATE_MESSAGE:
+      // set state to be the message object itself
+      return (state = action.payload);
+    default:
+      return state;
+  }
+}
