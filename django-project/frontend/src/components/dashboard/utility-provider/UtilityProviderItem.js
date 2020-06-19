@@ -1,6 +1,8 @@
 import React, { Component } from "react";
+import axios from "axios";
 
 export class UtilityProviderItem extends Component {
+  
   render() {
     const {
       utility_type,
@@ -12,14 +14,22 @@ export class UtilityProviderItem extends Component {
     return (
       <>
         <div className="form-group">
-          <label>Utility Type</label>
-          <input
-            type="text"
+          <label>Utility Type:</label>
+          <select
             className="form-control"
             name="utility_type"
             onChange={this.props.onChange}
             value={utility_type}
-          />
+          >
+            <option value="Default">Choose a utility</option>
+            {this.props.utilities.map((utility) => {
+              return (
+                <option key={utility["utility_type"]} value={utility["utility_type"]}>
+                  {utility["utility_type"]}
+                </option>
+              );
+            })}
+          </select>
         </div>
         <div className="form-group">
           <label>City</label>

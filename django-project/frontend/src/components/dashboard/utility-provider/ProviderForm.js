@@ -13,7 +13,15 @@ export class ProviderForm extends Component {
         unit_measurement: "",
       },
     ],
+    utilities: [],
   };
+
+  componentDidMount() {
+    axios.get("/api/utility/").then((response) => {
+      this.setState({ utilities: response.data });
+      console.log(this.state);
+    });
+  }
 
   onSubmit = (e) => {
     e.preventDefault();
@@ -90,6 +98,7 @@ export class ProviderForm extends Component {
               <div key={index} className="card card-body my-2">
                 <UtilityProviderItem
                   utility_provider_item={utility_provider_item}
+                  utilities={this.state.utilities}
                   onChange={this.handleChange(index)}
                 />
                 <button
