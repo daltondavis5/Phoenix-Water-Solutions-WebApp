@@ -7,15 +7,9 @@ import { returnErrors } from "../../../actions/messages";
 export class ProviderForm extends Component {
   state = {
     name: "",
-    utility_provider: [
-      {
-        utility_type: "",
-        city: "",
-        state: "",
-        unit_measurement: "",
-      },
-    ],
+    utility_provider: [],
     utilities: [],
+    currentMode: "viewing",
   };
 
   componentDidMount() {
@@ -34,14 +28,12 @@ export class ProviderForm extends Component {
         "Content-Type": "application/json",
       },
     };
-    axios
-      .post("/api/provider/", body, config)
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((err) => {
-        this.props.returnErrors(err.response.data, err.response.status);
-      });
+    axios.post("/api/provider/", body, config).then((res) => {
+      console.log(res.data);
+    });
+    this.setState({
+      currentMode: "viewing",
+    });
   };
 
   onProviderChange = (e) => {
@@ -68,6 +60,7 @@ export class ProviderForm extends Component {
     ]);
     this.setState({
       utility_provider,
+      currentMode: "add",
     });
   };
 
@@ -89,7 +82,7 @@ export class ProviderForm extends Component {
       <div className="col-md-6 m-auto">
         <div className="card card-body mt-5">
           <h2 className="text-center">Add Provider Form</h2>
-          <form onSubmit={this.onSubmit}>
+          <form>
             <div className="form-group">
               <label>Provider Name</label>
               <input
@@ -106,6 +99,7 @@ export class ProviderForm extends Component {
                   utility_provider_item={utility_provider_item}
                   utilities={this.state.utilities}
                   onChange={this.handleChange(index)}
+                  saveUtility={this.onSubmit}
                 />
                 <button
                   onClick={this.deleteUtilityProvider(index)}
@@ -115,18 +109,16 @@ export class ProviderForm extends Component {
                 </button>
               </div>
             ))}
-
-            <div className="form-group">
-              <button
-                onClick={this.addUtilityProvider}
-                className="btn btn-outline-secondary"
-              >
-                Add New Utility
-              </button>
-              <button type="submit" className="btn btn-primary float-right">
-                Submit Provider
-              </button>
-            </div>
+            {this.state.currentMode !== "add" && (
+              <div className="form-group">
+                <button
+                  onClick={this.addUtilityProvider}
+                  className="btn btn-outline-secondary"
+                >
+                  Add New Utility
+                </button>
+              </div>
+            )}
           </form>
         </div>
       </div>

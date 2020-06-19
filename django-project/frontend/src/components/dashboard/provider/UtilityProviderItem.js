@@ -11,6 +11,16 @@ export class UtilityProviderItem extends Component {
 
     return (
       <>
+        <div className="edit-save-buttons">
+          <button
+            type="submit"
+            className="btn btn-primary float-right"
+            style={{ "marginLeft": "10px", width: "60px" }}
+            onClick={this.props.saveUtility}
+          >
+            Save
+          </button>
+        </div>
         <div className="form-group">
           <label>Utility Type</label>
           <select
