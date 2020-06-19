@@ -20,6 +20,7 @@ services:
           DB_USER_ARG: local-postgres
           DB_PASS_ARG: local-password
           ENV_ARG: local-staging
+          DEBUG_ARG: 'True'
     volumes:
       - static_data:/vol/web
     env_file:
