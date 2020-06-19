@@ -1,6 +1,8 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import UtilityProviderItem from "./UtilityProviderItem";
 import axios from "axios";
+import { returnErrors } from "../../../actions/messages";
 
 export class ProviderForm extends Component {
   state = {
@@ -19,7 +21,6 @@ export class ProviderForm extends Component {
   componentDidMount() {
     axios.get("/api/utility/").then((response) => {
       this.setState({ utilities: response.data });
-      console.log(this.state);
     });
   }
 
@@ -33,9 +34,14 @@ export class ProviderForm extends Component {
         "Content-Type": "application/json",
       },
     };
-    axios.post("/api/provider/", body, config).then((res) => {
-      console.log(res.data);
-    });
+    axios
+      .post("/api/provider/", body, config)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        this.props.returnErrors(err.response.data, err.response.status);
+      });
   };
 
   onProviderChange = (e) => {
@@ -128,4 +134,4 @@ export class ProviderForm extends Component {
   }
 }
 
-export default ProviderForm;
+export default connect(null, { returnErrors })(ProviderForm);

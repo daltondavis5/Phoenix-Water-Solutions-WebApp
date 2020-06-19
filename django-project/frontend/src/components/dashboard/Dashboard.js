@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import ProviderForm from "./utility-provider/ProviderForm";
+import Provider from "./provider/Provider";
 
 export class Dashboard extends Component {
   render() {
     return (
       <div>
-        <ProviderForm></ProviderForm>
+        <Provider></Provider>
       </div>
     );
   }

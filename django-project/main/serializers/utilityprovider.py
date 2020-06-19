@@ -31,7 +31,7 @@ class ProviderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Provider
-        fields = ['name', 'utility_provider']
+        fields = ['id', 'name', 'utility_provider']
 
     def create(self, validated_data):
         utility_provider_data = validated_data.pop('utilityprovider_set')
