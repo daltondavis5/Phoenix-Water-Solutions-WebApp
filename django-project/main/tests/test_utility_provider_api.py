@@ -32,20 +32,6 @@ class ProviderViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['provider'].get('name'), data['name'])
 
-    def test_provider_update(self):
-        """ Tests the update functionality for provider details"""
-        data = {
-            "name": "Test Provider",
-            "utility_provider": [
-                {
-                    "utility_type": "Water",
-                    "city": "Phoenix",
-                    "state": "AZ",
-                    "unit_measurement": 748.0
-                }
-            ]
-        }
-
 
 class UtilityViewSetTestCase(APITestCase):
     UTILITY_LIST_URL = reverse('utility-list')
