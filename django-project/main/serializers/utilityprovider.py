@@ -25,7 +25,6 @@ class UtilityProviderSerializer(serializers.ModelSerializer):
         fields = ['provider', 'utility_type', 'city', 'state', 'unit_measurement']
 
     def create(self, validated_data):
-
         provider_name = validated_data.get('provider').get('name')
         provider_obj = Provider.objects.get(name=provider_name)
 
@@ -58,3 +57,8 @@ class ProviderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Provider
         fields = ['id', 'name', 'utility_provider']
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name')
+        instance.save()
+        return instance
