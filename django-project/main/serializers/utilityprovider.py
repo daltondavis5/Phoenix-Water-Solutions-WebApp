@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from core.models.utilityprovider import Utility, Location, UtilityProvider, \
-    Provider
+from core.models.utilityprovider import Utility, Location, UtilityProvider, Provider
 
 
 class UtilitySerializer(serializers.ModelSerializer):
@@ -16,7 +15,43 @@ class LocationSerializer(serializers.ModelSerializer):
 
 
 class UtilityProviderSerializer(serializers.ModelSerializer):
-    utility_type = serializers.CharField(source='utility.utility_type')
+    provider = serializers.CharField(source='provider.name')
+    utility_type = serializers.CharField(source='utility.type')
+    city = serializers.CharField(source='location.city')
+    state = serializers.CharField(source='location.state')
+
+    class Meta:
+        model = UtilityProvider
+        fields = ['id', 'provider', 'utility_type', 'city', 'state', 'unit_measurement']
+
+    def create(self, validated_data):
+        provider_name = validated_data.get('provider').get('name')
+        provider_obj = Provider.objects.get(name=provider_name)
+
+        utility_type = validated_data.get('utility').get('type')
+        state = validated_data.get('location').get('state')
+        city = validated_data.get('location').get('city')
+        utility_obj = Utility.objects.get(type=utility_type)
+        location_obj = Location.objects.get(state=state, city=city)
+        unit_measurement = float(validated_data.get('unit_measurement'))
+        utility_provider = UtilityProvider(
+            utility=utility_obj,
+            provider=provider_obj,
+            location=location_obj,
+            unit_measurement=unit_measurement
+        )
+
+        utility_provider.save()
+        return utility_provider
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('unit_measurement')
+        instance.save()
+        return instance
+
+
+class UtilityProviderSerializer_helper(serializers.ModelSerializer):
+    utility_type = serializers.CharField(source='utility.type')
     city = serializers.CharField(source='location.city')
     state = serializers.CharField(source='location.state')
 
@@ -26,29 +61,14 @@ class UtilityProviderSerializer(serializers.ModelSerializer):
 
 
 class ProviderSerializer(serializers.ModelSerializer):
-    utility_provider = UtilityProviderSerializer(
-        source="utilityprovider_set", many=True)
+    utility_provider = UtilityProviderSerializer_helper(
+                        source="utilityprovider_set", many=True)
 
     class Meta:
         model = Provider
         fields = ['id', 'name', 'utility_provider']
 
-    def create(self, validated_data):
-        utility_provider_data = validated_data.pop('utilityprovider_set')
-        provider = Provider.objects.create(**validated_data)
-        for utility in utility_provider_data:
-            utility_type = utility.get('utility').get('utility_type')
-            state = utility.get('location').get('state')
-            city = utility.get('location').get('city')
-            utility_obj = Utility.objects.get(utility_type=utility_type)
-            location_obj = Location.objects.get(
-                state=state, city=city)
-            utility_provider = UtilityProvider(
-                utility=utility_obj,
-                provider=provider,
-                location=location_obj,
-                unit_measurement=float(
-                    utility['unit_measurement'])
-            )
-            utility_provider.save()
-        return provider
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name')
+        instance.save()
+        return instance

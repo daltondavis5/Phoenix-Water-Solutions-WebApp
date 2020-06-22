@@ -24,3 +24,13 @@ services:
       - POSTGRES_DB=local-db
       - POSTGRES_USER=local-postgres
       - POSTGRES_PASSWORD=local-password
+
+  nginx:
+    image: nginx:1.17
+    container_name: ngx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    depends_on:
+      - app

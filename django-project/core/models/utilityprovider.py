@@ -2,15 +2,15 @@ from django.db import models
 
 
 class Utility(models.Model):
-    utility_type = models.CharField(max_length=50)
+    type = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.utility_type
+        return self.type
 
 
 class Provider(models.Model):
     name = models.CharField(max_length=50)
-    utility_provider = models.ManyToManyField(
+    utilities = models.ManyToManyField(
         Utility,
         through='UtilityProvider')
 
