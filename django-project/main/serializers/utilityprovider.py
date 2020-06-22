@@ -5,7 +5,7 @@ from core.models.utilityprovider import Utility, Location, UtilityProvider, Prov
 class UtilitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Utility
-        fields = ['utility_type']
+        fields = ['type']
 
 
 class LocationSerializer(serializers.ModelSerializer):
@@ -15,14 +15,14 @@ class LocationSerializer(serializers.ModelSerializer):
 
 
 class UtilityProviderSerializer(serializers.ModelSerializer):
-    provider = serializers.CharField(source='provider.name')
+    provider_name = serializers.CharField(source='provider.name')
     utility_type = serializers.CharField(source='utility.type')
     city = serializers.CharField(source='location.city')
     state = serializers.CharField(source='location.state')
 
     class Meta:
         model = UtilityProvider
-        fields = ['id', 'provider', 'utility_type', 'city', 'state', 'unit_measurement']
+        fields = ['id', 'provider_name', 'utility_type', 'city', 'state', 'unit_measurement']
 
     def create(self, validated_data):
         provider_name = validated_data.get('provider').get('name')
@@ -62,7 +62,7 @@ class UtilityProviderSerializer_helper(serializers.ModelSerializer):
 
 class ProviderSerializer(serializers.ModelSerializer):
     utility_provider = UtilityProviderSerializer_helper(
-                        source="utilityprovider_set", many=True)
+                        source="utilityprovider_set", many=True, read_only=True)
 
     class Meta:
         model = Provider
@@ -72,3 +72,4 @@ class ProviderSerializer(serializers.ModelSerializer):
         instance.name = validated_data.get('name')
         instance.save()
         return instance
+
