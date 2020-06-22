@@ -23,6 +23,7 @@ class UtilityProviderSerializer(serializers.ModelSerializer):
     class Meta:
         model = UtilityProvider
         fields = ['id', 'provider_name', 'utility_type', 'city', 'state', 'unit_measurement']
+        read_only_fields = ['provider_name', 'utility_type', 'city', 'state']
 
     def create(self, validated_data):
         provider_name = validated_data.get('provider').get('name')
@@ -45,7 +46,7 @@ class UtilityProviderSerializer(serializers.ModelSerializer):
         return utility_provider
 
     def update(self, instance, validated_data):
-        instance.name = validated_data.get('unit_measurement')
+        instance.unit_measurement = validated_data.get('unit_measurement')
         instance.save()
         return instance
 
@@ -67,6 +68,7 @@ class ProviderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Provider
         fields = ['id', 'name', 'utility_provider']
+        read_only_fields = ['utility_provider']
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name')

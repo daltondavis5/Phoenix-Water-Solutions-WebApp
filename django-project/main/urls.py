@@ -7,7 +7,7 @@ router.register('provider', ProviderViewSet)
 router.register('utility_provider', UtilityProviderViewSet)
 
 urlpatterns = [
-    path('utility/', ListUtilities.as_view(), name='utility-list'),
+    path('utility/', ListUtilities.as_view(), name='utility-list')
 ]
 
 urlpatterns += router.urls
