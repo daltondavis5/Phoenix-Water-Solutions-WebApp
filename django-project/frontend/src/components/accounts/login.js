@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { loginUser } from "../../actions/auth";
@@ -60,9 +60,6 @@ export class Login extends Component {
                 Login
               </button>
             </div>
-            <p>
-              Don't have an account? <Link to="/register">Register</Link>
-            </p>
           </form>
         </div>
       </div>
