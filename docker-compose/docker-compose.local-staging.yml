@@ -1,22 +1,30 @@
 version: "3"
 
 services:
+  nginx:
+    build:
+      context: ../nginx/
+    volumes:
+      - static_data:/vol/static
+    ports:
+      - '8080:8080'
+    depends_on:
+    - app
+
   app:
     build:
       context: ..
       args:
-          DEBUG_ARG: 'True'
           DB_HOST_ARG: db
           DB_NAME_ARG: local-db
           DB_USER_ARG: local-postgres
           DB_PASS_ARG: local-password
-          ENV_ARG: 'local'
-    ports:
-      - "8000:8000"
+          ENV_ARG: local-staging
+          DEBUG_ARG: 'True'
+    volumes:
+      - static_data:/vol/web
     env_file:
       - ../django-project/config/settings/.env
-    volumes:
-      - ../django-project:/django-project
     depends_on:
       - db
 
@@ -26,3 +34,6 @@ services:
       - POSTGRES_DB=local-db
       - POSTGRES_USER=local-postgres
       - POSTGRES_PASSWORD=local-password
+
+volumes:
+  static_data:

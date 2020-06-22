@@ -1,15 +1,29 @@
 version: "3"
 
 services:
+  nginx:
+    build:
+      context: ../nginx/
+    volumes:
+      - static_data:/vol/static
+    ports:
+      - '8080:8080'
+    depends_on:
+    - app
+
   app:
     build:
       context: ..
       args:
-          SECRET_KEY: ${SECRET_KEY}
-          DEBUG: ${DEBUG}
-          DB_HOST_ARG: ${DB_HOST}
-          DB_NAME_ARG: ${DB_NAME}
-          DB_USER_ARG: ${DB_USER}
-          DB_PASS_ARG: ${DB_PASS}
-    ports:
-      - "8000:8000"
+          SECRET_KEY_ARG: ${SECRET_KEY_ARG}
+          DB_HOST_ARG: ${DB_HOST_ARG}
+          DB_NAME_ARG: ${DB_NAME_ARG}
+          DB_USER_ARG: ${DB_USER_ARG}
+          DB_PASS_ARG: ${DB_PASS_ARG}
+          ENV_ARG: ${ENV_ARG}
+          DEBUG_ARG: 'True'
+    volumes:
+      - static_data:/vol/web
+
+volumes:
+  static_data:
