@@ -50,9 +50,19 @@ class UtilityProviderSerializer(serializers.ModelSerializer):
         return instance
 
 
+class UtilityProviderSerializer_helper(serializers.ModelSerializer):
+    utility_type = serializers.CharField(source='utility.utility_type')
+    city = serializers.CharField(source='location.city')
+    state = serializers.CharField(source='location.state')
+
+    class Meta:
+        model = UtilityProvider
+        fields = ['utility_type', 'city', 'state', 'unit_measurement']
+
+
 class ProviderSerializer(serializers.ModelSerializer):
-    utility_provider = UtilityProviderSerializer(
-        source="utilityprovider_set", many=True)
+    utility_provider = UtilityProviderSerializer_helper(
+                        source="utilityprovider_set", many=True)
 
     class Meta:
         model = Provider

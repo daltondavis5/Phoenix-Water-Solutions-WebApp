@@ -33,7 +33,7 @@ class ProviderViewSetTestCase(APITestCase):
         self.assertEqual(response.data['provider'].get('name'), data['name'])
 
     def test_provider_update(self):
-        """ Tests the update functionality for provider details"""
+        """ Tests the update functionality for provider """
         data = {
             "name": "Test Provider",
             "utility_provider": [
