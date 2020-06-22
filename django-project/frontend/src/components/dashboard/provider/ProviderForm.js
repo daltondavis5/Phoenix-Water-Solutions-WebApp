@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import UtilityProviderItem from "./UtilityProviderItem";
 import axios from "axios";
 import { returnErrors } from "../../../actions/messages";
+import PropTypes from "prop-types";
 
 export class ProviderForm extends Component {
   state = {
@@ -10,6 +11,10 @@ export class ProviderForm extends Component {
     utility_provider: [],
     utilities: [],
     currentMode: "viewing",
+  };
+
+  static propTypes = {
+    returnErrors: PropTypes.func.isRequired,
   };
 
   componentDidMount() {

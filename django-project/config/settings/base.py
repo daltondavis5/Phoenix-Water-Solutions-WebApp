@@ -39,13 +39,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'knox',
     'core',
     'frontend',
     'main',
+    'accounts',
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'knox.auth.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ],
     'TEST_REQUEST_DEFAULT_FORMAT': 'json'
@@ -133,3 +136,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Override Django USER model
+AUTH_USER_MODEL = 'accounts.User'
