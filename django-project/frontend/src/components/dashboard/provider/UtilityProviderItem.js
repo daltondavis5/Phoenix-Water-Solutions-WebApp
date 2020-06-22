@@ -26,23 +26,38 @@ export class UtilityProviderItem extends Component {
   }
 
   saveData = () => {
-    const METHOD = this.props.mode == "adding" ? "post" : "put";
-    data = {
+    const body = {
+      provider: this.props.providerName,
+      utility_type: this.state.utility_type,
       city: this.state.city,
       state: this.state.state,
       unit_measurement: this.state.unit_measurement,
-      utility_type: this.state.utility_type,
+    };
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
     };
 
-    this.props.saveButton(data);
-  };
-
-  handleChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
+    if (this.props.mode == "adding") {
+      axios
+        .post("/api/utility_provider/", JSON.stringify(body), config)
+        .then((response) => {});
+    }
+    if (this.props.mode == "editing") {
+      axios.put("/api/utility_provider/", body, config).then((response) => {});
+    }
+    this.props.saveButton();
   };
 
   render() {
-    const mode = this.props.mode;
+    const {
+      utility_type,
+      city,
+      state,
+      unit_measurement,
+      mode,
+    } = this.props.utility_provider_item;
     return (
       <div style={{ marginBottom: "20px" }}>
         <h2 className="text-center">
@@ -53,7 +68,7 @@ export class UtilityProviderItem extends Component {
             type="submit"
             className="btn btn-primary float-right"
             style={{ marginLeft: "10px", width: "60px" }}
-            onClick={this.saveData}
+            onClick={this.props.saveButton}
           >
             Save
           </button>
@@ -64,8 +79,8 @@ export class UtilityProviderItem extends Component {
             <select
               className="form-control"
               name="utility_type"
-              onChange={this.handleChange}
-              value={this.state.utility_type}
+              onChange={this.props.onChange}
+              value={utility_type}
               disabled={mode == "editing"}
             >
               <option value="Default">Choose a utility</option>
@@ -87,8 +102,8 @@ export class UtilityProviderItem extends Component {
               type="text"
               className="form-control"
               name="state"
-              onChange={this.handleChange}
-              value={this.state.state}
+              onChange={this.props.onChange}
+              value={state}
               disabled={mode == "editing"}
             />
           </div>
@@ -98,8 +113,8 @@ export class UtilityProviderItem extends Component {
               type="text"
               className="form-control"
               name="city"
-              onChange={this.handleChange}
-              value={this.state.city}
+              onChange={this.props.onChange}
+              value={city}
               disabled={mode == "editing"}
             />
           </div>
@@ -109,8 +124,8 @@ export class UtilityProviderItem extends Component {
               type="text"
               className="form-control"
               name="unit_measurement"
-              onChange={this.handleChange}
-              value={this.state.unit_measurement}
+              onChange={this.props.onChange}
+              value={unit_measurement}
             />
           </div>
         </div>
