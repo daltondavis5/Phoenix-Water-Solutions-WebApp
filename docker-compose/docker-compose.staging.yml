@@ -21,5 +21,9 @@ services:
           DB_USER_ARG: ${DB_USER_ARG}
           DB_PASS_ARG: ${DB_PASS_ARG}
           ENV_ARG: ${ENV_ARG}
+          DEBUG_ARG: 'True'
     volumes:
       - static_data:/vol/web
+
+volumes:
+  static_data:

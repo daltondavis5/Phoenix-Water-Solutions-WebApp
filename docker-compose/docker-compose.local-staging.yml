@@ -1,31 +1,50 @@
 version: "3"
 
 services:
+  ecs-local-endpoints:
+    image: amazon/amazon-ecs-local-container-endpoints
+    volumes:
+      - /var/run:/var/run
+      - $HOME/.aws/:/home/.aws/
+    environment:
+      ECS_LOCAL_METADATA_PORT: "51679"
+      HOME: "/home"
+    network_mode: container:local-pause
+
   nginx:
     build:
       context: ../nginx/
     volumes:
       - static_data:/vol/static
-    ports:
-      - '8080:8080'
     depends_on:
-    - app
+      - app
+      - ecs-local-endpoints
+    network_mode: container:local-pause
+    environment:
+      - ECS_CONTAINER_METADATA_URI="http://169.254.170.2/v3/containers/nginx"
+      - AWS_CONTAINER_CREDENTIALS_RELATIVE_URI="/creds"
 
   app:
     build:
       context: ..
       args:
-          DB_HOST_ARG: db
+          DB_HOST_ARG: localhost
           DB_NAME_ARG: local-db
           DB_USER_ARG: local-postgres
           DB_PASS_ARG: local-password
-          ENV_ARG: 'local-staging'
+          ENV_ARG: local-staging
+          DEBUG_ARG: 'True'
     volumes:
       - static_data:/vol/web
     env_file:
       - ../django-project/config/settings/.env
+    environment:
+      - ECS_CONTAINER_METADATA_URI="http://169.254.170.2/v3/containers/app"
+      - AWS_CONTAINER_CREDENTIALS_RELATIVE_URI="/creds"
     depends_on:
       - db
+      - ecs-local-endpoints
+    network_mode: container:local-pause
 
   db:
     image: postgres:10-alpine
@@ -33,6 +52,11 @@ services:
       - POSTGRES_DB=local-db
       - POSTGRES_USER=local-postgres
       - POSTGRES_PASSWORD=local-password
+      - ECS_CONTAINER_METADATA_URI="http://169.254.170.2/v3/containers/db"
+      - AWS_CONTAINER_CREDENTIALS_RELATIVE_URI="/creds"
+    depends_on:
+      - ecs-local-endpoints
+    network_mode: container:local-pause
 
 volumes:
   static_data:
