@@ -7,7 +7,7 @@ COPY requirements/$ENV_ARG.txt /requirements.txt
 COPY requirements/base.txt /base.txt
 RUN apk add --update --no-cache postgresql-client
 RUN apk add --update --no-cache --virtual .tmp-build-deps \
-    gcc libc-dev linux-headers postgresql-dev
+    gcc libc-dev linux-headers postgresql-dev libffi-dev
 RUN pip install -r /requirements.txt
 RUN apk del .tmp-build-deps
 
