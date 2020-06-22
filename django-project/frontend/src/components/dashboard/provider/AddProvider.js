@@ -11,19 +11,17 @@ export class AddProvider extends Component {
   };
 
   onSubmit = (e) => {
-    const { name, utility_provider } = this.state;
+    const { name } = this.state;
     e.preventDefault();
-    const body = JSON.stringify({ name, utility_provider });
+    const body = JSON.stringify({ name });
     const config = {
       headers: {
         "Content-Type": "application/json",
       },
     };
-    console.log(body)
     axios
       .post("/api/provider/", body, config)
       .then((res) => {
-        console.log(res.data);
         this.setState({
           response: res.data,
           status: "added",
