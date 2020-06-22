@@ -26,7 +26,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 
 #DEBUG is set to True if the env variable is the string 'True', otherwise, set as false
-DEBUG = os.environ['DEBUG_VALUE'] == 'True'
+DEBUG = os.environ['DEBUG'] == 'True'
 
 ALLOWED_HOSTS = []
 
