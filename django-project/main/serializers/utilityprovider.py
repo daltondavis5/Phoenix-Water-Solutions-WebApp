@@ -43,11 +43,18 @@ class UtilityProviderSerializer(serializers.ModelSerializer):
             location=location_obj,
             unit_measurement=unit_measurement
         )
-
         utility_provider.save()
         return utility_provider
 
     def update(self, instance, validated_data):
+        print(instance)
+        if(str(instance.utility) != validated_data['utility']['type'] or
+           str(instance.location.state) != validated_data['location']['state']
+           or
+           str(instance.location.city) != validated_data['location']['city']):
+            print("Here")
+            raise serializers.ValidationError("Cannot edit type, city or \
+                state. Contact administrator")
         instance.unit_measurement = validated_data.get('unit_measurement')
         instance.save()
         return instance
@@ -55,7 +62,7 @@ class UtilityProviderSerializer(serializers.ModelSerializer):
 
 class ProviderSerializer(serializers.ModelSerializer):
     utility_provider = UtilityProviderSerializer(
-                        source="utilityprovider_set", many=True, 
+                        source="utilityprovider_set", many=True,
                         read_only=True)
 
     class Meta:
