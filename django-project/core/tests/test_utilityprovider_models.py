@@ -7,8 +7,8 @@ from core.models.utilityprovider import Utility, Provider, UtilityProvider, \
 class ModelCreateTests(TestCase):
 
     def setUp(self):
-        self.utility1 = Utility.objects.create(utility_type='Water')
-        self.utility2 = Utility.objects.create(utility_type='Electricity')
+        self.utility1 = Utility.objects.create(type='Water')
+        self.utility2 = Utility.objects.create(type='Electricity')
 
         self.location = Location.objects.create(city='Phoenix', state='AZ')
 
@@ -28,10 +28,10 @@ class ModelCreateTests(TestCase):
 
     def test_create_utility(self):
         """Test creating utility"""
-        utility1 = Utility.objects.get(utility_type='Water')
-        utility2 = Utility.objects.get(utility_type='Electricity')
-        self.assertEqual(utility1.utility_type, 'Water')
-        self.assertEqual(utility2.utility_type, 'Electricity')
+        utility1 = Utility.objects.get(type='Water')
+        utility2 = Utility.objects.get(type='Electricity')
+        self.assertEqual(utility1.type, 'Water')
+        self.assertEqual(utility2.type, 'Electricity')
 
     def test_create_location(self):
         """Test creating location"""
@@ -64,9 +64,9 @@ class ModelCreateTests(TestCase):
         utilityProvider2 = UtilityProvider.objects.get(**utility_attributes2)
         provider = Provider.objects.get(name='Phoenix supplies')
         self.assertIn(utilityProvider1.utility,
-                      provider.utility_provider.all())
+                      provider.utilities.all())
         self.assertIn(utilityProvider2.utility,
-                      provider.utility_provider.all())
+                      provider.utilities.all())
 
     def test_no_extra_utility_added(self):
         """Test if utilities are exclusive for different providers"""
@@ -77,7 +77,7 @@ class ModelCreateTests(TestCase):
             'unit_measurement': 500
         }
 
-        utility3 = Utility.objects.create(utility_type='Gas')
+        utility3 = Utility.objects.create(type='Gas')
 
         new_provider = Provider.objects.create(name='New provider')
 
@@ -93,13 +93,13 @@ class ModelCreateTests(TestCase):
             **utility_attributes3)
         provider = Provider.objects.get(name='Phoenix supplies')
         self.assertIn(utilityProvider1.utility,
-                      provider.utility_provider.all())
-        self.assertNotIn(utility3, provider.utility_provider.all())
-        self.assertIn(utility3, new_provider.utility_provider.all())
+                      provider.utilities.all())
+        self.assertNotIn(utility3, provider.utilities.all())
+        self.assertIn(utility3, new_provider.utilities.all())
 
     def test_utility_str(self):
         """Check utility string representations"""
-        self.assertEqual(str(self.utility1), self.utility1.utility_type)
+        self.assertEqual(str(self.utility1), self.utility1.type)
 
     def test_location_str(self):
         """Check location string representation"""
