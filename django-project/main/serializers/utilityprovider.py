@@ -29,21 +29,30 @@ class UtilityProviderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         provider_name = validated_data.get('provider').get('name')
-        provider_obj = Provider.objects.get(name=provider_name)
-
         utility_type = validated_data.get('utility').get('type')
         state = validated_data.get('location').get('state')
         city = validated_data.get('location').get('city')
+
+        if not Provider.objects.filter(name=provider_name).exists():
+            raise serializers.ValidationError("No provider found in database. ")
+
+        if not Utility.objects.filter(type=utility_type).exists():
+            raise serializers.ValidationError("No utility found in database. ")
+
+        if not Location.objects.filter(state=state, city=city).exists():
+            raise serializers.ValidationError("No location found in database. ")
+
+        provider_obj = Provider.objects.get(name=provider_name)
         utility_obj = Utility.objects.get(type=utility_type)
         location_obj = Location.objects.get(state=state, city=city)
         unit_measurement = float(validated_data.get('unit_measurement'))
+
         utility_provider = UtilityProvider(
             utility=utility_obj,
             provider=provider_obj,
             location=location_obj,
             unit_measurement=unit_measurement
         )
-
         utility_provider.save()
         return utility_provider
 
