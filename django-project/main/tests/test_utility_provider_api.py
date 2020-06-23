@@ -43,6 +43,18 @@ class ProviderViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data.get('provider_name'), payload['provider_name'])
 
+    def test_utility_provider_utility_error(self):
+        """ Test to only create if utilities present in database """
+        payload = {
+            "provider_name": "Test Provider Services",
+            "utility_type": "AQ92839",
+            "city": "Phoenix",
+            "state": "AZ",
+            "unit_measurement": 748.0
+        }
+        response = self.client.post(self.UTILITY_PROVIDER_LIST_URL, payload)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_provider_update(self):
         """ Tests the update functionality for provider. Only update Name """
         payload = {
