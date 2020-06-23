@@ -30,7 +30,7 @@ export class Provider extends Component {
         <div className="jumbotron mt-3">
           <h1>Provider List</h1>
           <ul className="list-group">{providerItems}</ul>
-          <div className="btn btn-primary" style={{marginTop: "30px"}}>
+          <div className="btn btn-primary mt-4">
             <Link style={providerLink} to="/provider/add">
               Add Provider
             </Link>
