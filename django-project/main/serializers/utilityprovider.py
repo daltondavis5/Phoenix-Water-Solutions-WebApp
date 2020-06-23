@@ -74,4 +74,3 @@ class ProviderSerializer(serializers.ModelSerializer):
         instance.name = validated_data.get('name')
         instance.save()
         return instance
-

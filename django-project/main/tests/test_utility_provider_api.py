@@ -9,7 +9,7 @@ class ProviderViewSetTestCase(APITestCase):
     PROVIDER_LIST_URL = reverse("provider-list")
 
     def setUp(self):
-        Utility.objects.create(utility_type="Water")
+        Utility.objects.create(type="Water")
         Location.objects.create(city="Phoenix", state="AZ")
 
     def test_provider_list(self):
@@ -29,8 +29,8 @@ class ProviderViewSetTestCase(APITestCase):
             ]
         }
         response = self.client.post(self.PROVIDER_LIST_URL, data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['provider'].get('name'), data['name'])
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data.get('name'), data['name'])
 
     def test_provider_update(self):
         """ Tests the update functionality for provider """
@@ -51,11 +51,11 @@ class UtilityViewSetTestCase(APITestCase):
     UTILITY_LIST_URL = reverse('utility-list')
 
     def test_utility_list(self):
-        Utility.objects.create(utility_type="Water")
-        Utility.objects.create(utility_type="Electricity")
+        Utility.objects.create(type="Water")
+        Utility.objects.create(type="Electricity")
         response = self.client.get(self.UTILITY_LIST_URL)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual("Water",
-                         response.data['utilities'][0]['utility_type'])
+                         response.data[0]['type'])
         self.assertEqual("Electricity",
-                         response.data['utilities'][1]['utility_type'])
+                         response.data[1]['type'])
