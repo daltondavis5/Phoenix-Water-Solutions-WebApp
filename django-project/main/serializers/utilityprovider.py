@@ -47,14 +47,12 @@ class UtilityProviderSerializer(serializers.ModelSerializer):
         return utility_provider
 
     def update(self, instance, validated_data):
-        print(instance)
+        ERROR_MSG = "Cannot edit type, city or state. Contact administrator"
         if(str(instance.utility) != validated_data['utility']['type'] or
            str(instance.location.state) != validated_data['location']['state']
            or
            str(instance.location.city) != validated_data['location']['city']):
-            print("Here")
-            raise serializers.ValidationError("Cannot edit type, city or \
-                state. Contact administrator")
+            raise serializers.ValidationError(ERROR_MSG)
         instance.unit_measurement = validated_data.get('unit_measurement')
         instance.save()
         return instance
