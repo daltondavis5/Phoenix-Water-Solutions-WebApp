@@ -1,12 +1,20 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import axios from "axios";
 import UtilityProviderItem from "./UtilityProviderItem";
 import UtilityProviderCard from "./UtilityProviderCard";
+import { createMessage, returnErrors } from "../../../actions/messages";
+import PropTypes from "prop-types";
 
 export class ProviderDetails extends Component {
   state = {
     name: "",
     utility_provider: [],
+  };
+
+  static propTypes = {
+    createMessage: PropTypes.func.isRequired,
+    returnErrors: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -21,6 +29,9 @@ export class ProviderDetails extends Component {
           name: response.data.name,
           utility_provider: alteredData,
         });
+      })
+      .catch((err) => {
+        this.props.returnErrors(err.response.data, err.response.status);
       });
     this.setState((prevState) => {
       prevState.utility_provider.map(
@@ -57,6 +68,10 @@ export class ProviderDetails extends Component {
         .post("/api/utility_provider/", JSON.stringify(body), config)
         .then((response) => {
           utility_provider["id"] = response.data.id;
+          this.props.createMessage({ msg: "Success!" });
+        })
+        .catch((err) => {
+          this.props.returnErrors(err.response.data, err.response.status);
         });
     }
     if (utility_provider.mode == "editing") {
@@ -66,7 +81,13 @@ export class ProviderDetails extends Component {
           JSON.stringify(body),
           config
         )
-        .then((response) => {});
+        .then((response) => {
+          this.props.createMessage({ msg: "Success!" });
+        })
+        .catch((err) => {
+          console.log(err.response.data);
+          this.props.returnErrors(err.response.data, err.response.status);
+        });
     }
     let utility_providers = [...this.state.utility_provider];
     utility_providers[index]["mode"] = "viewing";
@@ -139,4 +160,4 @@ export class ProviderDetails extends Component {
   }
 }
 
-export default ProviderDetails;
+export default connect(null, { createMessage, returnErrors })(ProviderDetails);
