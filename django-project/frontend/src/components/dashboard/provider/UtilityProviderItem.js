@@ -87,10 +87,10 @@ export class UtilityProviderItem extends Component {
               {this.state.utilities.map((utility) => {
                 return (
                   <option
-                    key={utility["utility_type"]}
-                    value={utility["utility_type"]}
+                    key={utility["type"]}
+                    value={utility["type"]}
                   >
-                    {utility["utility_type"]}
+                    {utility["type"]}
                   </option>
                 );
               })}

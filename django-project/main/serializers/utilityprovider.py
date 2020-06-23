@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from core.models.utilityprovider import Utility, Location, UtilityProvider, Provider
+from core.models.utilityprovider import Utility, Location, \
+    UtilityProvider, Provider
 
 
 class UtilitySerializer(serializers.ModelSerializer):
@@ -22,7 +23,8 @@ class UtilityProviderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UtilityProvider
-        fields = ['id', 'provider_name', 'utility_type', 'city', 'state', 'unit_measurement']
+        fields = ['id', 'provider_name', 'utility_type', 'city', 
+                  'state', 'unit_measurement']
         read_only_fields = ['provider_name', 'utility_type', 'city', 'state']
 
     def create(self, validated_data):
@@ -62,8 +64,9 @@ class UtilityProviderSerializer_helper(serializers.ModelSerializer):
 
 
 class ProviderSerializer(serializers.ModelSerializer):
-    utility_provider = UtilityProviderSerializer_helper(
-                        source="utilityprovider_set", many=True, read_only=True)
+    utility_provider = UtilityProviderSerializer(
+                        source="utilityprovider_set", many=True, 
+                        read_only=True)
 
     class Meta:
         model = Provider

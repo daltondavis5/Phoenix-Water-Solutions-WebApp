@@ -41,7 +41,7 @@ export class ProviderDetails extends Component {
   changeToView = (index) => () => {
     let utility_provider = this.state.utility_provider[index];
     const body = {
-      provider: this.state.name,
+      provider_name: this.state.name,
       utility_type: utility_provider.utility_type,
       city: utility_provider.city,
       state: utility_provider.state,
@@ -60,7 +60,7 @@ export class ProviderDetails extends Component {
     }
     if (utility_provider.mode == "editing") {
       axios
-        .put("/api/utility_provider/", JSON.stringify(body), config)
+        .put(`/api/utility_provider/${utility_provider['id']}/`, JSON.stringify(body), config)
         .then((response) => {});
     }
     let utility_providers = [...this.state.utility_provider];
