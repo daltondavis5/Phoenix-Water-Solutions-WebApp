@@ -34,7 +34,7 @@ export class ProviderForm extends Component {
       },
     };
     axios.post("/api/provider/", body, config).then((res) => {
-      console.log(res.data);
+      
     });
     this.setState({
       currentMode: "viewing",

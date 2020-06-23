@@ -13,7 +13,6 @@ export class ProviderDetails extends Component {
     axios
       .get(`/api/provider/${this.props.match.params.id}`)
       .then((response) => {
-        console.log(response.data)
         var alteredData = response.data.utility_provider.map((data) => {
           data.mode = "viewing";
           return data;
@@ -56,11 +55,17 @@ export class ProviderDetails extends Component {
     if (utility_provider.mode == "adding") {
       axios
         .post("/api/utility_provider/", JSON.stringify(body), config)
-        .then((response) => {});
+        .then((response) => {
+          utility_provider["id"] = response.data.id;
+        });
     }
     if (utility_provider.mode == "editing") {
       axios
-        .put(`/api/utility_provider/${utility_provider['id']}/`, JSON.stringify(body), config)
+        .put(
+          `/api/utility_provider/${utility_provider["id"]}/`,
+          JSON.stringify(body),
+          config
+        )
         .then((response) => {});
     }
     let utility_providers = [...this.state.utility_provider];
