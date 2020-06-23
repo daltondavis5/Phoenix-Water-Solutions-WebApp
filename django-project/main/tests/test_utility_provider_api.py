@@ -42,14 +42,42 @@ class ProviderViewSetTestCase(APITestCase):
         response = self.client.post(self.UTILITY_PROVIDER_LIST_URL, payload)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data.get('provider_name'), payload['provider_name'])
+        self.assertEqual(response.data.get('utility_type'), payload['utility_type'])
+        self.assertEqual(response.data.get('city'), payload['city'])
+        self.assertEqual(response.data.get('state'), payload['state'])
+        self.assertEqual(response.data.get('unit_measurement'), payload['unit_measurement'])
 
-    def test_utility_provider_utility_error(self):
+    def test_utility_provider_create_utility_error(self):
         """ Test to only create if utilities present in database """
         payload = {
             "provider_name": "Test Provider Services",
             "utility_type": "AQ92839",
             "city": "Phoenix",
             "state": "AZ",
+            "unit_measurement": 748.0
+        }
+        response = self.client.post(self.UTILITY_PROVIDER_LIST_URL, payload)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_utility_provider_create_provider_error(self):
+        """ Test to only create if utilities present in database """
+        payload = {
+            "provider_name": "Not there",
+            "utility_type": "Water",
+            "city": "Phoenix",
+            "state": "AZ",
+            "unit_measurement": 748.0
+        }
+        response = self.client.post(self.UTILITY_PROVIDER_LIST_URL, payload)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_utility_provider_create_location_error(self):
+        """ Test to only create if utilities present in database """
+        payload = {
+            "provider_name": "Test Provider Services",
+            "utility_type": "Water",
+            "city": "Phoenix",
+            "state": "not there",
             "unit_measurement": 748.0
         }
         response = self.client.post(self.UTILITY_PROVIDER_LIST_URL, payload)
