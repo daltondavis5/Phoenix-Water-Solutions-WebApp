@@ -48,7 +48,7 @@ class ProviderViewSetTestCase(APITestCase):
         self.assertEqual(response.data.get('unit_measurement'), payload['unit_measurement'])
 
     def test_utility_provider_create_utility_error(self):
-        """ Test to only create if utilities present in database """
+        """ Test to not allow create if utility already present """
         payload = {
             "provider_name": "Test Provider Services",
             "utility_type": "AQ92839",
@@ -60,7 +60,7 @@ class ProviderViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_utility_provider_create_provider_error(self):
-        """ Test to only create if utilities present in database """
+        """  Test to not allow create if provider already present """
         payload = {
             "provider_name": "Not there",
             "utility_type": "Water",
@@ -71,8 +71,8 @@ class ProviderViewSetTestCase(APITestCase):
         response = self.client.post(self.UTILITY_PROVIDER_LIST_URL, payload)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_utility_provider_create_location_error(self):
-        """ Test to only create if utilities present in database """
+    def test_utility_provider_create_city_error(self):
+        """  Test to not allow create if city already present """
         payload = {
             "provider_name": "Test Provider Services",
             "utility_type": "Water",
@@ -83,17 +83,17 @@ class ProviderViewSetTestCase(APITestCase):
         response = self.client.post(self.UTILITY_PROVIDER_LIST_URL, payload)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_provider_update(self):
-        """ Tests the update functionality for provider. Only update Name """
+    def test_utility_provider_create_state_error(self):
+        """  Test to not allow create if state already present """
         payload = {
-            "name": "Test Provider Services Updated",
+            "provider_name": "Test Provider Services",
+            "utility_type": "Water",
+            "city": "Phoenix",
+            "state": "Not there",
+            "unit_measurement": 748.0
         }
-        provider = self.provider
-        url = detail_url_provider(provider.id)
-        response = self.client.put(url, payload)
-        provider.refresh_from_db()
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(payload['name'], response.data['name'])
+        response = self.client.post(self.UTILITY_PROVIDER_LIST_URL, payload)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_utility_provider_update(self):
         """ Tests the update functionality for utility provider"""
@@ -111,6 +111,78 @@ class ProviderViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(payload.get('unit_measurement'),
                          response.data['unit_measurement'])
+
+    def test_utility_provider_update_provider_error(self):
+        """  Test to not allow update if provider already present """
+        payload = {
+            "provider_name": "Provider not there",
+            "utility_type": "Water",
+            "city": "Phoenix",
+            "state": "AZ",
+            "unit_measurement": 748.0
+        }
+        utility_provider = self.utility_provider
+        url = detail_url_utility_provider(utility_provider.id)
+        response = self.client.put(url, payload)
+        utility_provider.refresh_from_db()
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_utility_provider_update_utility_error(self):
+        """  Test to not allow update if utility already present """
+        payload = {
+            "provider_name": "Test Provider Services",
+            "utility_type": "Not there",
+            "city": "Phoenix",
+            "state": "AZ",
+            "unit_measurement": 748.0
+        }
+        utility_provider = self.utility_provider
+        url = detail_url_utility_provider(utility_provider.id)
+        response = self.client.put(url, payload)
+        utility_provider.refresh_from_db()
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_utility_provider_update_city_error(self):
+        """  Test to not allow update if city already present """
+        payload = {
+            "provider_name": "Test Provider Services",
+            "utility_type": "Water",
+            "city": "Not there",
+            "state": "AZ",
+            "unit_measurement": 748.0
+        }
+        utility_provider = self.utility_provider
+        url = detail_url_utility_provider(utility_provider.id)
+        response = self.client.put(url, payload)
+        utility_provider.refresh_from_db()
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_utility_provider_update_state_error(self):
+        """  Test to not allow update if state already present """
+        payload = {
+            "provider_name": "Test Provider Services",
+            "utility_type": "Water",
+            "city": "Phoenix",
+            "state": "Not there",
+            "unit_measurement": 748.0
+        }
+        utility_provider = self.utility_provider
+        url = detail_url_utility_provider(utility_provider.id)
+        response = self.client.put(url, payload)
+        utility_provider.refresh_from_db()
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_provider_update(self):
+        """ Tests the update functionality for provider. Only update Name """
+        payload = {
+            "name": "Test Provider Services Updated",
+        }
+        provider = self.provider
+        url = detail_url_provider(provider.id)
+        response = self.client.put(url, payload)
+        provider.refresh_from_db()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(payload['name'], response.data['name'])
 
 
 class UtilityViewSetTestCase(APITestCase):
