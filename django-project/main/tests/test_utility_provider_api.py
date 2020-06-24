@@ -49,7 +49,7 @@ class ProviderViewSetTestCase(APITestCase):
         self.assertEqual(response.data.get('unit_measurement'), payload['unit_measurement'])
 
     def test_utility_provider_create_utility_error(self):
-        """ Test to only create if utilities present in database """
+        """ Test to not allow create if utility already present """
         payload = {
             "provider_name": "Test Provider Services",
             "utility_type": "AQ92839",
@@ -61,7 +61,7 @@ class ProviderViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_utility_provider_create_provider_error(self):
-        """ Test to only create if utilities present in database """
+        """  Test to not allow create if provider already present """
         payload = {
             "provider_name": "Not there",
             "utility_type": "Water",
@@ -95,18 +95,6 @@ class ProviderViewSetTestCase(APITestCase):
         }
         response = self.client.post(self.UTILITY_PROVIDER_LIST_URL, payload)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_provider_update(self):
-        """ Tests the update functionality for provider. Only update Name """
-        payload = {
-            "name": "Test Provider Services Updated",
-        }
-        provider = self.provider
-        url = detail_url_provider(provider.id)
-        response = self.client.put(url, payload)
-        provider.refresh_from_db()
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(payload['name'], response.data['name'])
 
     def test_utility_provider_update(self):
         """ Tests the update functionality for utility provider"""
@@ -199,6 +187,18 @@ class ProviderViewSetTestCase(APITestCase):
         response = self.client.put(url, payload)
         utility_provider.refresh_from_db()
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_provider_update(self):
+        """ Tests the update functionality for provider. Only update Name """
+        payload = {
+            "name": "Test Provider Services Updated",
+        }
+        provider = self.provider
+        url = detail_url_provider(provider.id)
+        response = self.client.put(url, payload)
+        provider.refresh_from_db()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(payload['name'], response.data['name'])
 
 
 class UtilityViewSetTestCase(APITestCase):
