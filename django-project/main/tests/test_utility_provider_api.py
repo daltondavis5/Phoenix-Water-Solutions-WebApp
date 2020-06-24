@@ -173,18 +173,6 @@ class ProviderViewSetTestCase(APITestCase):
         utility_provider.refresh_from_db()
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_provider_update(self):
-        """ Tests the update functionality for provider. Only update Name """
-        payload = {
-            "name": "Test Provider Services Updated",
-        }
-        provider = self.provider
-        url = detail_url_provider(provider.id)
-        response = self.client.put(url, payload)
-        provider.refresh_from_db()
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(payload['name'], response.data['name'])
-
 
 class UtilityViewSetTestCase(APITestCase):
     UTILITY_LIST_URL = reverse('utility-list')

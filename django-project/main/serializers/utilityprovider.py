@@ -62,7 +62,6 @@ class UtilityProviderSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("No location found in database. ")
             return data
 
-
     def create(self, validated_data):
         provider_name = validated_data.get('provider').get('name')
         utility_type = validated_data.get('utility').get('type')
@@ -98,8 +97,3 @@ class ProviderSerializer(serializers.ModelSerializer):
         model = Provider
         fields = ['id', 'name', 'utility_provider']
         read_only_fields = ['utility_provider']
-
-    def update(self, instance, validated_data):
-        instance.name = validated_data.get('name')
-        instance.save()
-        return instance
