@@ -1,6 +1,9 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { returnErrors } from "../../../actions/messages";
+import PropTypes from "prop-types";
 
 export class AddProvider extends Component {
   state = {
@@ -8,6 +11,10 @@ export class AddProvider extends Component {
     status: "adding",
     response: "",
     utility_provider: [],
+  };
+
+  static propTypes = {
+    returnErrors: PropTypes.func.isRequired,
   };
 
   onSubmit = (e) => {
@@ -28,7 +35,7 @@ export class AddProvider extends Component {
         });
       })
       .catch((err) => {
-        // this.props.returnErrors(err.response.data, err.response.status);
+        this.props.returnErrors(err.response.data, err.response.status);
       });
   };
 
@@ -83,4 +90,4 @@ const providerLink = {
   textDecoration: "none",
 };
 
-export default AddProvider;
+export default connect(null, { returnErrors })(AddProvider);
