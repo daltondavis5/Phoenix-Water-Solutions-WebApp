@@ -32,7 +32,6 @@ export class Provider extends Component {
           style={{
             padding: "30px",
             boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
-            transition: "0.3s",
             borderRadius: "5px",
           }}
         >
