@@ -113,21 +113,6 @@ class ProviderViewSetTestCase(APITestCase):
         self.assertEqual(payload.get('unit_measurement'),
                          response.data['unit_measurement'])
 
-    def test_utility_provider_update_fail(self):
-        """Tests if error there is an error updating type, city or state."""
-        payload = {
-            "provider_name": "Test Provider Services",
-            "utility_type": "Gas",
-            "city": "Phoenix",
-            "state": "AZ",
-            "unit_measurement": 748.0
-        }
-        utility_provider = self.utility_provider
-        url = detail_url_utility_provider(utility_provider.id)
-        response = self.client.put(url, payload)
-        utility_provider.refresh_from_db()
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
     def test_utility_provider_update_provider_error(self):
         """  Test to not allow update if provider already present """
         payload = {
