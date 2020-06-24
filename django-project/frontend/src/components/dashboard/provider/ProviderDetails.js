@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import axios from "axios";
 import UtilityProviderItem from "./UtilityProviderItem";
 import UtilityProviderCard from "./UtilityProviderCard";
+import HandleProvider from "./HandleProvider";
 import { createMessage, returnErrors } from "../../../actions/messages";
 import PropTypes from "prop-types";
 
@@ -10,6 +11,7 @@ export class ProviderDetails extends Component {
   state = {
     name: "",
     utility_provider: [],
+    currentMode: "added",
   };
 
   static propTypes = {
@@ -39,6 +41,26 @@ export class ProviderDetails extends Component {
       );
     });
   }
+
+  updateName = (name) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const body = {
+      name,
+    };
+    axios
+      .put(
+        `/api/provider/${this.props.match.params.id}/`,
+        JSON.stringify(body),
+        config
+      )
+      .then((response) => {
+        location.reload();
+      });
+  };
 
   changeToEdit = (index) => () => {
     let utility_provider = [...this.state.utility_provider];
@@ -97,6 +119,28 @@ export class ProviderDetails extends Component {
     });
   };
 
+  deleteItem = (index) => () => {
+    let utility_provider = this.state.utility_provider[index];
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    if (utility_provider.mode == "editing") {
+      axios
+        .delete(`/api/utility_provider/${utility_provider["id"]}/`, config)
+        .then((response) => {});
+    }
+    let utility_providers = [
+      ...this.state.utility_provider.slice(0, index),
+      ...this.state.utility_provider.slice(index + 1),
+    ];
+    this.setState({
+      utility_provider: utility_providers,
+      currentMode: "added",
+    });
+  };
+
   handleChange = (index) => (e) => {
     let utility_provider = [...this.state.utility_provider];
     utility_provider[index][e.target.name] = e.target.value;
@@ -126,7 +170,7 @@ export class ProviderDetails extends Component {
     const providerName = this.state.name;
     return (
       <React.Fragment>
-        <h2 className="text-center">{this.state.name}</h2>
+        <HandleProvider name={providerName} updateName={this.updateName} />
         {this.state.utility_provider.map((utility_provider_item, index) => {
           return utility_provider_item.mode === "viewing" ? (
             <UtilityProviderCard
@@ -140,6 +184,7 @@ export class ProviderDetails extends Component {
               key={index}
               providerName={providerName}
               saveButton={this.changeToView(index)}
+              deleteButton={this.deleteItem(index)}
               onChange={this.handleChange(index)}
               utility_provider_item={utility_provider_item}
             />

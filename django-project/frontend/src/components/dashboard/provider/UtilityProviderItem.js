@@ -72,6 +72,14 @@ export class UtilityProviderItem extends Component {
           >
             Save
           </button>
+          <button
+            type="submit"
+            className="btn btn-primary float-right"
+            style={{ marginLeft: "10px", width: "70px" }}
+            onClick={this.props.deleteButton}
+          >
+            Delete
+          </button>
         </div>
         <div>
           <div className="form-group">
@@ -86,10 +94,7 @@ export class UtilityProviderItem extends Component {
               <option value="Default">Choose a utility</option>
               {this.state.utilities.map((utility) => {
                 return (
-                  <option
-                    key={utility["type"]}
-                    value={utility["type"]}
-                  >
+                  <option key={utility["type"]} value={utility["type"]}>
                     {utility["type"]}
                   </option>
                 );
