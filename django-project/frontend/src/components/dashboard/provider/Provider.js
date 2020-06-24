@@ -27,10 +27,20 @@ export class Provider extends Component {
 
     return (
       <React.Fragment>
-        <div className="jumbotron mt-3">
-          <h1>Provider List</h1>
+        <div
+          className="jumbotron mt-3"
+          style={{
+            padding: "30px",
+            boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
+            transition: "0.3s",
+            borderRadius: "5px",
+          }}
+        >
+          <h1 className="text-center" style={{ marginBottom: "20px" }}>
+            Provider List
+          </h1>
           <ul className="list-group">{providerItems}</ul>
-          <div className="btn btn-primary mt-4">
+          <div className="btn btn-primary mt-4" style={{ borderRadius: "4px" }}>
             <Link style={providerLink} to="/provider/add">
               Add Provider
             </Link>

@@ -63,12 +63,12 @@ export class AddProvider extends Component {
                 />
               </div>
               {this.state.status !== "added" && (
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="btn btn-primary" style={{ borderRadius: "2px" }}>
                   Submit
                 </button>
               )}
               {this.state.status === "added" && (
-                <div className="btn btn-primary float-right">
+                <div className="btn btn-primary float-right" style={{ borderRadius: "2px" }}>
                   <Link
                     style={providerLink}
                     to={`/provider/${this.state.response["id"]}`}

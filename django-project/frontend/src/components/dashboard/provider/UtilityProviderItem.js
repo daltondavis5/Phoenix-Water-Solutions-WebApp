@@ -67,7 +67,7 @@ export class UtilityProviderItem extends Component {
           <button
             type="submit"
             className="btn btn-primary float-right"
-            style={{ marginLeft: "10px", width: "60px" }}
+            style={{ marginLeft: "10px", width: "60px", borderRadius: "4px" }}
             onClick={this.props.saveButton}
           >
             Save
@@ -75,7 +75,7 @@ export class UtilityProviderItem extends Component {
           <button
             type="submit"
             className="btn btn-primary float-right"
-            style={{ marginLeft: "10px", width: "70px" }}
+            style={{ marginLeft: "10px", width: "70px", borderRadius: "4px" }}
             onClick={this.props.deleteButton}
           >
             Delete

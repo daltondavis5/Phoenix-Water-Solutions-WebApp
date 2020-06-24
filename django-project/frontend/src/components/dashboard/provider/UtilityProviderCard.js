@@ -14,7 +14,7 @@ class UtilityProviderCard extends Component {
           <button
             type="submit"
             className="btn btn-primary float-right"
-            style={{ marginLeft: "10px", width: "60px" }}
+            style={{ marginLeft: "10px", width: "60px", borderRadius: "4px" }}
             onClick={this.props.editButton}
           >
             Edit
