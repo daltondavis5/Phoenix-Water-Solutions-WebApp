@@ -14,13 +14,13 @@ class UtilityProviderCard extends Component {
           <button
             type="submit"
             className="btn btn-primary float-right"
-            style={{ marginLeft: "10px", width: "60px" }}
+            style={{ marginLeft: "10px", width: "60px", borderRadius: "4px" }}
             onClick={this.props.editButton}
           >
             Edit
           </button>
         </div>
-        <div className="card">
+        <div className="card" style={{borderRadius: "10px"}}>
           <div className="card-body">Utility: {utility_type}</div>
           <div className="card-body">State: {state}</div>
           <div className="card-body">City: {city}</div>

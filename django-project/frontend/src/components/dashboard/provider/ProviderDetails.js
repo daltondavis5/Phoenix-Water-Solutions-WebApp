@@ -195,6 +195,7 @@ export class ProviderDetails extends Component {
             <button
               onClick={this.addUtilityProvider}
               className="btn btn-outline-secondary"
+              style={{ borderRadius: "4px" }}
             >
               Add New Utility
             </button>

@@ -17,7 +17,6 @@ function Main() {
         <Route exact path="/" component={Dashboard} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/provider/add" component={AddProvider} />
-        <Route exact path="/provider/edit/:id" component={EditProvider} />
         <Route exact path="/provider/:id" component={ProviderDetails} />
       </Switch>
     </main>
