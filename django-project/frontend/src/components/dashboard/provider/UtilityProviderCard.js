@@ -20,7 +20,7 @@ class UtilityProviderCard extends Component {
             Edit
           </button>
         </div>
-        <div className="card">
+        <div className="card" style={{borderRadius: "10px"}}>
           <div className="card-body">Utility: {utility_type}</div>
           <div className="card-body">State: {state}</div>
           <div className="card-body">City: {city}</div>
