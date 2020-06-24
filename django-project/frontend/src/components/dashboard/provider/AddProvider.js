@@ -61,7 +61,7 @@ export class AddProvider extends Component {
                 </button>
               )}
               {this.state.status === "added" && (
-                <div className="btn btn-primary">
+                <div className="btn btn-primary float-right">
                   <Link
                     style={providerLink}
                     to={`/provider/${this.state.response["id"]}`}
