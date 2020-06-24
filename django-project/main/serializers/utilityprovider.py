@@ -41,13 +41,13 @@ class UtilityProviderSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("Not allowed to change provider name. ")
 
             if instance.utility.type != utility_type:
-                raise serializers.ValidationError("Not allowed to change utility type. ")
+                raise serializers.ValidationError("Not allowed to change utility type of provider. ")
 
             if instance.location.city != city:
-                raise serializers.ValidationError("Not allowed to change city. ")
+                raise serializers.ValidationError("Not allowed to change provider city. ")
 
             if instance.location.state != state:
-                raise serializers.ValidationError("Not allowed to change state. ")
+                raise serializers.ValidationError("Not allowed to change provider state. ")
             return data
 
         # if utility_provider does not exist (Create)
@@ -84,6 +84,12 @@ class UtilityProviderSerializer(serializers.ModelSerializer):
         return utility_provider
 
     def update(self, instance, validated_data):
+        ERROR_MSG = "Cannot edit type, city or state. Contact administrator"
+        if(str(instance.utility) != validated_data['utility']['type'] or
+           str(instance.location.state) != validated_data['location']['state']
+           or
+           str(instance.location.city) != validated_data['location']['city']):
+            raise serializers.ValidationError(ERROR_MSG)
         instance.unit_measurement = validated_data.get('unit_measurement')
         instance.save()
         return instance
@@ -91,7 +97,7 @@ class UtilityProviderSerializer(serializers.ModelSerializer):
 
 class ProviderSerializer(serializers.ModelSerializer):
     utility_provider = UtilityProviderSerializer(
-                        source="utilityprovider_set", many=True, 
+                        source="utilityprovider_set", many=True,
                         read_only=True)
 
     class Meta:

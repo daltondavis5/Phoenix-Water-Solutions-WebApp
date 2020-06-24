@@ -1,12 +1,22 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import axios from "axios";
 import UtilityProviderItem from "./UtilityProviderItem";
 import UtilityProviderCard from "./UtilityProviderCard";
+import HandleProvider from "./HandleProvider";
+import { createMessage, returnErrors } from "../../../actions/messages";
+import PropTypes from "prop-types";
 
 export class ProviderDetails extends Component {
   state = {
     name: "",
     utility_provider: [],
+    currentMode: "added",
+  };
+
+  static propTypes = {
+    createMessage: PropTypes.func.isRequired,
+    returnErrors: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -21,6 +31,9 @@ export class ProviderDetails extends Component {
           name: response.data.name,
           utility_provider: alteredData,
         });
+      })
+      .catch((err) => {
+        this.props.returnErrors(err.response.data, err.response.status);
       });
     this.setState((prevState) => {
       prevState.utility_provider.map(
@@ -28,6 +41,26 @@ export class ProviderDetails extends Component {
       );
     });
   }
+
+  updateName = (name) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const body = {
+      name,
+    };
+    axios
+      .put(
+        `/api/provider/${this.props.match.params.id}/`,
+        JSON.stringify(body),
+        config
+      )
+      .then((response) => {
+        location.reload();
+      });
+  };
 
   changeToEdit = (index) => () => {
     let utility_provider = [...this.state.utility_provider];
@@ -57,6 +90,10 @@ export class ProviderDetails extends Component {
         .post("/api/utility_provider/", JSON.stringify(body), config)
         .then((response) => {
           utility_provider["id"] = response.data.id;
+          this.props.createMessage({ msg: "Success!" });
+        })
+        .catch((err) => {
+          this.props.returnErrors(err.response.data, err.response.status);
         });
     }
     if (utility_provider.mode == "editing") {
@@ -66,10 +103,38 @@ export class ProviderDetails extends Component {
           JSON.stringify(body),
           config
         )
-        .then((response) => {});
+        .then((response) => {
+          this.props.createMessage({ msg: "Success!" });
+        })
+        .catch((err) => {
+          console.log(err.response.data);
+          this.props.returnErrors(err.response.data, err.response.status);
+        });
     }
     let utility_providers = [...this.state.utility_provider];
     utility_providers[index]["mode"] = "viewing";
+    this.setState({
+      utility_provider: utility_providers,
+      currentMode: "added",
+    });
+  };
+
+  deleteItem = (index) => () => {
+    let utility_provider = this.state.utility_provider[index];
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    if (utility_provider.mode == "editing") {
+      axios
+        .delete(`/api/utility_provider/${utility_provider["id"]}/`, config)
+        .then((response) => {});
+    }
+    let utility_providers = [
+      ...this.state.utility_provider.slice(0, index),
+      ...this.state.utility_provider.slice(index + 1),
+    ];
     this.setState({
       utility_provider: utility_providers,
       currentMode: "added",
@@ -105,7 +170,7 @@ export class ProviderDetails extends Component {
     const providerName = this.state.name;
     return (
       <React.Fragment>
-        <h2 className="text-center">{this.state.name}</h2>
+        <HandleProvider name={providerName} updateName={this.updateName} />
         {this.state.utility_provider.map((utility_provider_item, index) => {
           return utility_provider_item.mode === "viewing" ? (
             <UtilityProviderCard
@@ -119,6 +184,7 @@ export class ProviderDetails extends Component {
               key={index}
               providerName={providerName}
               saveButton={this.changeToView(index)}
+              deleteButton={this.deleteItem(index)}
               onChange={this.handleChange(index)}
               utility_provider_item={utility_provider_item}
             />
@@ -139,4 +205,4 @@ export class ProviderDetails extends Component {
   }
 }
 
-export default ProviderDetails;
+export default connect(null, { createMessage, returnErrors })(ProviderDetails);
