@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import UtilityProviderItem from "./UtilityProviderItem";
 import UtilityProviderCard from "./UtilityProviderCard";
+import HandleProvider from "./HandleProvider";
 
 export class ProviderDetails extends Component {
   state = {
@@ -29,6 +30,26 @@ export class ProviderDetails extends Component {
       );
     });
   }
+
+  updateName = (name) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const body = {
+      name,
+    };
+    axios
+      .put(
+        `/api/provider/${this.props.match.params.id}/`,
+        JSON.stringify(body),
+        config
+      )
+      .then((response) => {
+        location.reload();
+      });
+  };
 
   changeToEdit = (index) => () => {
     let utility_provider = [...this.state.utility_provider];
@@ -128,7 +149,7 @@ export class ProviderDetails extends Component {
     const providerName = this.state.name;
     return (
       <React.Fragment>
-        <h2 className="text-center">{this.state.name}</h2>
+        <HandleProvider name={providerName} updateName={this.updateName} />
         {this.state.utility_provider.map((utility_provider_item, index) => {
           return utility_provider_item.mode === "viewing" ? (
             <UtilityProviderCard
