@@ -2,14 +2,14 @@ from django.db import models
 
 
 class Utility(models.Model):
-    type = models.CharField(max_length=50)
+    type = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
         return self.type
 
 
 class Provider(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
     utilities = models.ManyToManyField(
         Utility,
         through='UtilityProvider')
@@ -25,6 +25,9 @@ class Location(models.Model):
     def __str__(self):
         return self.city + ", " + self.state
 
+    class meta:
+        unique_together = ('city', 'state')
+
 
 class UtilityProvider(models.Model):
     utility = models.ForeignKey(Utility, on_delete=models.CASCADE)
@@ -35,3 +38,6 @@ class UtilityProvider(models.Model):
     def __str__(self):
         return str(self.provider) + " supplies " + str(self.utility) + \
             " in " + str(self.location)
+
+    class meta:
+        unique_together = ('utility', 'provider', 'location')
