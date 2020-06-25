@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 from core.models.utilityprovider import Utility, Location, \
     UtilityProvider, Provider
@@ -13,6 +14,12 @@ class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
         fields = ['city', 'state']
+        validators = [
+            serializers.UniqueTogetherValidator(
+                queryset=model.objects.all(),
+                fields=['city', 'state'],
+            )
+        ]
 
 
 class UtilityProviderSerializer(serializers.ModelSerializer):
@@ -23,20 +30,11 @@ class UtilityProviderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UtilityProvider
-        # fields = ['id', 'provider_name', 'utility_type', 'city',
-        #           'state', 'unit_measurement']
-        # read_only_fields = ['provider_name', 'utility_type', 'city', 'state']
-        validators = [
-            serializers.UniqueTogetherValidator(
-                queryset=model.objects.all(),
-                fields=['provider_name', 'utility_type', 'city', 'state'],
-            )
-        ]
         fields = ['id', 'provider_name', 'utility_type', 'city',
                   'state', 'unit_measurement']
+        read_only_fields = ['provider_name', 'utility_type', 'city', 'state']
 
     def validate(self, data):
-        print("In validate", data)
         instance = self.instance
 
         provider_name = data.get('provider').get('name')
@@ -64,7 +62,18 @@ class UtilityProviderSerializer(serializers.ModelSerializer):
             return data
 
         # if utility_provider does not exist (Create)
+
         else:
+            # check if the unique together for utility provider holds
+            try:
+                if UtilityProvider.objects.filter(
+                        provider=Provider.objects.get(name=provider_name),
+                        utility=Utility.objects.get(type=utility_type),
+                        location=Location.objects.get(state=state, city=city)).exists():
+                    raise serializers.ValidationError("Utility Provider already exists")
+            except ObjectDoesNotExist:
+                pass
+
             if not Provider.objects.filter(name=provider_name).exists():
                 raise serializers.ValidationError("No provider found in "
                                                   "database. ")

@@ -20,6 +20,7 @@ class ProviderViewSetTestCase(APITestCase):
 
     def setUp(self):
         self.utility = Utility.objects.create(type="Water")
+        self.utility_gas = Utility.objects.create(type="Gas")
         self.location = Location.objects.create(city="Phoenix", state="AZ")
         self.provider = Provider.objects.create(name='Test Provider Services')
         self.utility_provider = UtilityProvider.objects.create(
@@ -36,7 +37,7 @@ class ProviderViewSetTestCase(APITestCase):
         """ Test create functionality for utility provider through table """
         payload = {
             "provider_name": "Test Provider Services",
-            "utility_type": "Water",
+            "utility_type": "Gas",
             "city": "Phoenix",
             "state": "AZ",
             "unit_measurement": 748.0
@@ -97,6 +98,19 @@ class ProviderViewSetTestCase(APITestCase):
             "utility_type": "Water",
             "city": "Phoenix",
             "state": "Not there",
+            "unit_measurement": 748.0
+        }
+        response = self.client.post(self.UTILITY_PROVIDER_LIST_URL, payload)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_utility_provider_create_is_unique(self):
+        """ Test to enforce uniqueness of
+        Location, Provider name, & utility """
+        payload = {
+            "provider_name": "Test Provider Services",
+            "utility_type": "Water",
+            "city": "Phoenix",
+            "state": "AZ",
             "unit_measurement": 748.0
         }
         response = self.client.post(self.UTILITY_PROVIDER_LIST_URL, payload)
