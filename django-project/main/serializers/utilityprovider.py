@@ -23,11 +23,20 @@ class UtilityProviderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UtilityProvider
-        fields = ['id', 'provider_name', 'utility_type', 'city', 
+        # fields = ['id', 'provider_name', 'utility_type', 'city',
+        #           'state', 'unit_measurement']
+        # read_only_fields = ['provider_name', 'utility_type', 'city', 'state']
+        validators = [
+            serializers.UniqueTogetherValidator(
+                queryset=model.objects.all(),
+                fields=['provider_name', 'utility_type', 'city', 'state'],
+            )
+        ]
+        fields = ['id', 'provider_name', 'utility_type', 'city',
                   'state', 'unit_measurement']
-        read_only_fields = ['provider_name', 'utility_type', 'city', 'state']
 
     def validate(self, data):
+        print("In validate", data)
         instance = self.instance
 
         provider_name = data.get('provider').get('name')
@@ -38,28 +47,35 @@ class UtilityProviderSerializer(serializers.ModelSerializer):
         # if utility_provider objects exists in db (Update)
         if instance is not None:
             if instance.provider.name != provider_name:
-                raise serializers.ValidationError("Not allowed to change provider name. ")
+                raise serializers.ValidationError("Not allowed to change"
+                                                  " provider name. ")
 
             if instance.utility.type != utility_type:
-                raise serializers.ValidationError("Not allowed to change utility type of provider. ")
+                raise serializers.ValidationError("Not allowed to change"
+                                                  " utility type of provider")
 
             if instance.location.city != city:
-                raise serializers.ValidationError("Not allowed to change provider city. ")
+                raise serializers.ValidationError("Not allowed to change "
+                                                  "provider city. ")
 
             if instance.location.state != state:
-                raise serializers.ValidationError("Not allowed to change provider state. ")
+                raise serializers.ValidationError("Not allowed to change "
+                                                  "provider state. ")
             return data
 
         # if utility_provider does not exist (Create)
         else:
             if not Provider.objects.filter(name=provider_name).exists():
-                raise serializers.ValidationError("No provider found in database. ")
+                raise serializers.ValidationError("No provider found in "
+                                                  "database. ")
 
             if not Utility.objects.filter(type=utility_type).exists():
-                raise serializers.ValidationError("No utility found in database. ")
+                raise serializers.ValidationError("No utility found in "
+                                                  "database. ")
 
             if not Location.objects.filter(state=state, city=city).exists():
-                raise serializers.ValidationError("No location found in database. ")
+                raise serializers.ValidationError("No location found in "
+                                                  "database. ")
             return data
 
     def create(self, validated_data):
@@ -90,8 +106,8 @@ class UtilityProviderSerializer(serializers.ModelSerializer):
 
 class ProviderSerializer(serializers.ModelSerializer):
     utility_provider = UtilityProviderSerializer(
-                        source="utilityprovider_set", many=True,
-                        read_only=True)
+        source="utilityprovider_set", many=True,
+        read_only=True)
 
     class Meta:
         model = Provider

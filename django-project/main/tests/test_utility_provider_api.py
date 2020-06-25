@@ -22,10 +22,11 @@ class ProviderViewSetTestCase(APITestCase):
         self.utility = Utility.objects.create(type="Water")
         self.location = Location.objects.create(city="Phoenix", state="AZ")
         self.provider = Provider.objects.create(name='Test Provider Services')
-        self.utility_provider = UtilityProvider.objects.create(utility=self.utility,
-                                                               provider=self.provider,
-                                                               location=self.location,
-                                                               unit_measurement=1234.50)
+        self.utility_provider = UtilityProvider.objects.create(
+            utility=self.utility,
+            provider=self.provider,
+            location=self.location,
+            unit_measurement=1234.50)
 
     def test_provider_list(self):
         response = self.client.get(self.PROVIDER_LIST_URL)
@@ -42,11 +43,16 @@ class ProviderViewSetTestCase(APITestCase):
         }
         response = self.client.post(self.UTILITY_PROVIDER_LIST_URL, payload)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data.get('provider_name'), payload['provider_name'])
-        self.assertEqual(response.data.get('utility_type'), payload['utility_type'])
-        self.assertEqual(response.data.get('city'), payload['city'])
-        self.assertEqual(response.data.get('state'), payload['state'])
-        self.assertEqual(response.data.get('unit_measurement'), payload['unit_measurement'])
+        self.assertEqual(response.data.get('provider_name'),
+                         payload['provider_name'])
+        self.assertEqual(response.data.get('utility_type'),
+                         payload['utility_type'])
+        self.assertEqual(response.data.get('city'),
+                         payload['city'])
+        self.assertEqual(response.data.get('state'),
+                         payload['state'])
+        self.assertEqual(response.data.get('unit_measurement'),
+                         payload['unit_measurement'])
 
     def test_utility_provider_create_utility_error(self):
         """ Test to not allow create if utility already present """
