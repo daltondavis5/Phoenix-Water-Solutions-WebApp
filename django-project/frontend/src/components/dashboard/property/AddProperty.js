@@ -30,7 +30,6 @@ export class AddProperty extends Component {
         "Content-Type": "application/json",
       },
     };
-    console.log(body)
     axios
       .post("/api/property/", JSON.stringify(body), config)
       .then((res) => {
@@ -64,6 +63,7 @@ export class AddProperty extends Component {
                   type="text"
                   className="form-control"
                   name="name"
+                  required
                   onChange={this.onChange}
                   value={this.state.name}
                 />
@@ -74,6 +74,7 @@ export class AddProperty extends Component {
                   type="text"
                   className="form-control"
                   name="address"
+                  required
                   onChange={this.onChange}
                   value={this.state.address}
                 />
@@ -84,6 +85,7 @@ export class AddProperty extends Component {
                   type="text"
                   className="form-control"
                   name="zipcode"
+                  required
                   onChange={this.onChange}
                   value={this.state.zipcode}
                 />

@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 
 export class PropertyDetails extends Component {
   state = {
-    
+    units: [],
   };
 
   static propTypes = {
@@ -39,11 +39,7 @@ export class PropertyDetails extends Component {
   }
 
   render() {
-    return (
-      <React.Fragment>
-        
-      </React.Fragment>
-    );
+    return <React.Fragment></React.Fragment>;
   }
 }
 

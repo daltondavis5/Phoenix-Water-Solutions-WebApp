@@ -5,15 +5,12 @@ import { Link } from "react-router-dom";
 
 export class Property extends Component {
   state = {
-    properties: [
-      {name: "Apt 1"},
-      {name: "Apt 2"}
-    ],
+    properties: [],
   };
 
-  // componentWillMount() {
-  //   this.getProperties();
-  // }
+  componentWillMount() {
+    this.getProperties();
+  }
 
   getProperties = () => {
     axios
