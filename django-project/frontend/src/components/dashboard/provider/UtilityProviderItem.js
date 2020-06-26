@@ -4,51 +4,13 @@ import axios from "axios";
 export class UtilityProviderItem extends Component {
   state = {
     utilities: [],
-    utility_type: "",
-    state: "",
-    city: "",
-    unit_measurement: "",
   };
 
   componentDidMount() {
     axios.get("/api/utility/").then((response) => {
       this.setState({ utilities: response.data });
     });
-    if (this.props.mode == "editing") {
-      const { city, state, unit_measurement, utility_type } = this.props;
-      this.setState({
-        city,
-        state,
-        unit_measurement,
-        utility_type,
-      });
-    }
   }
-
-  saveData = () => {
-    const body = {
-      provider: this.props.providerName,
-      utility_type: this.state.utility_type,
-      city: this.state.city,
-      state: this.state.state,
-      unit_measurement: this.state.unit_measurement,
-    };
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-
-    if (this.props.mode == "adding") {
-      axios
-        .post("/api/utility_provider/", JSON.stringify(body), config)
-        .then((response) => {});
-    }
-    if (this.props.mode == "editing") {
-      axios.put("/api/utility_provider/", body, config).then((response) => {});
-    }
-    this.props.saveButton();
-  };
 
   render() {
     const {
@@ -74,7 +36,7 @@ export class UtilityProviderItem extends Component {
           </button>
           <button
             type="submit"
-            className="btn btn-primary float-right"
+            className="btn btn-danger float-right"
             style={{ marginLeft: "10px", width: "70px", borderRadius: "4px" }}
             onClick={this.props.deleteButton}
           >
