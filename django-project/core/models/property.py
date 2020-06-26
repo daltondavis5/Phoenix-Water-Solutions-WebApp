@@ -13,6 +13,9 @@ class Property(models.Model):
     def __str__(self):
         return self.name
 
+    class meta:
+        unique_together = ('name', 'zip_code')
+
 
 class PropertyCityUtilityInfo(models.Model):
     utility_provider = models.ForeignKey(UtilityProvider,
@@ -30,6 +33,9 @@ class Unit(models.Model):
 
     def __str__(self):
         return self.name
+
+    class meta:
+        unique_together = ('name', 'property')
 
 
 class Meter(models.Model):

@@ -3,7 +3,7 @@ from core.models.property import Meter, Property, Unit, \
     PropertyCityUtilityInfo
 
 
-class MeterViewSerializer(serializers.ModelSerializer):
+class MeterSerializer(serializers.ModelSerializer):
     utility_type = serializers.CharField(source='utility.type')
     unit_name = serializers.CharField(source='unit.name')
 
@@ -23,7 +23,7 @@ class PropertyCityUtilityInfoSerializer(serializers.ModelSerializer):
                   'bill_post_day', 'default_usage']
 
 
-class PropertyViewSerializer(serializers.ModelSerializer):
+class PropertySerializer(serializers.ModelSerializer):
     city_utility = PropertyCityUtilityInfoSerializer(
         source='propertycityutilityinfo_set', many=True,
         read_only=True)
@@ -32,11 +32,23 @@ class PropertyViewSerializer(serializers.ModelSerializer):
         model = Property
         fields = ['id', 'name', 'street_address', 'zip_code',
                   'attribute', 'city_utility']
+        validators = [
+            serializers.UniqueTogetherValidator(
+                queryset=model.objects.all(),
+                fields=['name', 'zip_code'],
+            )
+        ]
 
 
-class UnitViewSerializer(serializers.ModelSerializer):
-    property_name = serializers.CharField(source='property.name')
+class UnitSerializer(serializers.ModelSerializer):
+    # property_name = serializers.CharField(source='property.name')
 
     class Meta:
         model = Unit
-        fields = ['id', 'name', 'property_name']
+        fields = ['id', 'name', 'property']
+        validators = [
+            serializers.UniqueTogetherValidator(
+                queryset=model.objects.all(),
+                fields=['name', 'property'],
+            )
+        ]
