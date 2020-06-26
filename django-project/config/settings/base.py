@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'frontend',
     'main',
     'accounts',
+    'property',
 ]
 
 REST_FRAMEWORK = {
