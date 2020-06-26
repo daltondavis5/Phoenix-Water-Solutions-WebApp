@@ -1,13 +1,12 @@
-from django.urls import path
+from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import ProviderViewSet, ListUtilities, UtilityProviderViewSet
 
 router = DefaultRouter()
 router.register('provider', ProviderViewSet)
-router.register('utility_provider', UtilityProviderViewSet)
+router.register('utilityprovider', UtilityProviderViewSet)
 
 urlpatterns = [
-    path('utility/', ListUtilities.as_view(), name='utility-list')
+    path('utility/', ListUtilities.as_view(), name='utility-list'),
+    path('', include(router.urls))
 ]
-
-urlpatterns += router.urls
