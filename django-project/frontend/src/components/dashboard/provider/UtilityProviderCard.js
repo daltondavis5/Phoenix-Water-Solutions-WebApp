@@ -20,11 +20,17 @@ class UtilityProviderCard extends Component {
             Edit
           </button>
         </div>
-        <div className="card" style={{borderRadius: "10px"}}>
-          <div className="card-body">Utility: {utility_type}</div>
-          <div className="card-body">State: {state}</div>
-          <div className="card-body">City: {city}</div>
-          <div className="card-body">Unit Measurement: {unit_measurement}</div>
+        <div className="card" style={{ borderRadius: "10px" }}>
+          <div className="card-body">
+            <ul className="list-group list-group-flush">
+              <li className="list-group-item">Utility: {utility_type}</li>
+              <li className="list-group-item">State: {state}</li>
+              <li className="list-group-item">City: {city}</li>
+              <li className="list-group-item">
+                Unit Measurement: {unit_measurement}
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     );

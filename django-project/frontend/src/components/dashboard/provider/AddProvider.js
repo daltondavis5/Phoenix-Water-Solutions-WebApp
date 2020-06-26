@@ -2,15 +2,13 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { returnErrors } from "../../../actions/messages";
+import { createMessage, returnErrors } from "../../../actions/messages";
 import PropTypes from "prop-types";
 
 export class AddProvider extends Component {
   state = {
     name: "",
-    status: "adding",
     response: "",
-    utility_provider: [],
   };
 
   static propTypes = {
@@ -29,10 +27,11 @@ export class AddProvider extends Component {
     axios
       .post("/api/provider/", body, config)
       .then((res) => {
-        this.setState({
-          response: res.data,
-          status: "added",
+        this.props.createMessage({
+          msg: `Successfully added Provider - ${name}`,
         });
+        // redirectly directing to provider details page
+        this.props.history.push(`/provider/${res.data.id}`);
       })
       .catch((err) => {
         this.props.returnErrors(err.response.data, err.response.status);
@@ -62,21 +61,13 @@ export class AddProvider extends Component {
                   value={this.state.name}
                 />
               </div>
-              {this.state.status !== "added" && (
-                <button type="submit" className="btn btn-primary" style={{ borderRadius: "2px" }}>
-                  Submit
-                </button>
-              )}
-              {this.state.status === "added" && (
-                <div className="btn btn-primary float-right" style={{ borderRadius: "2px" }}>
-                  <Link
-                    style={providerLink}
-                    to={`/provider/${this.state.response["id"]}`}
-                  >
-                    Add Utility
-                  </Link>
-                </div>
-              )}
+              <button
+                type="submit"
+                className="btn btn-primary"
+                style={{ borderRadius: "2px" }}
+              >
+                Submit
+              </button>
             </form>
           </div>
         </div>
@@ -85,9 +76,4 @@ export class AddProvider extends Component {
   }
 }
 
-const providerLink = {
-  color: "white",
-  textDecoration: "none",
-};
-
-export default connect(null, { returnErrors })(AddProvider);
+export default connect(null, { createMessage, returnErrors })(AddProvider);

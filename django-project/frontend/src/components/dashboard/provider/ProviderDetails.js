@@ -3,7 +3,8 @@ import { connect } from "react-redux";
 import axios from "axios";
 import UtilityProviderItem from "./UtilityProviderItem";
 import UtilityProviderCard from "./UtilityProviderCard";
-import HandleProvider from "./HandleProvider";
+import EditProvider from "./EditProvider";
+import ViewProvider from "./ViewProvider";
 import { createMessage, returnErrors } from "../../../actions/messages";
 import PropTypes from "prop-types";
 
@@ -12,6 +13,7 @@ export class ProviderDetails extends Component {
     name: "",
     utility_provider: [],
     currentMode: "added",
+    editingProviderName: false,
   };
 
   static propTypes = {
@@ -35,6 +37,7 @@ export class ProviderDetails extends Component {
       .catch((err) => {
         this.props.returnErrors(err.response.data, err.response.status);
       });
+    // TODO: Is setting the state again necessary??
     this.setState((prevState) => {
       prevState.utility_provider.map(
         (utility_provider_item) => (utility_provider_item["mode"] = "viewing")
@@ -58,7 +61,16 @@ export class ProviderDetails extends Component {
         config
       )
       .then((response) => {
-        location.reload();
+        this.setState({
+          editingProviderName: false,
+          name,
+        });
+        this.props.createMessage({
+          msg: "Provider name successfully updated!",
+        });
+      })
+      .catch((err) => {
+        this.props.returnErrors(err.response.data, err.response.status);
       });
   };
 
@@ -107,7 +119,6 @@ export class ProviderDetails extends Component {
           this.props.createMessage({ msg: "Success!" });
         })
         .catch((err) => {
-          console.log(err.response.data);
           this.props.returnErrors(err.response.data, err.response.status);
         });
     }
@@ -166,11 +177,24 @@ export class ProviderDetails extends Component {
     });
   };
 
+  changeMode = () => {
+    let currMode = this.state.editingProviderName;
+    this.setState({
+      editingProviderName: !currMode,
+    });
+  };
+
   render() {
     const providerName = this.state.name;
     return (
       <React.Fragment>
-        <HandleProvider name={providerName} updateName={this.updateName} />
+        <div className="mt-3">
+          {this.state.editingProviderName ? (
+            <EditProvider name={providerName} updateName={this.updateName} />
+          ) : (
+            <ViewProvider name={providerName} changeMode={this.changeMode} />
+          )}
+        </div>
         {this.state.utility_provider.map((utility_provider_item, index) => {
           return utility_provider_item.mode === "viewing" ? (
             <UtilityProviderCard
@@ -180,6 +204,7 @@ export class ProviderDetails extends Component {
               editButton={this.changeToEdit(index)}
             />
           ) : (
+            // editing or adding
             <UtilityProviderItem
               key={index}
               providerName={providerName}
