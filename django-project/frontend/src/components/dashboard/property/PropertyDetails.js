@@ -21,7 +21,6 @@ export class PropertyDetails extends Component {
   };
 
   componentDidMount() {
-    console.log(`/api/property/${this.props.match.params.id}`);
     axios
       .get(`/api/property/${this.props.match.params.id}`)
       .then((response) => {
@@ -52,79 +51,72 @@ export class PropertyDetails extends Component {
       <React.Fragment>
         <h2 className="text-center">{this.state.name}</h2>
         <h2 className="text-center">{this.state.street_address}</h2>
-        <div class="row">
-          <div class="col-3">
+        <div className="row">
+          <div className="col-3">
             <div
-              class="nav flex-column nav-pills"
+              className="nav flex-column nav-pills"
               id="v-pills-tab"
               role="tablist"
               aria-orientation="vertical"
             >
-              <Link
-                to={`/property/${this.state.id}/`}
+              <a
                 className="nav-link active"
                 id="v-pills-home-tab"
                 data-toggle="pill"
+                href="#v-pills-home"
                 role="tab"
                 aria-controls="v-pills-home"
                 aria-selected="true"
               >
                 Home
-              </Link>
-              <Link
-                to={`/property/${this.state.id}/`}
-                class="nav-link"
-                id="v-pills-profile-tab"
+              </a>
+              <a
+                className="nav-link"
+                id="v-pills-units-tab"
                 data-toggle="pill"
+                href="#v-pills-units"
                 role="tab"
-                aria-controls="v-pills-profile"
+                aria-controls="v-pills-units"
                 aria-selected="false"
               >
                 Units
-              </Link>
-              <Link
-                class="nav-link"
-                id="v-pills-messages-tab"
+              </a>
+              <a
+                className="nav-link"
+                id="v-pills-utilities-tab"
                 data-toggle="pill"
+                href="#v-pills-utilities"
                 role="tab"
-                aria-controls="v-pills-messages"
+                aria-controls="v-pills-utilities"
                 aria-selected="false"
               >
-                Add utilities
-              </Link>
+                Utilities
+              </a>
             </div>
           </div>
-          <div class="col-9">
-            <div class="tab-content" id="v-pills-tabContent">
+          <div className="col-9">
+            <div className="tab-content" id="v-pills-tabContent">
               <div
-                class="tab-pane fade show active"
+                className="tab-pane fade show active"
                 id="v-pills-home"
                 role="tabpanel"
                 aria-labelledby="v-pills-home-tab"
               >
-                ...
+                Hello
               </div>
               <div
-                class="tab-pane fade"
-                id="v-pills-profile"
+                className="tab-pane fade"
+                id="v-pills-units"
                 role="tabpanel"
-                aria-labelledby="v-pills-profile-tab"
+                aria-labelledby="v-pills-units-tab"
               >
-                ...
+                Hey
               </div>
               <div
-                class="tab-pane fade"
-                id="v-pills-messages"
+                className="tab-pane fade"
+                id="v-pills-utilities"
                 role="tabpanel"
-                aria-labelledby="v-pills-messages-tab"
-              >
-                ...
-              </div>
-              <div
-                class="tab-pane fade"
-                id="v-pills-settings"
-                role="tabpanel"
-                aria-labelledby="v-pills-settings-tab"
+                aria-labelledby="v-pills-utilities-tab"
               >
                 ...
               </div>

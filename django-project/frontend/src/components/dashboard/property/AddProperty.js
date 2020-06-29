@@ -23,7 +23,6 @@ export class AddProperty extends Component {
       name,
       street_address,
       zip_code,
-      attribute: false,
     };
     e.preventDefault();
     const config = {
