@@ -1,3 +1,4 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from core.models.utilityprovider import UtilityProvider, Utility
 
@@ -22,8 +23,14 @@ class PropertyCityUtilityInfo(models.Model):
                                          on_delete=models.CASCADE)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     allowance_units = models.FloatField()
-    bill_period_day = models.PositiveIntegerField()
-    bill_post_day = models.PositiveIntegerField()
+    bill_period_day = models.PositiveIntegerField(validators=[
+        MaxValueValidator(31),
+        MinValueValidator(1)
+    ])
+    bill_post_day = models.PositiveIntegerField(validators=[
+        MaxValueValidator(31),
+        MinValueValidator(1)
+    ])
     default_usage = models.FloatField()
 
 
@@ -47,6 +54,3 @@ class Meter(models.Model):
 
     def __str__(self):
         return self.name
-
-
-
