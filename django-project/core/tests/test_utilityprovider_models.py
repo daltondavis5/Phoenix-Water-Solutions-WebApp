@@ -60,12 +60,12 @@ class ModelCreateTests(TestCase):
             'unit_measurement': 50
         }
 
-        utilityProvider1 = UtilityProvider.objects.get(**utility_attributes1)
-        utilityProvider2 = UtilityProvider.objects.get(**utility_attributes2)
+        utility_provider1 = UtilityProvider.objects.get(**utility_attributes1)
+        utility_provider2 = UtilityProvider.objects.get(**utility_attributes2)
         provider = Provider.objects.get(name='Phoenix supplies')
-        self.assertIn(utilityProvider1.utility,
+        self.assertIn(utility_provider1.utility,
                       provider.utilities.all())
-        self.assertIn(utilityProvider2.utility,
+        self.assertIn(utility_provider2.utility,
                       provider.utilities.all())
 
     def test_no_extra_utility_added(self):
@@ -88,11 +88,11 @@ class ModelCreateTests(TestCase):
             'unit_measurement': 100
         }
 
-        utilityProvider1 = UtilityProvider.objects.get(**utility_attributes1)
-        utilityProvider3 = UtilityProvider.objects.create(
+        utility_provider1 = UtilityProvider.objects.get(**utility_attributes1)
+        utility_provider3 = UtilityProvider.objects.create(
             **utility_attributes3)
         provider = Provider.objects.get(name='Phoenix supplies')
-        self.assertIn(utilityProvider1.utility,
+        self.assertIn(utility_provider1.utility,
                       provider.utilities.all())
         self.assertNotIn(utility3, provider.utilities.all())
         self.assertIn(utility3, new_provider.utilities.all())
@@ -118,7 +118,7 @@ class ModelCreateTests(TestCase):
             'location': self.location,
             'unit_measurement': 500
         }
-        utilityProvider1 = UtilityProvider.objects.get(**utility_attributes1)
-        self.assertEqual(str(utilityProvider1), str(utilityProvider1.provider) +
-                         " supplies " + str(utilityProvider1.utility) +
-                         " in " + str(utilityProvider1.location))
+        utility_provider1 = UtilityProvider.objects.get(**utility_attributes1)
+        self.assertEqual(str(utility_provider1), str(utility_provider1.provider) +
+                         " supplies " + str(utility_provider1.utility) +
+                         " in " + str(utility_provider1.location))
