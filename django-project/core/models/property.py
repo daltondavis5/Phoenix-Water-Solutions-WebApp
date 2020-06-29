@@ -49,4 +49,20 @@ class Meter(models.Model):
         return self.name
 
 
+class MeterRead(models.Model):
+    meter = models.ForeignKey(Meter, on_delete=models.CASCADE)
+    read_date = models.DateField()
+    amount = models.FloatField()
 
+    def __str__(self):
+        return self.meter
+
+
+class MeterError(models.Model):
+    meter = models.ForeignKey(Meter, on_delete=models.CASCADE)
+    error_date = models.DateField()
+    description = models.CharField(max_length=200)
+    repair_date = models.DateField()
+
+    def __str__(self):
+        return self.meter
