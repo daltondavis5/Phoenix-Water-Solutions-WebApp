@@ -21,8 +21,9 @@ export class AddProperty extends Component {
     const { name, address, zipcode } = this.state;
     const body = {
       name,
-      address,
-      zipcode,
+      street_address: address,
+      zip_code: zipcode,
+      attribute: false,
     };
     e.preventDefault();
     const config = {
