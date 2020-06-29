@@ -31,3 +31,12 @@ class ListUnitsForProperty(viewsets.generics.ListAPIView):
     def get_queryset(self):
         property_id = self.kwargs['id']
         return Unit.objects.filter(property=property_id)
+
+
+class ListMetersForUnit(viewsets.generics.ListAPIView):
+    permission_classes = [permissions.AllowAny, ]
+    serializer_class = MeterSerializer
+
+    def get_queryset(self):
+        unit_id = self.kwargs['id']
+        return Meter.objects.filter(unit=unit_id)
