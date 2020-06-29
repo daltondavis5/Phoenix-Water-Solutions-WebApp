@@ -78,7 +78,10 @@ export class PropertyDetails extends Component {
     const { name, street_address, zip_code } = this.state;
     return (
       <React.Fragment>
-        <div style={{marginTop: "30px"}}>
+        <h2 className="text-center" style={{ marginTop: "30px" }}>
+          {name}
+        </h2>
+        <div style={{ marginTop: "30px" }}>
           <div className="row">
             <div className="col-3">
               <div
