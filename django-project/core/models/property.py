@@ -55,7 +55,7 @@ class MeterRead(models.Model):
     amount = models.FloatField()
 
     def __str__(self):
-        return self.meter
+        return str(self.meter)
 
 
 class MeterError(models.Model):
@@ -65,4 +65,53 @@ class MeterError(models.Model):
     repair_date = models.DateField()
 
     def __str__(self):
-        return self.meter
+        return str(self.meter)
+
+
+class NewAccountFee(models.Model):
+    PRIORITIES = (
+        (0, 'Low'),
+        (1, 'Normal'),
+        (2, 'High'),
+    )
+
+    name = models.CharField(max_length=100)
+    amount = models.FloatField()
+    property = models.ForeignKey(Property, on_delete=models.CASCADE)
+    priority = models.IntegerField(choices=PRIORITIES)
+
+    def __str__(self):
+        return self.name
+
+
+class LateFee(models.Model):
+    PRIORITIES = (
+        (0, 'Low'),
+        (1, 'Normal'),
+        (2, 'High'),
+    )
+
+    name = models.CharField(max_length=100)
+    amount = models.FloatField()
+    property = models.ForeignKey(Property, on_delete=models.CASCADE)
+    days_late = models.IntegerField()
+    priority = models.IntegerField(choices=PRIORITIES)
+
+    def __str__(self):
+        return self.name
+
+
+class AdminFee(models.Model):
+    PRIORITIES = (
+        (0, 'Low'),
+        (1, 'Normal'),
+        (2, 'High'),
+    )
+
+    name = models.CharField(max_length=100)
+    amount = models.FloatField()
+    property = models.ForeignKey(Property, on_delete=models.CASCADE)
+    priority = models.IntegerField(choices=PRIORITIES)
+
+    def __str__(self):
+        return self.name
