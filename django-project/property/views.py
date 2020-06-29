@@ -1,5 +1,5 @@
 from rest_framework import viewsets, permissions
-from rest_framework.response import Response
+
 from core.models.property import Meter, Property, Unit
 from .serializers import MeterSerializer, \
     PropertySerializer, UnitSerializer
@@ -22,3 +22,12 @@ class UnitViewSet(viewsets.ModelViewSet):
     queryset = Unit.objects.all()
     serializer_class = UnitSerializer
     permission_classes = [permissions.AllowAny, ]
+
+
+class ListUnitsForProperty(viewsets.generics.ListAPIView):
+    permission_classes = [permissions.AllowAny, ]
+    serializer_class = UnitSerializer
+
+    def get_queryset(self):
+        property_id = self.kwargs['id']
+        return Unit.objects.filter(property=property_id)
