@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import axios from "axios";
 import { createMessage, returnErrors } from "../../../actions/messages";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 export class PropertyUnitItem extends Component {
   static propTypes = {
@@ -107,7 +108,11 @@ export class PropertyUnitItem extends Component {
             </div>
           ) : (
             <div className="list-group-item">
-              {this.state.name !== "" ? this.state.name : this.props.unit.name}
+              <Link to={`/unit/${this.props.unit.id}`}>
+                {this.state.name !== ""
+                  ? this.state.name
+                  : this.props.unit.name}
+              </Link>
               <button
                 onClick={this.switchToEdit}
                 className="btn btn-info float-right"

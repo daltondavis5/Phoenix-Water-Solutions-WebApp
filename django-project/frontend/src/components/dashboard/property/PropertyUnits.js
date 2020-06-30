@@ -46,6 +46,7 @@ class PropertyUnits extends Component {
         this.props.returnErrors(err.response.data, err.response.status);
       });
 
+    // make a call to parent component to update the unit list - current fix is to reload the page
     //this.props.refreshUnitList();
   };
 
