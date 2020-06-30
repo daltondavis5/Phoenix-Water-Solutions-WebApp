@@ -16,6 +16,10 @@ def detail_url_unit(unit_id):
     return reverse("unit-detail", args=[unit_id])
 
 
+def detail_url_meterread(meter_id):
+    return reverse("meter-list", args=[meter_id])
+
+
 class PropertyViewSetTestCase(APITestCase):
     PROPERTY_LIST_URL = reverse("property-list")
 

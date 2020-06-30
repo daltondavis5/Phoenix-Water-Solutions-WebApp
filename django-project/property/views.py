@@ -1,8 +1,8 @@
 from rest_framework import viewsets, permissions
 
-from core.models.property import Meter, Property, Unit
+from core.models.property import Meter, Property, Unit, MeterRead
 from .serializers import MeterSerializer, \
-    PropertySerializer, UnitSerializer
+    PropertySerializer, UnitSerializer, MeterReadSerializer
 
 
 # Create your views here.
@@ -40,3 +40,12 @@ class ListMetersForUnit(viewsets.generics.ListAPIView):
     def get_queryset(self):
         unit_id = self.kwargs['id']
         return Meter.objects.filter(unit=unit_id)
+
+
+class ListMeterreadsForMeter(viewsets.generics.ListAPIView):
+    permission_classes = [permissions.AllowAny, ]
+    serializer_class = MeterReadSerializer
+
+    def get_queryset(self):
+        meter_id = self.kwargs['id']
+        return MeterRead.objects.filter(meter=meter_id)
