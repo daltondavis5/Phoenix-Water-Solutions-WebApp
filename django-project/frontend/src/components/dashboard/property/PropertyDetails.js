@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import axios from "axios";
 import { createMessage, returnErrors } from "../../../actions/messages";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import PropertyUnits from "./PropertyUnits";
 
 export class PropertyDetails extends Component {
   static propTypes = {
@@ -18,6 +18,7 @@ export class PropertyDetails extends Component {
     zip_code: "",
     attribute: "",
     city_utility: [],
+    units: [],
   };
 
   componentDidMount() {
@@ -44,6 +45,17 @@ export class PropertyDetails extends Component {
       .catch((err) => {
         this.props.returnErrors(err.response.data, err.response.status);
       });
+
+    axios
+      .get(`/api/property/${this.props.match.params.id}/units`)
+      .then((response) => {
+        this.setState({
+          units: response.data,
+        });
+      })
+      .catch((err) => {
+        this.props.returnErrors(err.response.data, err.response.status);
+      });
   }
 
   render() {
@@ -54,7 +66,7 @@ export class PropertyDetails extends Component {
         <div className="row">
           <div className="col-3">
             <div
-              className="nav flex-column nav-pills"
+              className="nav flex-column nav-pills bg-white"
               id="v-pills-tab"
               role="tablist"
               aria-orientation="vertical"
@@ -110,7 +122,10 @@ export class PropertyDetails extends Component {
                 role="tabpanel"
                 aria-labelledby="v-pills-units-tab"
               >
-                Hey
+                <PropertyUnits
+                  propertyId={this.state.id}
+                  units={this.state.units}
+                />
               </div>
               <div
                 className="tab-pane fade"
