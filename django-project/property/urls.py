@@ -11,7 +11,7 @@ router.register('unit', UnitViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('property/<int:id>/units', ListUnitsForProperty.as_view(),
-         name="unit-list"),
+         name="property-unit-list"),
     path('unit/<int:id>/meters', ListMetersForUnit.as_view(),
-         name="meter-list")
+         name="unit-meter-list")
 ]
