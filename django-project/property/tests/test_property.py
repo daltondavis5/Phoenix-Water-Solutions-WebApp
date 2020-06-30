@@ -9,14 +9,6 @@ from property.serializers import MeterSerializer, UnitSerializer, \
     MeterReadSerializer
 
 
-def detail_url_property(property_id):
-    return reverse("property-detail", args=[property_id])
-
-
-def detail_url_unit(unit_id):
-    return reverse("unit-detail", args=[unit_id])
-
-
 class PropertyViewSetTestCase(APITestCase):
     PROPERTY_LIST_URL = reverse("property-list")
 
