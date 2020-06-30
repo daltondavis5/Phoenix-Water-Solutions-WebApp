@@ -1,8 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from property.views import MeterViewSet, PropertyViewSet, UnitViewSet,\
-    ListUnitsForProperty, ListMetersForUnit, ListUnitsForProperty, \
-    ListMeterreadsForMeter
+    ListUnitsForProperty, ListMetersForUnit
 
 router = DefaultRouter()
 router.register('property', PropertyViewSet)
