@@ -248,11 +248,11 @@ class ModelCreateTests(TestCase):
             zip_code=99999
         )
         name = "New Acc Fee 1"
-        amount, priority = 89, 1
+        amount, priority, split_value = 89, 1, True
         rec_fee_obj = RecollectionFee.objects.create(
             name=name,
             amount=amount,
-            split_method=1,
+            usage_based_split=split_value,
             property=property_,
             priority=priority
         )
@@ -260,5 +260,5 @@ class ModelCreateTests(TestCase):
         self.assertEqual(rec_fee_obj.property, property_)
         self.assertEqual(rec_fee_obj.amount, amount)
         self.assertEqual(rec_fee_obj.priority, priority)
-        self.assertEqual(rec_fee_obj.split_method, 1)
+        self.assertEqual(rec_fee_obj.usage_based_split, split_value)
         self.assertEqual(str(rec_fee_obj), name)

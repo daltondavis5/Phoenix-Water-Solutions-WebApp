@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from core.models.property import Meter, Property, Unit, \
-    PropertyCityUtilityInfo
+    PropertyCityUtilityInfo, MeterRead
 
 
 class MeterSerializer(serializers.ModelSerializer):
@@ -52,3 +52,10 @@ class UnitSerializer(serializers.ModelSerializer):
                 fields=['name', 'property'],
             )
         ]
+
+
+class MeterReadSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MeterRead
+        fields = ['id', 'read_date', 'amount']

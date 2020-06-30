@@ -8,8 +8,8 @@ import PropTypes from "prop-types";
 export class AddProperty extends Component {
   state = {
     name: "",
-    address: "",
-    zipcode: "",
+    street_address: "",
+    zip_code: "",
     response: "",
   };
 
@@ -18,11 +18,11 @@ export class AddProperty extends Component {
   };
 
   onSubmit = (e) => {
-    const { name, address, zipcode } = this.state;
+    const { name, street_address, zip_code } = this.state;
     const body = {
       name,
-      address,
-      zipcode,
+      street_address,
+      zip_code,
     };
     e.preventDefault();
     const config = {
@@ -73,10 +73,10 @@ export class AddProperty extends Component {
                 <input
                   type="text"
                   className="form-control"
-                  name="address"
+                  name="street_address"
                   required
                   onChange={this.onChange}
-                  value={this.state.address}
+                  value={this.state.street_address}
                 />
               </div>
               <div className="form-group">
@@ -84,10 +84,10 @@ export class AddProperty extends Component {
                 <input
                   type="text"
                   className="form-control"
-                  name="zipcode"
+                  name="zip_code"
                   required
                   onChange={this.onChange}
-                  value={this.state.zipcode}
+                  value={this.state.zip_code}
                 />
               </div>
               <button
