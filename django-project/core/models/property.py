@@ -122,3 +122,20 @@ class AdminFee(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class RecollectionFee(models.Model):
+    PRIORITIES = (
+        (0, 'Low'),
+        (1, 'Normal'),
+        (2, 'High'),
+    )
+
+    name = models.CharField(max_length=100)
+    amount = models.FloatField()
+    split_method = models.IntegerField()
+    property = models.ForeignKey(Property, on_delete=models.CASCADE)
+    priority = models.IntegerField(choices=PRIORITIES)
+
+    def __str__(self):
+        return self.name
