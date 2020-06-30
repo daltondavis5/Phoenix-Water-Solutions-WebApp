@@ -138,11 +138,11 @@ class MeterViewSetTestCase(APITestCase):
                                            installed_date="2020-06-29",
                                            uninstalled_date="2020-06-28")
         self.meter_read_1 = MeterRead.objects.create(meter=self.meter1,
-                                                read_date="2020-06-29",
-                                                amount=99.5)
+                                                     read_date="2020-06-29",
+                                                     amount=99.5)
         self.meter_read_2 = MeterRead.objects.create(meter=self.meter1,
-                                                read_date="2020-06-30",
-                                                amount=199.5)
+                                                     read_date="2020-06-30",
+                                                     amount=199.5)
 
     def get_reverse_url_unit_meter_list(self, unit_id):
         return reverse("unit-meter-list", args=unit_id)
