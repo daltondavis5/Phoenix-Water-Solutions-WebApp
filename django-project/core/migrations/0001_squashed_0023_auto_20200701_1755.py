@@ -8,8 +8,6 @@ import django.utils.timezone
 
 class Migration(migrations.Migration):
 
-    replaces = [('core', '0001_initial'), ('core', '0002_auto_20200616_0002'), ('core', '0003_auto_20200616_1911'), ('core', '0004_auto_20200616_1936'), ('core', '0005_auto_20200616_1942'), ('core', '0006_auto_20200617_1616'), ('core', '0007_auto_20200617_1830'), ('core', '0008_auto_20200622_2027'), ('core', '0009_auto_20200624_2132'), ('core', '0010_auto_20200626_2029'), ('core', '0011_propertycityutilityinfo_bill_post_day'), ('core', '0012_metererror_meterread'), ('core', '0013_newaccountfee'), ('core', '0014_adminfee_latefee'), ('core', '0012_auto_20200629_1729'), ('core', '0013_auto_20200629_1731'), ('core', '0015_merge_20200629_2117'), ('core', '0016_auto_20200629_2249'), ('core', '0017_auto_20200629_2253'), ('core', '0018_auto_20200630_0025'), ('core', '0016_recollectionfee'), ('core', '0017_auto_20200630_1810'), ('core', '0019_merge_20200630_1817'), ('core', '0020_auto_20200701_0545'), ('core', '0021_auto_20200701_1644'), ('core', '0022_auto_20200701_1646'), ('core', '0023_auto_20200701_1755')]
-
     initial = True
 
     dependencies = [
