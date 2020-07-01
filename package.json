@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack --mode development --watch ./django-project/frontend/src/index.js --output ./django-project/frontend/static/frontend/main.js",
-    "build": "webpack --mode production ./django-project/frontend/src/index.js --output ./django-project/frontend/static/frontend/main.js"
+    "dev": "webpack --mode development --watch",
+    "build": "webpack --mode production"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +16,8 @@
     "@babel/preset-react": "^7.10.1",
     "babel-loader": "^8.1.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
+    "css-loader": "^3.6.0",
+    "style-loader": "^1.2.1",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
   },

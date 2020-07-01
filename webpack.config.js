@@ -1,6 +1,12 @@
+const path = require("path");
+
 module.exports = {
+  entry: "./django-project/frontend/src/index.js",
+  output: {
+    path: path.join(__dirname, "django-project/frontend/static/frontend"),
+    filename: "main.js",
+  },
   module: {
-    // this takes care of allowing babel to transpile our js code
     rules: [
       {
         test: /\.js$/,
@@ -8,6 +14,11 @@ module.exports = {
         use: {
           loader: "babel-loader",
         },
+      },
+      {
+        test: /\.css$/,
+        exclude: /node_modules/,
+        use: ["style-loader", "css-loader"],
       },
     ],
   },
