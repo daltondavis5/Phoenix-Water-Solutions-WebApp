@@ -9,8 +9,8 @@ class Property(models.Model):
     street_address = models.CharField(max_length=100)
     zip_code = models.IntegerField(null=False)
     attribute = models.BooleanField(default=False)
-    city_utility = models.ManyToManyField(UtilityProvider,
-                                          through='PropertyCityUtilityInfo')
+    utility_provider = models.ManyToManyField(UtilityProvider,
+                              through='PropertyUtilityProviderInfo')
 
     def __str__(self):
         return self.name
@@ -19,11 +19,11 @@ class Property(models.Model):
         unique_together = ('name', 'zip_code')
 
 
-class PropertyCityUtilityInfo(models.Model):
+class PropertyUtilityProviderInfo(models.Model):
     utility_provider = models.ForeignKey(UtilityProvider,
                                          on_delete=models.CASCADE)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    allowance_units = models.FloatField(null=False)
+    allowance_units = models.FloatField(default=0)
     bill_period_day = models.PositiveIntegerField(validators=[
         MaxValueValidator(31),
         MinValueValidator(1)
@@ -60,21 +60,24 @@ class Meter(models.Model):
 
 class MeterRead(models.Model):
     meter = models.ForeignKey(Meter, on_delete=models.CASCADE)
-    read_date = models.DateField(null=False)
+    read_date = models.DateTimeField(null=False)
     amount = models.FloatField(null=False)
 
     def __str__(self):
-        return str(self.meter)
+        return "Meter: " + str(self.meter) + ", Read Date: " + \
+               str(self.read_date) + ", Amount: " + str(self.amount)
 
 
 class MeterError(models.Model):
     meter = models.ForeignKey(Meter, on_delete=models.CASCADE)
     error_date = models.DateField(null=False)
-    description = models.CharField(max_length=200)
-    repair_date = models.DateField(null=False)
+    description = models.TextField(max_length=200)
+    repair_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        return str(self.meter)
+        return "Meter: " + str(self.meter) + ", Error Date: " + \
+               str(self.error_date) + ", Description: " + \
+               str(self.description)
 
 
 class Priority(models.IntegerChoices):
@@ -106,7 +109,7 @@ class LateFee(models.Model):
 
 class AdminFee(models.Model):
     name = models.CharField(max_length=100)
-    amount = models.FloatField()
+    amount = models.FloatField(null=False)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     priority = models.IntegerField(choices=Priority.choices)
 

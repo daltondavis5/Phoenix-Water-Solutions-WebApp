@@ -2,11 +2,13 @@ from django.urls import reverse
 
 from core.models.utilityprovider import Utility, Location, Provider, \
     UtilityProvider
-from core.models.property import Unit, Meter, Property, MeterRead
+from core.models.property import Unit, Meter, Property, MeterRead,\
+    MeterError
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
 from property.serializers import MeterSerializer, UnitSerializer, \
-    MeterReadSerializer
+    MeterReadSerializer, MeterWithLastReadSerializer, MeterErrorSerializer
 
 
 class PropertyViewSetTestCase(APITestCase):
@@ -137,12 +139,22 @@ class MeterViewSetTestCase(APITestCase):
                                            unit=self.unit1,
                                            installed_date="2020-06-29",
                                            uninstalled_date="2020-06-28")
+
         self.meter_read_1 = MeterRead.objects.create(meter=self.meter1,
-                                                     read_date="2020-06-29",
+                                                     read_date=timezone.now(),
                                                      amount=99.5)
-        self.meter_read_2 = MeterRead.objects.create(meter=self.meter1,
-                                                     read_date="2020-06-30",
+        self.meter_read_2 = MeterRead.objects.create(meter=self.meter2,
+                                                     read_date=timezone.now(),
                                                      amount=199.5)
+
+        self.meter_error_1 = MeterError.objects.create(meter=self.meter1,
+                                                 error_date="2020-06-28",
+                                                 description="Test Desc 1",
+                                                 repair_date="2020-06-28")
+        self.meter_error_2 = MeterError.objects.create(meter=self.meter2,
+                                                 error_date="2020-06-28",
+                                                 description="Test Desc 2",
+                                                 repair_date="2020-06-28")
 
     def get_reverse_url_unit_meter_list(self, unit_id):
         return reverse("unit-meter-list", args=unit_id)
@@ -150,7 +162,10 @@ class MeterViewSetTestCase(APITestCase):
     def get_reverse_url_meter_meterread_list(self, meter_id):
         return reverse('meter-meterreads-list', args=meter_id)
 
-    def test_meter_list_unit(self):
+    def get_reverse_url_meter_metererror_list(self, meter_id):
+        return reverse('meter-metererrors-list', args=meter_id)
+
+    def test_unit_list_meter_with_last_read(self):
         """ Test to retrieve all meters for a given unit"""
         meter3 = Meter.objects.create(name="Meter unit 2 water",
                                       utility=self.utility1,
@@ -160,9 +175,9 @@ class MeterViewSetTestCase(APITestCase):
         response = self.client.get(
             self.get_reverse_url_unit_meter_list([self.unit1.id])
         )
-        serializer1 = MeterSerializer(self.meter1)
-        serializer2 = MeterSerializer(self.meter2)
-        serializer3 = MeterSerializer(meter3)
+        serializer1 = MeterWithLastReadSerializer(self.meter1)
+        serializer2 = MeterWithLastReadSerializer(self.meter2)
+        serializer3 = MeterWithLastReadSerializer(meter3)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
         self.assertIn(serializer1.data, response.data)
@@ -172,16 +187,33 @@ class MeterViewSetTestCase(APITestCase):
     def test_meter_list_meterreads(self):
         """ Test case to retrieve all meter reads for a given meter"""
         meter_read_3 = MeterRead.objects.create(meter=self.meter2,
-                                                read_date="2020-06-27",
+                                                read_date=timezone.now(),
                                                 amount=299.5)
         response = self.client.get(
-            self.get_reverse_url_meter_meterread_list([self.meter1.id])
+            self.get_reverse_url_meter_meterread_list([self.meter2.id])
         )
         serializer1 = MeterReadSerializer(self.meter_read_1)
         serializer2 = MeterReadSerializer(self.meter_read_2)
         serializer3 = MeterReadSerializer(meter_read_3)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
-        self.assertIn(serializer1.data, response.data)
+        self.assertIn(serializer3.data, response.data)
         self.assertIn(serializer2.data, response.data)
-        self.assertNotIn(serializer3.data, response.data)
+        self.assertNotIn(serializer1.data, response.data)
+
+    def test_meter_list_metererrors(self):
+        """ Test case to retrieve all meter errors for a given meter"""
+        meter_error_3 = MeterError.objects.create(meter=self.meter2,
+                                                 error_date="2020-06-28",
+                                                 description="Test Desc 3")
+        response = self.client.get(
+            self.get_reverse_url_meter_metererror_list([self.meter2.id])
+        )
+        serializer1 = MeterErrorSerializer(self.meter_error_1)
+        serializer2 = MeterErrorSerializer(self.meter_error_2)
+        serializer3 = MeterErrorSerializer(meter_error_3)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 2)
+        self.assertIn(serializer3.data, response.data)
+        self.assertIn(serializer2.data, response.data)
+        self.assertNotIn(serializer1.data, response.data)

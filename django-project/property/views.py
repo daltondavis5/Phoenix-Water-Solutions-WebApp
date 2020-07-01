@@ -1,6 +1,7 @@
 from rest_framework import viewsets, permissions
 from rest_framework import status
 
+<<<<<<< HEAD
 import datetime
 from core.models.property import Meter, Property, Unit, MeterRead
 from .serializers import MeterSerializer, \
@@ -8,6 +9,13 @@ from .serializers import MeterSerializer, \
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from . import PropertyService as PS
+=======
+from core.models.property import Meter, Property, Unit, MeterRead,\
+    MeterError
+from .serializers import MeterSerializer, \
+    PropertySerializer, UnitSerializer, MeterReadSerializer,\
+    MeterErrorSerializer, MeterWithLastReadSerializer
+>>>>>>> feature/add-property
 
 
 class MeterViewSet(viewsets.ModelViewSet):
@@ -28,6 +36,19 @@ class UnitViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny, ]
 
 
+# class MeterReadViewSet(viewsets.ModelViewSet):
+#     queryset = MeterRead.objects.all()
+#     permission_classes = [permissions.AllowAny, ]
+#     serializer_class = MeterReadSerializer
+#
+#
+# class MeterErrorViewSet(viewsets.ModelViewSet):
+#     queryset = MeterError.objects.all()
+#     permission_classes = [permissions.AllowAny, ]
+#     serializer_class = MeterErrorSerializer
+
+
+# custom views here
 class ListUnitsForProperty(viewsets.generics.ListAPIView):
     permission_classes = [permissions.AllowAny, ]
     serializer_class = UnitSerializer
@@ -39,14 +60,14 @@ class ListUnitsForProperty(viewsets.generics.ListAPIView):
 
 class ListMetersForUnit(viewsets.generics.ListAPIView):
     permission_classes = [permissions.AllowAny, ]
-    serializer_class = MeterSerializer
+    serializer_class = MeterWithLastReadSerializer
 
     def get_queryset(self):
         unit_id = self.kwargs['id']
         return Meter.objects.filter(unit=unit_id)
 
 
-class ListMeterreadsForMeter(viewsets.generics.ListAPIView):
+class ListMeterReadsForMeter(viewsets.generics.ListAPIView):
     permission_classes = [permissions.AllowAny, ]
     serializer_class = MeterReadSerializer
 
@@ -67,10 +88,17 @@ def get_property_amount(request):
                                              , "%Y-%m-%d").date()
         utility_id = request.data.get('utility_id')
 
-
-
         if from_date > to_date:
             return Response("To date can't me greater than from date",
                             status=status.HTTP_404_NOT_FOUND)
         amount = PS.get_property_amount(pid, utility_id, from_date, to_date)
         return Response({"total_amount": amount})
+
+
+class ListMeterErrorsForMeter(viewsets.generics.ListAPIView):
+    permission_classes = [permissions.AllowAny, ]
+    serializer_class = MeterErrorSerializer
+
+    def get_queryset(self):
+        meter_id = self.kwargs['id']
+        return MeterError.objects.filter(meter=meter_id)
