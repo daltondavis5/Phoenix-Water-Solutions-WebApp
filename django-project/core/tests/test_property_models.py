@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.test import TestCase
 
-from core.models.property import Property, PropertyCityUtilityInfo, \
+from core.models.property import Property, PropertyUtilityProviderInfo, \
     Unit, Meter, MeterRead, MeterError, NewAccountFee, LateFee, AdminFee, \
     RecollectionFee
 from core.models.utilityprovider import Utility, Location, UtilityProvider, \
@@ -79,8 +79,8 @@ class ModelCreateTests(TestCase):
         self.assertEqual(meter.uninstalled_date, uninstalled_date)
         self.assertEqual(str(meter), meter_name)
 
-    def test_create_propertcityutilityinfo_create(self):
-        """ Test to create PropertyCityUtilityInfo """
+    def test_create_propertyutilityproviderinfo_create(self):
+        """ Test to create PropertyUtilityProviderInfo"""
         utility_provider = self.utility_provider
         property_ = Property.objects.create(
             name="Property Test",
@@ -92,7 +92,7 @@ class ModelCreateTests(TestCase):
         bill_period_day = 8
         bill_post_day = 8
         default_usage = 10
-        property_city_utility_info = PropertyCityUtilityInfo.objects.create(
+        property_utility_provider_info = PropertyUtilityProviderInfo.objects.create(
             utility_provider=utility_provider,
             property=property_,
             allowance_units=allowance_units,
@@ -100,16 +100,16 @@ class ModelCreateTests(TestCase):
             bill_post_day=bill_post_day,
             default_usage=default_usage
         )
-        self.assertEqual(property_city_utility_info.utility_provider,
+        self.assertEqual(property_utility_provider_info.utility_provider,
                          utility_provider)
-        self.assertEqual(property_city_utility_info.property, property_)
-        self.assertEqual(property_city_utility_info.allowance_units,
+        self.assertEqual(property_utility_provider_info.property, property_)
+        self.assertEqual(property_utility_provider_info.allowance_units,
                          allowance_units)
-        self.assertEqual(property_city_utility_info.bill_period_day,
+        self.assertEqual(property_utility_provider_info.bill_period_day,
                          bill_period_day)
-        self.assertEqual(property_city_utility_info.bill_post_day,
+        self.assertEqual(property_utility_provider_info.bill_post_day,
                          bill_post_day)
-        self.assertEqual(property_city_utility_info.default_usage,
+        self.assertEqual(property_utility_provider_info.default_usage,
                          default_usage)
 
     def test_create_meter_read_str(self):
@@ -135,10 +135,12 @@ class ModelCreateTests(TestCase):
         meter_read = MeterRead.objects.create(meter=meter,
                                               read_date=read_dt,
                                               amount=amount)
+        meter_str = "Meter: " + meter_name + ", Read Date: " + \
+                    str(read_dt) + ", Amount: " + str(amount)
         self.assertEqual(meter_read.read_date, read_dt)
         self.assertEqual(meter_read.amount, amount)
         self.assertEqual(meter_read.meter.name, meter_name)
-        self.assertEqual(str(meter_read), meter_name)
+        self.assertEqual(str(meter_read), meter_str)
 
     def test_create_meter_error_str(self):
         """Test to create meter error object and custom str method"""
@@ -165,11 +167,14 @@ class ModelCreateTests(TestCase):
                                                 description=desc,
                                                 repair_date=repair_dt)
 
+        error_str = "Meter: " + meter_name + ", Error Date: " + \
+                    str(error_dt) + ", Description: " + \
+                    str(desc)
         self.assertEqual(meter_error.error_date, error_dt)
         self.assertEqual(meter_error.repair_date, repair_dt)
         self.assertEqual(meter_error.description, desc)
         self.assertEqual(meter_error.meter.name, meter_name)
-        self.assertEqual(str(meter_error), meter_name)
+        self.assertEqual(str(meter_error), error_str)
 
     def test_create_new_acc_fee_str(self):
         """ Test to create new acc fee object and custom str method """
