@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { createMessage, returnErrors } from "../../../actions/messages";
 import PropTypes from "prop-types";
 import UnitMeters from "./UnitMeters";
+import MeterDashboard from "./MeterDashboard";
 
 export class UnitDetails extends Component {
   static propTypes = {
@@ -204,7 +205,7 @@ export class UnitDetails extends Component {
                   role="tabpanel"
                   aria-labelledby="v-pills-meters-tab"
                 >
-                  <UnitMeters
+                  {/* <UnitMeters
                     meters={this.state.meters}
                     unit_id={id}
                     changeToEdit={this.changeToEdit}
@@ -212,7 +213,8 @@ export class UnitDetails extends Component {
                     saveButton={this.saveButton}
                     deleteButton={this.deleteButton}
                     addMeter={this.addMeter}
-                  />
+                  /> */}
+                  <MeterDashboard meters={this.state.meters} />
                 </div>
                 <div
                   className="tab-pane fade"
