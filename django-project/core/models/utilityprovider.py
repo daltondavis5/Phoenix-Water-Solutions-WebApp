@@ -36,8 +36,8 @@ class UtilityProvider(models.Model):
     unit_measurement = models.FloatField()
 
     def __str__(self):
-        return str(self.provider) + " supplies " + str(self.utility) + \
-            " in " + str(self.location)
+        return "Provider: " + str(self.provider) + ", Utility: " + \
+               str(self.utility) + ", Location: " + str(self.location)
 
     class meta:
         unique_together = ('utility', 'provider', 'location')
