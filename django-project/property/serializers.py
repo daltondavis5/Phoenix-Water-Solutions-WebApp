@@ -1,31 +1,29 @@
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 from core.models.property import Meter, Property, Unit, \
-    PropertyCityUtilityInfo, MeterRead
+    PropertyUtilityProviderInfo, MeterRead, MeterError
 
 
 class MeterSerializer(serializers.ModelSerializer):
-    utility_type = serializers.CharField(source='utility.type')
-    unit_name = serializers.CharField(source='unit.name')
 
     class Meta:
         model = Meter
-        fields = ['id', 'name', 'installed_date', 'uninstalled_date',
-                  'utility_type', 'unit_name']
+        fields = "__all__"
 
 
-class PropertyCityUtilityInfoSerializer(serializers.ModelSerializer):
+class PropertyUtilityProviderInfoSerializer(serializers.ModelSerializer):
     utility_provider = serializers.CharField(
         source='utility_provider.provider.name')
 
     class Meta:
-        model = PropertyCityUtilityInfo
+        model = PropertyUtilityProviderInfo
         fields = ['utility_provider', 'allowance_units', 'bill_period_day',
                   'bill_post_day', 'default_usage']
 
 
 class PropertySerializer(serializers.ModelSerializer):
-    city_utility = PropertyCityUtilityInfoSerializer(
-        source='propertycityutilityinfo_set', many=True,
+    city_utility = PropertyUtilityProviderInfoSerializer(
+        source='propertyutilityproviderinfo_set', many=True,
         read_only=True)
 
     class Meta:
@@ -41,7 +39,6 @@ class PropertySerializer(serializers.ModelSerializer):
 
 
 class UnitSerializer(serializers.ModelSerializer):
-    # property_name = serializers.CharField(source='property.name')
 
     class Meta:
         model = Unit
@@ -59,3 +56,28 @@ class MeterReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = MeterRead
         fields = ['id', 'read_date', 'amount']
+
+
+class MeterErrorSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MeterError
+        fields = "__all__"
+
+
+class MeterWithLastReadSerializer(serializers.ModelSerializer):
+    last_read_info = serializers.SerializerMethodField(
+        method_name='get_last_read_info_for_meter'
+    )
+
+    class Meta:
+        model = Meter
+        fields = ['id', 'name', 'utility', 'unit', 'last_read_info']
+
+    def get_last_read_info_for_meter(self, obj):
+        try:
+            last_read_obj = obj.meterread_set.latest('read_date')
+            last_read_info = [last_read_obj.amount, last_read_obj.read_date]
+            return last_read_info
+        except ObjectDoesNotExist:
+            return None
