@@ -15,8 +15,8 @@ services:
       - "8000:8000"
     env_file:
       - ../django-project/config/settings/.env
-    volumes:
-      - ../django-project:/django-project
+    # volumes:
+    #   - ../django-project:/django-project
     depends_on:
       - db
 
