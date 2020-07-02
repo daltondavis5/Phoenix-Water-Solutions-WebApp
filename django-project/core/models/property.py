@@ -13,7 +13,8 @@ class Property(models.Model):
                               through='PropertyUtilityProviderInfo')
 
     def __str__(self):
-        return self.name
+        return "Property: " + str(self.name) + ", Zip Code:" + \
+               str(self.zip_code)
 
     class meta:
         unique_together = ('name', 'zip_code')
@@ -41,7 +42,7 @@ class Unit(models.Model):
     billing_active = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.name
+        return "Unit: " + str(self.name) + ", Property: " + str(self.property)
 
     class meta:
         unique_together = ('name', 'property')
@@ -55,7 +56,8 @@ class Meter(models.Model):
     uninstalled_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        return self.name
+        return "Meter: " + str(self.name) + ", Utility: " + str(self.utility)\
+               + ", Unit: " + str(self.unit)
 
 
 class MeterRead(models.Model):
