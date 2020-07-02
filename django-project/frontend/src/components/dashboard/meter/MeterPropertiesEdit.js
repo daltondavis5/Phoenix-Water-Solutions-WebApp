@@ -1,32 +1,65 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import axios from "axios";
+import { createMessage, returnErrors } from "../../../actions/messages";
+import PropTypes from "prop-types";
 
-class MeterEdit extends Component {
-  state = {
-    utilities: [],
-  };
-
-  componentDidMount() {
-    axios.get("/api/utility/").then((response) => {
-      this.setState({ utilities: response.data });
-    });
+class MeterPropertiesEdit extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: props.meter.name,
+      utility: props.meter.utility,
+      installed_date: props.meter.installed_date,
+      uninstalled_date: props.meter.uninstalled_date,
+      id: props.meter.id,
+      unit: props.meter.unit,
+    };
   }
 
+  static propTypes = {
+    createMessage: PropTypes.func.isRequired,
+    returnErrors: PropTypes.func.isRequired,
+  };
+
+  onChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  saveButton = () => {
+    const body = {
+      name: this.state.name,
+      utility: this.state.utility,
+      installed_date: this.state.installed_date,
+      uninstalled_date: this.state.uninstalled_date,
+      id: this.state.id,
+      unit: this.state.unit,
+    };
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    console.log(JSON.stringify(body))
+    axios
+      .put(`/api/meter/${this.state.id}`, JSON.stringify(body), config)
+      .then((response) => {
+        this.props.createMessage({ msg: "Success!" });
+        this.props.updateMeter(body);
+      })
+      .catch((err) => {
+        this.props.returnErrors(err.response.data, err.response.status);
+      });
+  };
+
   render() {
-    const {
-      name,
-      utility_type,
-      installed_date,
-      uninstalled_date,
-      mode,
-    } = this.props.meter;
+    const { name, utility, installed_date, uninstalled_date } = this.state;
     return (
       <React.Fragment>
-        <div className="card" style={{ marginBottom: "20px" }}>
+        <div className="card rounded mt-5 mb-5 shadow">
           <div className="card-body">
-            <h2 className="text-center">
-              {mode === "adding" ? "Add Meter" : "Edit Meter"}
-            </h2>
             <div className="edit-save-buttons" style={{ height: "25px" }}>
               <button
                 type="submit"
@@ -36,7 +69,7 @@ class MeterEdit extends Component {
                   width: "60px",
                   borderRadius: "4px",
                 }}
-                onClick={this.props.saveButton}
+                onClick={this.saveButton}
               >
                 Save
               </button>
@@ -48,9 +81,9 @@ class MeterEdit extends Component {
                   width: "70px",
                   borderRadius: "4px",
                 }}
-                onClick={this.props.deleteButton}
+                onClick={this.props.changeToView}
               >
-                Delete
+                Cancel
               </button>
             </div>
             <div>
@@ -60,7 +93,7 @@ class MeterEdit extends Component {
                   type="text"
                   className="form-control"
                   name="name"
-                  onChange={this.props.onChange}
+                  onChange={this.onChange}
                   value={name}
                 />
               </div>
@@ -68,19 +101,12 @@ class MeterEdit extends Component {
                 <label>Utility Type</label>
                 <select
                   className="form-control"
-                  name="utility_type"
-                  onChange={this.props.onChange}
-                  value={utility_type}
-                  disabled={mode == "editing"}
+                  name="utility"
+                  onChange={this.onChange}
+                  value={utility}
+                  disabled
                 >
-                  <option value="Default">Choose a utility</option>
-                  {this.state.utilities.map((utility) => {
-                    return (
-                      <option key={utility["type"]} value={utility["type"]}>
-                        {utility["type"]}
-                      </option>
-                    );
-                  })}
+                  <option value="Default">{utility}</option>
                 </select>
               </div>
               <div className="form-group">
@@ -89,9 +115,9 @@ class MeterEdit extends Component {
                   type="date"
                   className="form-control"
                   name="installed_date"
-                  onChange={this.props.onChange}
+                  onChange={this.onChange}
                   value={installed_date}
-                  disabled={mode == "editing"}
+                  disabled
                 />
               </div>
               <div className="form-group">
@@ -100,7 +126,7 @@ class MeterEdit extends Component {
                   type="date"
                   className="form-control"
                   name="uninstalled_date"
-                  onChange={this.props.onChange}
+                  onChange={this.onChange}
                   value={uninstalled_date !== null && uninstalled_date}
                 />
               </div>
@@ -112,4 +138,6 @@ class MeterEdit extends Component {
   }
 }
 
-export default MeterEdit;
+export default connect(null, { createMessage, returnErrors })(
+  MeterPropertiesEdit
+);
