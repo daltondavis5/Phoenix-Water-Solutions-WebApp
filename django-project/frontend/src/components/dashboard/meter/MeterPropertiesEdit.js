@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import axios from "axios";
 import { createMessage, returnErrors } from "../../../actions/messages";
 import PropTypes from "prop-types";
+import { Redirect } from "react-router-dom";
 
 class MeterPropertiesEdit extends Component {
   constructor(props) {
@@ -42,15 +43,39 @@ class MeterPropertiesEdit extends Component {
         "Content-Type": "application/json",
       },
     };
-    console.log(JSON.stringify(body))
     axios
-      .put(`/api/meter/${this.state.id}`, JSON.stringify(body), config)
+      .put(`/api/meter/${this.state.id}/`, JSON.stringify(body), config)
       .then((response) => {
         this.props.createMessage({ msg: "Success!" });
         this.props.updateMeter(body);
       })
       .catch((err) => {
         this.props.returnErrors(err.response.data, err.response.status);
+      });
+  };
+
+  deleteMeter = () => {
+    const { id, unit } = this.state;
+    const body = {
+      id,
+    };
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    axios
+      .delete(`/api/meter/${id}/`, JSON.stringify(body), config)
+      .then((res) => {
+        this.props.createMessage({
+          msg: `Successfully deleted`,
+        });
+        // redirectly directing to provider details page
+        // this.props.history.push(`/unit/${unit}`);
+        <Redirect to="/unit/:id" />;
+      })
+      .catch((err) => {
+        // this.props.returnErrors(err.response.data, err.response.status);
       });
   };
 
@@ -75,7 +100,7 @@ class MeterPropertiesEdit extends Component {
               </button>
               <button
                 type="submit"
-                className="btn btn-danger float-right"
+                className="btn btn-primary float-right"
                 style={{
                   marginLeft: "10px",
                   width: "70px",
@@ -84,6 +109,18 @@ class MeterPropertiesEdit extends Component {
                 onClick={this.props.changeToView}
               >
                 Cancel
+              </button>
+              <button
+                type="submit"
+                className="btn btn-danger float-right"
+                style={{
+                  marginLeft: "10px",
+                  width: "70px",
+                  borderRadius: "4px",
+                }}
+                onClick={this.deleteMeter}
+              >
+                Delete
               </button>
             </div>
             <div>
