@@ -1,0 +1,48 @@
+import React, { Component } from "react";
+
+class MeterPropertiesView extends Component {
+  render() {
+    const {
+      name,
+      utility,
+      installed_date,
+      uninstalled_date,
+    } = this.props.meter;
+    return (
+      <div>
+        <div className="card rounded mt-5 shadow">
+          <div className="card-body">
+            <ul className="list-group list-group-flush">
+              <li className="list-group-item">Name: {name}</li>
+              <li className="list-group-item">Utility: {utility}</li>
+              <li className="list-group-item">
+                Installed Date: {installed_date}
+              </li>
+              <li className="list-group-item">
+                Uninstalled Date: {uninstalled_date}
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="edit-save-buttons" style={{ height: "76px" }}>
+          <button
+            type="submit"
+            className="btn btn-primary float-right"
+            style={{
+              marginBottom: "20px",
+              marginTop: "20px",
+              width: "100px",
+              borderRadius: "4px",
+            }}
+            onClick={this.props.changeToEdit}
+          >
+            Edit Meter
+          </button>
+        </div>
+      </div>
+    );
+  }
+}
+
+export default MeterPropertiesView;
