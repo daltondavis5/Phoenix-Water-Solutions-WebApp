@@ -24,7 +24,7 @@ export default class MeterErrors extends Component {
             <th scope="col">Repair Date</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="bg-light">
           {this.state.errors.map((error) => {
             return (
               <tr key={error.id}>

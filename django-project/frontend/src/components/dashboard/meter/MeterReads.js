@@ -24,7 +24,7 @@ export default class MeterReads extends Component {
             <th scope="col">Amount</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="bg-light">
           {this.state.reads.map((read) => {
             return (
               <tr key={read.id}>
