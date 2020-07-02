@@ -52,9 +52,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'knox',
     'core',
     'frontend',
+    'main',
+    'accounts',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'knox.auth.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json'
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -145,3 +156,7 @@ MEDIA_RUL = '/static/media/'
 
 STATIC_ROOT = '/vol/web/static'
 MEDIA_ROOT = '/vol/web/media'
+
+
+# Override Django USER model
+AUTH_USER_MODEL = 'accounts.User'
