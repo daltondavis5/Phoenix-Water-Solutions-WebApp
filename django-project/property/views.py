@@ -6,6 +6,8 @@ from .serializers import MeterSerializer, \
     PropertySerializer, UnitSerializer, MeterReadSerializer,\
     MeterErrorSerializer, MeterWithLastReadSerializer
 
+import property.services as services
+
 
 # Create your views here.
 class MeterViewSet(viewsets.ModelViewSet):
@@ -54,7 +56,8 @@ class ListMetersForUnit(viewsets.generics.ListAPIView):
 
     def get_queryset(self):
         unit_id = self.kwargs['id']
-        return Meter.objects.filter(unit=unit_id)
+        queryset = services.get_meters_for_unit(unit_id)
+        return queryset
 
 
 class ListMeterReadsForMeter(viewsets.generics.ListAPIView):
@@ -63,7 +66,8 @@ class ListMeterReadsForMeter(viewsets.generics.ListAPIView):
 
     def get_queryset(self):
         meter_id = self.kwargs['id']
-        return MeterRead.objects.filter(meter=meter_id)
+        queryset = services.get_meter_reads_for_meter(meter_id)
+        return queryset
 
 
 class ListMeterErrorsForMeter(viewsets.generics.ListAPIView):
@@ -72,4 +76,5 @@ class ListMeterErrorsForMeter(viewsets.generics.ListAPIView):
 
     def get_queryset(self):
         meter_id = self.kwargs['id']
-        return MeterError.objects.filter(meter=meter_id)
+        queryset = services.get_meter_errors_for_meter(meter_id)
+        return queryset

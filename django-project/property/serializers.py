@@ -85,5 +85,6 @@ class MeterWithLastReadSerializer(serializers.ModelSerializer):
         model = Meter
         fields = ['id', 'name', 'utility', 'unit', 'last_read_info']
 
-    def get_last_read_info(self, obj):
+    @staticmethod
+    def get_last_read_info(obj):
         return services.get_last_read_info_for_meter(obj)
