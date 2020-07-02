@@ -3,7 +3,6 @@ import axios from "axios";
 import { connect } from "react-redux";
 import { createMessage, returnErrors } from "../../../actions/messages";
 import PropTypes from "prop-types";
-import UnitMeters from "./UnitMeters";
 import MeterDashboard from "./MeterDashboard";
 
 export class UnitDetails extends Component {
@@ -205,15 +204,6 @@ export class UnitDetails extends Component {
                   role="tabpanel"
                   aria-labelledby="v-pills-meters-tab"
                 >
-                  {/* <UnitMeters
-                    meters={this.state.meters}
-                    unit_id={id}
-                    changeToEdit={this.changeToEdit}
-                    onChange={this.handleChange}
-                    saveButton={this.saveButton}
-                    deleteButton={this.deleteButton}
-                    addMeter={this.addMeter}
-                  /> */}
                   <MeterDashboard meters={this.state.meters} />
                 </div>
                 <div

@@ -29,29 +29,29 @@ export class MeterDashboard extends Component {
         </span>
 
         <div
-          class="modal fade"
+          className="modal fade"
           id="meterModal"
-          tabindex="-1"
+          tabIndex="-1"
           role="dialog"
           aria-labelledby="modalLabel"
           aria-hidden="true"
         >
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="modalLabel">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="modalLabel">
                   Add New Meter
                 </h5>
                 <button
                   type="button"
-                  class="close"
+                  className="close"
                   data-dismiss="modal"
                   aria-label="Close"
                 >
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div class="modal-body">
+              <div className="modal-body">
                 body
                 {/* <div>
                   <div className="form-group">
@@ -104,15 +104,15 @@ export class MeterDashboard extends Component {
                   </div>
                 </div> */}
               </div>
-              <div class="modal-footer">
+              <div className="modal-footer">
                 <button
                   type="button"
-                  class="btn btn-secondary"
+                  className="btn btn-secondary"
                   data-dismiss="modal"
                 >
                   Close
                 </button>
-                <button type="button" class="btn btn-primary">
+                <button type="button" className="btn btn-primary">
                   Save
                 </button>
               </div>
