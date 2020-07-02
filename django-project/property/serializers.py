@@ -1,4 +1,3 @@
-from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 from core.models.property import Meter, Property, Unit, \
     PropertyUtilityProviderInfo, MeterRead, MeterError
@@ -66,7 +65,7 @@ class MeterReadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MeterRead
-        fields = ['id', 'read_date', 'amount']
+        fields = "_all__"
 
 
 class MeterErrorSerializer(serializers.ModelSerializer):
