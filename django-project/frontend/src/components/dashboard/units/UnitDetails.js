@@ -14,6 +14,7 @@ export class UnitDetails extends Component {
   state = {
     unit: {},
     meters: [],
+    utilities: [],
   };
 
   componentDidMount() {
@@ -28,115 +29,43 @@ export class UnitDetails extends Component {
         this.props.returnErrors(err.response.data, err.response.status);
       });
 
+    axios.get("/api/utility/").then((response) => {
+      this.setState({ utilities: response.data });
+    });
+
+    this.getMetersList();
+  }
+
+  getMetersList = () => {
     axios
       .get(`/api/unit/${this.props.match.params.id}/meters`)
       .then((response) => {
-        var alteredData = response.data.map((data) => {
-          data.mode = "viewing";
-          return data;
-        });
         this.setState({
-          meters: alteredData,
+          meters: response.data,
         });
       })
       .catch((err) => {
         this.props.returnErrors(err.response.data, err.response.status);
       });
-  }
-
-  changeToEdit = (index) => () => {
-    let meters = [...this.state.meters];
-    meters[index]["mode"] = "editing";
-    this.setState({
-      meters,
-    });
   };
 
-  handleChange = (index) => (e) => {
-    let meters = [...this.state.meters];
-    meters[index][e.target.name] = e.target.value;
-    this.setState({
-      meters,
-    });
-  };
-
-  saveButton = (index) => {
-    let meter = this.state.meters[index];
-    const body = {
-      name: meter.name,
-      utility_type: meter.utility_type,
-      installed_date: meter.installed_date,
-      uninstalled_date: meter.uninstalled_date,
-      unit_name: meter.unit_name,
-    };
+  addMeter = (body) => {
+    body.unit = this.state.unit.id;
     const config = {
       headers: {
         "Content-Type": "application/json",
       },
     };
 
-    if (meter.mode == "adding") {
-      axios
-        .post("/api/meter/", JSON.stringify(body), config)
-        .then((response) => {
-          meter["id"] = response.data.id;
-          this.props.createMessage({ msg: "Success!" });
-        })
-        .catch((err) => {
-          this.props.returnErrors(err.response.data, err.response.status);
-        });
-    }
-    if (meter.mode == "editing") {
-      axios
-        .put(`/api/meter/${meter["id"]}/`, JSON.stringify(body), config)
-        .then((response) => {
-          this.props.createMessage({ msg: "Success!" });
-        })
-        .catch((err) => {
-          this.props.returnErrors(err.response.data, err.response.status);
-        });
-    }
-    let meters = [...this.state.meters];
-    meters[index]["mode"] = "viewing";
-    this.setState({
-      meter: meters,
-    });
-  };
-
-  deleteButton = (index) => {
-    let meter = this.state.meters[index];
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    if (meter.mode == "editing") {
-      axios.delete(`/api/meter/${meter["id"]}/`, config).then((response) => {});
-    }
-    let meters = [
-      ...this.state.meters.slice(0, index),
-      ...this.state.meters.slice(index + 1),
-    ];
-    this.setState({
-      meters,
-    });
-  };
-
-  addMeter = (e) => {
-    e.preventDefault();
-    let meters = this.state.meters.concat([
-      {
-        installed_date: "",
-        mode: "adding",
-        name: "",
-        uninstalled_date: "",
-        unit_name: this.state.unit.name,
-        utility_type: "",
-      },
-    ]);
-    this.setState({
-      meters,
-    });
+    axios
+      .post("/api/meter/", JSON.stringify(body), config)
+      .then((response) => {
+        this.getMetersList();
+        this.props.createMessage({ msg: "Success!" });
+      })
+      .catch((err) => {
+        this.props.returnErrors(err.response.data, err.response.status);
+      });
   };
 
   render() {
@@ -204,7 +133,11 @@ export class UnitDetails extends Component {
                   role="tabpanel"
                   aria-labelledby="v-pills-meters-tab"
                 >
-                  <MeterDashboard meters={this.state.meters} />
+                  <MeterDashboard
+                    meters={this.state.meters}
+                    utilities={this.state.utilities}
+                    addMeter={this.addMeter}
+                  />
                 </div>
                 <div
                   className="tab-pane fade"
