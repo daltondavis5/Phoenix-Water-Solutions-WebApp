@@ -118,7 +118,7 @@ class ModelCreateTests(TestCase):
             'location': self.location,
             'unit_measurement': 500
         }
+        return_string = "Provider: " + str(self.provider) + ", Utility: " + \
+                        str(self.utility1) + ", Location: " + str(self.location)
         utility_provider1 = UtilityProvider.objects.get(**utility_attributes1)
-        self.assertEqual(str(utility_provider1), str(utility_provider1.provider) +
-                         " supplies " + str(utility_provider1.utility) +
-                         " in " + str(utility_provider1.location))
+        self.assertEqual(str(utility_provider1), return_string)

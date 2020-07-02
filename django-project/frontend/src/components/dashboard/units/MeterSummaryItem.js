@@ -13,12 +13,13 @@ export class MeterSummaryItem extends Component {
         <div className="card-body">
           <div>
             <span className="font-weight-bold display-4 text-monospace text-success">
-              {last_read_info[0]}
+              {last_read_info !== null ? last_read_info[0] : 0}
             </span>
           </div>
           <div>
             <span className="text-muted font-weight-lighter font-italic small">
-              Last Read: {last_read_info[1]}
+              Last Read:{" "}
+              {last_read_info !== null ? last_read_info[1] : "Data Unavailable"}
             </span>
             <span className="float-right">
               <Link className="text-decoration-none" to={`/meter/${id}`}>

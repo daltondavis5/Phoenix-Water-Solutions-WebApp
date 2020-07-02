@@ -2,7 +2,30 @@ import React, { Component } from "react";
 import MeterSummaryItem from "./MeterSummaryItem";
 
 export class MeterDashboard extends Component {
+  state = {
+    name: "",
+    installed_date: "",
+    uninstalled_date: null,
+    utility: "",
+  };
+
+  handleChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  addMeter = () => {
+    let body = {
+      name: this.state.name,
+      utility: this.state.utility,
+      installed_date: this.state.installed_date,
+      uninstalled_date: this.state.uninstalled_date,
+    };
+    this.props.addMeter(body);
+  };
   render() {
+    const { name, installed_date, uninstalled_date, utility } = this.state;
     return (
       <>
         <div className="row row-cols-2">
@@ -21,7 +44,6 @@ export class MeterDashboard extends Component {
           }}
         >
           <i
-            onClick={this.addMeter}
             data-toggle="modal"
             data-target="#meterModal"
             className="fa fa-plus-circle"
@@ -52,15 +74,14 @@ export class MeterDashboard extends Component {
                 </button>
               </div>
               <div className="modal-body">
-                body
-                {/* <div>
+                <div>
                   <div className="form-group">
                     <label>Name</label>
                     <input
                       type="text"
                       className="form-control"
                       name="name"
-                      onChange={this.props.onChange}
+                      onChange={this.handleChange}
                       value={name}
                     />
                   </div>
@@ -68,9 +89,9 @@ export class MeterDashboard extends Component {
                     <label>Utility Type</label>
                     <select
                       className="form-control"
-                      name="utility_type"
-                      onChange={this.props.onChange}
-                      value={utility_type}
+                      name="utility"
+                      onChange={this.handleChange}
+                      value={utility}
                     >
                       <option value="Default">Choose a utility</option>
                       {this.props.utilities.map((utility) => {
@@ -88,21 +109,24 @@ export class MeterDashboard extends Component {
                       type="date"
                       className="form-control"
                       name="installed_date"
-                      onChange={this.props.onChange}
+                      onChange={this.handleChange}
                       value={installed_date}
                     />
                   </div>
                   <div className="form-group">
-                    <label>Uninstalled Date</label>
+                    <label>
+                      Uninstalled Date{" "}
+                      <span className="text-muted">(Optional)</span>
+                    </label>
                     <input
                       type="date"
                       className="form-control"
                       name="uninstalled_date"
-                      onChange={this.props.onChange}
+                      onChange={this.handleChange}
                       value={uninstalled_date !== null && uninstalled_date}
                     />
                   </div>
-                </div> */}
+                </div>
               </div>
               <div className="modal-footer">
                 <button
@@ -112,7 +136,12 @@ export class MeterDashboard extends Component {
                 >
                   Close
                 </button>
-                <button type="button" className="btn btn-primary">
+                <button
+                  type="button"
+                  onClick={this.addMeter}
+                  className="btn btn-primary"
+                  data-dismiss="modal"
+                >
                   Save
                 </button>
               </div>
