@@ -60,6 +60,9 @@ class Meter(models.Model):
         return "Meter: " + str(self.name) + ", Utility: " + str(self.utility)\
                + ", Unit: " + str(self.unit.name)
 
+    class meta:
+        unique_together = ('name', 'unit')
+
 
 class MeterRead(models.Model):
     meter = models.ForeignKey(Meter, on_delete=models.CASCADE)

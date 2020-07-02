@@ -70,7 +70,7 @@ class UnitViewSetTestCase(APITestCase):
             zip_code=86595
         )
 
-    def getReverseURL(self, arguments):
+    def get_reverse_url_property(self, arguments):
         return reverse("property-unit-list", args=arguments)
 
     def test_property_list_for_unit(self):
@@ -79,7 +79,7 @@ class UnitViewSetTestCase(APITestCase):
         unit2 = Unit.objects.create(name="unit 2", property=self.property1)
         unit3 = Unit.objects.create(name="unit 3", property=self.property2)
 
-        response = self.client.get(self.getReverseURL([self.property1.id]))
+        response = self.client.get(self.get_reverse_url_property([self.property1.id]))
 
         serializer1 = UnitSerializer(unit1)
         serializer2 = UnitSerializer(unit2)
