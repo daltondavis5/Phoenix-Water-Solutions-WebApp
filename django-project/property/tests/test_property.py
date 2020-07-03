@@ -2,7 +2,7 @@ from django.urls import reverse
 
 from core.models.utilityprovider import Utility, Location, Provider, \
     UtilityProvider
-from core.models.property import Unit, Meter, Property, MeterRead,\
+from core.models.property import Unit, Meter, Property, MeterRead, \
     MeterError
 from django.utils import timezone
 from rest_framework import status
@@ -79,7 +79,8 @@ class UnitViewSetTestCase(APITestCase):
         unit2 = Unit.objects.create(name="unit 2", property=self.property1)
         unit3 = Unit.objects.create(name="unit 3", property=self.property2)
 
-        response = self.client.get(self.get_reverse_url_property([self.property1.id]))
+        response = self.client.get(self.get_reverse_url_property(
+            [self.property1.id]))
 
         serializer1 = UnitSerializer(unit1)
         serializer2 = UnitSerializer(unit2)
@@ -90,6 +91,11 @@ class UnitViewSetTestCase(APITestCase):
         self.assertIn(serializer1.data, response.data)
         self.assertIn(serializer2.data, response.data)
         self.assertNotIn(serializer3.data, response.data)
+
+        # Test to retrieve an empty list if the id is wrong
+        response = self.client.get(self.get_reverse_url_property([0]))
+        self.assertEqual(len(response.data), 0)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_unit_create_is_unique(self):
         """ Test to enforce uniqueness of Name & Property for a Unit """
@@ -148,13 +154,13 @@ class MeterViewSetTestCase(APITestCase):
                                                      amount=199.5)
 
         self.meter_error_1 = MeterError.objects.create(meter=self.meter1,
-                                                 error_date="2020-06-28",
-                                                 description="Test Desc 1",
-                                                 repair_date="2020-06-28")
+                                                       error_date="2020-06-28",
+                                                       description="Test Desc 1",
+                                                       repair_date="2020-06-28")
         self.meter_error_2 = MeterError.objects.create(meter=self.meter2,
-                                                 error_date="2020-06-28",
-                                                 description="Test Desc 2",
-                                                 repair_date="2020-06-28")
+                                                       error_date="2020-06-28",
+                                                       description="Test Desc 2",
+                                                       repair_date="2020-06-28")
 
     def get_reverse_url_unit_meter_list(self, unit_id):
         return reverse("unit-meter-list", args=unit_id)
@@ -201,11 +207,18 @@ class MeterViewSetTestCase(APITestCase):
         self.assertIn(serializer2.data, response.data)
         self.assertNotIn(serializer1.data, response.data)
 
+        # Test to retrieve an empty list if the id is wrong
+        response = self.client.get(
+            self.get_reverse_url_meter_meterread_list([0])
+        )
+        self.assertEqual(len(response.data), 0)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_meter_list_metererrors(self):
         """ Test case to retrieve all meter errors for a given meter"""
         meter_error_3 = MeterError.objects.create(meter=self.meter2,
-                                                 error_date="2020-06-28",
-                                                 description="Test Desc 3")
+                                                  error_date="2020-06-28",
+                                                  description="Test Desc 3")
         response = self.client.get(
             self.get_reverse_url_meter_metererror_list([self.meter2.id])
         )
@@ -217,3 +230,10 @@ class MeterViewSetTestCase(APITestCase):
         self.assertIn(serializer3.data, response.data)
         self.assertIn(serializer2.data, response.data)
         self.assertNotIn(serializer1.data, response.data)
+
+        # Test to retrieve an empty list if the id is wrong
+        response = self.client.get(
+            self.get_reverse_url_meter_metererror_list([0])
+        )
+        self.assertEqual(len(response.data), 0)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
