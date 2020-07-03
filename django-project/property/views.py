@@ -1,21 +1,16 @@
 from rest_framework import viewsets, permissions
 from rest_framework import status
 
-<<<<<<< HEAD
-import datetime
-from core.models.property import Meter, Property, Unit, MeterRead
-from .serializers import MeterSerializer, \
-    PropertySerializer, UnitSerializer, MeterReadSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from . import PropertyService as PS
-=======
 from core.models.property import Meter, Property, Unit, MeterRead,\
     MeterError
 from .serializers import MeterSerializer, \
     PropertySerializer, UnitSerializer, MeterReadSerializer,\
-    MeterErrorSerializer, MeterWithLastReadSerializer
->>>>>>> feature/add-property
+    MeterErrorSerializer, MeterWithLastReadSerializer, PropertyMeterReadSerializer
+import io
+from rest_framework.parsers import JSONParser
 
 
 class MeterViewSet(viewsets.ModelViewSet):
@@ -38,7 +33,7 @@ class UnitViewSet(viewsets.ModelViewSet):
 
 # class MeterReadViewSet(viewsets.ModelViewSet):
 #     queryset = MeterRead.objects.all()
-#     permission_classes = [permissions.AllowAny, ]
+#     permission_classes = [permListMeterreadsForMeterissions.AllowAny, ]
 #     serializer_class = MeterReadSerializer
 #
 #
@@ -76,23 +71,23 @@ class ListMeterReadsForMeter(viewsets.generics.ListAPIView):
         return MeterRead.objects.filter(meter=meter_id)
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def get_property_amount(request):
     """API to calculate meter amount for all Units in a Property"""
-    if request.method == "POST":
+    if request.method == "GET":
 
-        pid = request.data.get('property_id')
-        from_date = datetime.datetime.strptime(request.data.get('from_date')
-                                               , "%Y-%m-%d").date()
-        to_date = datetime.datetime.strptime(request.data.get('to_date')
-                                             , "%Y-%m-%d").date()
-        utility_id = request.data.get('utility_id')
+        serializer = PropertyMeterReadSerializer(data=request.data)
+        if serializer.is_valid():
+            pid = serializer.validated_data.get("provider_id")
+            from_date = serializer.validated_data.get("from_date")
+            to_date = serializer.validated_data.get("to_date")
+            utility_type = serializer.validated_data.get("utility_type")
 
-        if from_date > to_date:
-            return Response("To date can't me greater than from date",
-                            status=status.HTTP_404_NOT_FOUND)
-        amount = PS.get_property_amount(pid, utility_id, from_date, to_date)
-        return Response({"total_amount": amount})
+            print(pid, type(from_date), to_date, utility_type)
+            amount = PS.get_property_amount(pid, from_date, to_date, utility_type)
+            return Response(data={"amount": 1}, status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class ListMeterErrorsForMeter(viewsets.generics.ListAPIView):

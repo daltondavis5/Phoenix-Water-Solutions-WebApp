@@ -81,3 +81,15 @@ class MeterWithLastReadSerializer(serializers.ModelSerializer):
             return last_read_info
         except ObjectDoesNotExist:
             return None
+
+
+class PropertyMeterReadSerializer(serializers.Serializer):
+    provider_id = serializers.IntegerField()
+    to_date = serializers.DateField()
+    from_date = serializers.DateField()
+    utility_type = serializers.CharField()
+
+    def validate(self, data):
+        if data['from_date'] > data['to_date']:
+            raise serializers.ValidationError("from_date error")
+        return data

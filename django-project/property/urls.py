@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from property.views import MeterViewSet, PropertyViewSet, UnitViewSet,\
-    ListUnitsForProperty, ListMetersForUnit, ListMeterreadsForMeter, \
+    ListUnitsForProperty, ListMetersForUnit, ListMeterReadsForMeter, \
     ListMeterErrorsForMeter, get_property_amount
 
 
