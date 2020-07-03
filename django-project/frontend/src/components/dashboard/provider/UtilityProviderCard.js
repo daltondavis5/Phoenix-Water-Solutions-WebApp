@@ -13,8 +13,8 @@ class UtilityProviderCard extends Component {
         <div className="edit-save-buttons" style={{ height: "40px" }}>
           <button
             type="submit"
-            className="btn btn-primary float-right"
-            style={{ marginLeft: "10px", width: "60px", borderRadius: "4px" }}
+            className="btn btn-primary float-right rounded"
+            style={{ width: "60px" }}
             onClick={this.props.editButton}
           >
             Edit
