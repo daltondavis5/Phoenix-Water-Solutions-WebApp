@@ -16,8 +16,7 @@ export class ViewProperty extends Component {
         </div>
         <button
           type="submit"
-          className="btn btn-primary float-right"
-          style={{ marginLeft: "10px", marginTop: "20px", width: "100px", borderRadius: "4px" }}
+          className="btn btn-primary float-right mt-4 rounded"
           onClick={this.props.changeToEdit}
         >
           Edit Details

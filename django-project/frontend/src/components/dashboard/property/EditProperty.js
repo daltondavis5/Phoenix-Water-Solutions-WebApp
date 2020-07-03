@@ -25,7 +25,7 @@ export class EditProperty extends Component {
   render() {
     return (
       <React.Fragment>
-        <div className="card" style={{ borderRadius: "10px", padding: "30px" }}>
+        <div className="card p-4" style={{ borderRadius: "10px" }}>
           <div className="form-group">
             <label>Name</label>
             <input
@@ -58,25 +58,19 @@ export class EditProperty extends Component {
           </div>
         </div>
         <div
-          className="edit-save-buttons"
-          style={{ height: "25px", marginTop: "20px" }}
+          className="edit-save-buttons mt-3"
+          style={{ height: "25px" }}
         >
           <button
             type="submit"
-            className="btn btn-primary float-right"
-            style={{
-              marginLeft: "10px",
-              width: "60px",
-              borderRadius: "4px",
-            }}
+            className="btn btn-primary float-right rounded ml-2"
             onClick={this.saveButton}
           >
             Save
           </button>
           <button
             type="submit"
-            className="btn btn-danger float-right"
-            style={{ marginLeft: "10px", width: "70px", borderRadius: "4px" }}
+            className="btn btn-danger float-right rounded"
             onClick={this.props.cancelButton}
           >
             Cancel
