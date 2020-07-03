@@ -92,8 +92,7 @@ export class AddProperty extends Component {
               </div>
               <button
                 type="submit"
-                className="btn btn-primary"
-                style={{ borderRadius: "2px" }}
+                className="btn btn-primary rounded"
               >
                 Submit
               </button>

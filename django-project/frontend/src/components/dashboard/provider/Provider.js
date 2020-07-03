@@ -28,19 +28,18 @@ export class Provider extends Component {
     return (
       <React.Fragment>
         <div
-          className="jumbotron mt-3"
+          className="jumbotron mt-3 rounded shadow"
           style={{
             padding: "30px",
-            boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
-            borderRadius: "5px",
           }}
         >
-          <h1 className="text-center" style={{ marginBottom: "20px" }}>
-            Provider List
-          </h1>
+          <h1 className="text-center mb-4">Provider List</h1>
           <ul className="list-group">{providerItems}</ul>
-          <div className="btn btn-primary mt-4" style={{ borderRadius: "4px" }}>
-            <Link style={providerLink} to="/provider/add">
+          <div className="btn btn-primary mt-4 rounded">
+            <Link
+              className="text-light text-decoration-none"
+              to="/provider/add"
+            >
               Add Provider
             </Link>
           </div>
@@ -49,10 +48,5 @@ export class Provider extends Component {
     );
   }
 }
-
-const providerLink = {
-  color: "white",
-  textDecoration: "none",
-};
 
 export default Provider;

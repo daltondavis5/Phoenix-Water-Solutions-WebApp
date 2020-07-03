@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import { createMessage, returnErrors } from "../../../actions/messages";
 import PropTypes from "prop-types";
@@ -63,8 +62,7 @@ export class AddProvider extends Component {
               </div>
               <button
                 type="submit"
-                className="btn btn-primary"
-                style={{ borderRadius: "2px" }}
+                className="btn btn-primary rounded"
               >
                 Submit
               </button>

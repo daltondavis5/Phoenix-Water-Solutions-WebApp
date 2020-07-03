@@ -91,10 +91,10 @@ export class PropertyDetails extends Component {
     const { name, street_address, zip_code } = this.state;
     return (
       <React.Fragment>
-        <h2 className="text-center" style={{ marginTop: "30px" }}>
+        <h2 className="text-center mt-4">
           {name}
         </h2>
-        <div style={{ marginTop: "30px" }}>
+        <div className="mt-4">
           <div className="row">
             <div className="col-3">
               <div
