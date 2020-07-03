@@ -1,4 +1,4 @@
-from datetime import datetime
+from django.utils import timezone
 from django.test import TestCase
 
 from core.models.property import Property, PropertyUtilityProviderInfo, \
@@ -32,11 +32,13 @@ class ModelCreateTests(TestCase):
             attribute=attribute,
             zip_code=zip_code
         )
+        property_str = "Property: " + name + ", Zip Code:" + \
+                       str(zip_code)
         self.assertEqual(property_.name, name)
         self.assertEqual(property_.street_address, street_address)
         self.assertEqual(property_.zip_code, zip_code)
         self.assertEqual(property_.attribute, attribute)
-        self.assertEqual(str(property_), name)
+        self.assertEqual(str(property_), property_str)
 
     def test_create_unit_and_str(self):
         """ Test to create a new Unit and str"""
@@ -49,9 +51,11 @@ class ModelCreateTests(TestCase):
         unit_name = "Unit Test"
         unit = Unit.objects.create(name=unit_name,
                                    property=property_)
+        unit_str = "Unit: " + unit_name + \
+                   ", Property: " + str(property_.name)
         self.assertEqual(unit.property, property_)
         self.assertEqual(unit.name, unit_name)
-        self.assertEqual(str(unit), unit_name)
+        self.assertEqual(str(unit), unit_str)
 
     def test_create_meter_and_str(self):
         """ Test to create meter and str """
@@ -64,8 +68,8 @@ class ModelCreateTests(TestCase):
         unit = Unit.objects.create(name="Unit Test",
                                    property=property_)
         meter_name = "Meter Test"
-        installed_date = datetime.now()
-        uninstalled_date = datetime.now()
+        installed_date = timezone.now()
+        uninstalled_date = timezone.now()
         meter = Meter.objects.create(
             name=meter_name,
             utility=self.utility,
@@ -73,11 +77,13 @@ class ModelCreateTests(TestCase):
             installed_date=installed_date,
             uninstalled_date=uninstalled_date
         )
+        meter_str = "Meter: " + meter_name + ", Utility: "\
+                    + str(self.utility) + ", Unit: " + str(unit.name)
         self.assertEqual(meter.unit, unit)
         self.assertEqual(meter.name, meter_name)
         self.assertEqual(meter.installed_date, installed_date)
         self.assertEqual(meter.uninstalled_date, uninstalled_date)
-        self.assertEqual(str(meter), meter_name)
+        self.assertEqual(str(meter), meter_str)
 
     def test_create_propertyutilityproviderinfo_create(self):
         """ Test to create PropertyUtilityProviderInfo"""
@@ -127,10 +133,10 @@ class ModelCreateTests(TestCase):
             name=meter_name,
             utility=self.utility,
             unit=unit,
-            installed_date=datetime.now(),
-            uninstalled_date=datetime.now()
+            installed_date=timezone.now(),
+            uninstalled_date=timezone.now()
         )
-        read_dt = datetime.now()
+        read_dt = timezone.now()
         amount = 992
         meter_read = MeterRead.objects.create(meter=meter,
                                               read_date=read_dt,
@@ -157,10 +163,10 @@ class ModelCreateTests(TestCase):
             name=meter_name,
             utility=self.utility,
             unit=unit,
-            installed_date=datetime.now(),
-            uninstalled_date=datetime.now()
+            installed_date=timezone.now(),
+            uninstalled_date=timezone.now()
         )
-        error_dt = repair_dt = datetime.now()
+        error_dt = repair_dt = timezone.now()
         desc = "Sample description."
         meter_error = MeterError.objects.create(meter=meter,
                                                 error_date=error_dt,

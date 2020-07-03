@@ -63,8 +63,7 @@ class PropertyUnits extends Component {
         <ul className="list-group">{propertyUnitItems}</ul>
         <button
           onClick={this.addUnit}
-          className="btn btn-outline-primary mt-3"
-          style={{ borderRadius: "4px" }}
+          className="btn btn-outline-primary mt-3 rounded"
         >
           Add New Unit
         </button>

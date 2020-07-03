@@ -13,7 +13,8 @@ class Property(models.Model):
                               through='PropertyUtilityProviderInfo')
 
     def __str__(self):
-        return self.name
+        return "Property: " + str(self.name) + ", Zip Code:" + \
+               str(self.zip_code)
 
     class meta:
         unique_together = ('name', 'zip_code')
@@ -41,7 +42,8 @@ class Unit(models.Model):
     billing_active = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.name
+        return "Unit: " + str(self.name) + ", Property: " \
+               + str(self.property.name)
 
     class meta:
         unique_together = ('name', 'property')
@@ -55,7 +57,11 @@ class Meter(models.Model):
     uninstalled_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        return self.name
+        return "Meter: " + str(self.name) + ", Utility: " + str(self.utility)\
+               + ", Unit: " + str(self.unit.name)
+
+    class meta:
+        unique_together = ('name', 'unit')
 
 
 class MeterRead(models.Model):
@@ -64,7 +70,7 @@ class MeterRead(models.Model):
     amount = models.FloatField(null=False)
 
     def __str__(self):
-        return "Meter: " + str(self.meter) + ", Read Date: " + \
+        return "Meter: " + str(self.meter.name) + ", Read Date: " + \
                str(self.read_date) + ", Amount: " + str(self.amount)
 
 
@@ -75,7 +81,7 @@ class MeterError(models.Model):
     repair_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        return "Meter: " + str(self.meter) + ", Error Date: " + \
+        return "Meter: " + str(self.meter.name) + ", Error Date: " + \
                str(self.error_date) + ", Description: " + \
                str(self.description)
 

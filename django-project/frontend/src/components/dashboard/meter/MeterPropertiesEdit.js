@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import axios from "axios";
 import { createMessage, returnErrors } from "../../../actions/messages";
 import PropTypes from "prop-types";
+import { Redirect } from "react-router-dom";
 
 class MeterPropertiesEdit extends Component {
   constructor(props) {
@@ -42,9 +43,8 @@ class MeterPropertiesEdit extends Component {
         "Content-Type": "application/json",
       },
     };
-    console.log(JSON.stringify(body))
     axios
-      .put(`/api/meter/${this.state.id}`, JSON.stringify(body), config)
+      .put(`/api/meter/${this.state.id}/`, JSON.stringify(body), config)
       .then((response) => {
         this.props.createMessage({ msg: "Success!" });
         this.props.updateMeter(body);
@@ -54,36 +54,58 @@ class MeterPropertiesEdit extends Component {
       });
   };
 
+  deleteMeter = () => {
+    const { id, unit } = this.state;
+    const body = {
+      id,
+    };
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    axios
+      .delete(`/api/meter/${id}/`, JSON.stringify(body), config)
+      .then((res) => {
+        this.props.createMessage({
+          msg: `Successfully deleted`,
+        });
+        // redirectly directing to provider details page
+        // this.props.history.push(`/unit/${unit}`);
+        <Redirect to="/unit/:id" />;
+      })
+      .catch((err) => {
+        // this.props.returnErrors(err.response.data, err.response.status);
+      });
+  };
+
   render() {
     const { name, utility, installed_date, uninstalled_date } = this.state;
     return (
       <React.Fragment>
-        <div className="card rounded mt-5 mb-5 shadow">
+        <div className="card mt-5 mb-5 shadow" style={{ borderRadius: "10px" }}>
           <div className="card-body">
             <div className="edit-save-buttons" style={{ height: "25px" }}>
               <button
                 type="submit"
-                className="btn btn-primary float-right"
-                style={{
-                  marginLeft: "10px",
-                  width: "60px",
-                  borderRadius: "4px",
-                }}
+                className="btn btn-primary float-right rounded ml-2"
                 onClick={this.saveButton}
               >
                 Save
               </button>
               <button
                 type="submit"
-                className="btn btn-danger float-right"
-                style={{
-                  marginLeft: "10px",
-                  width: "70px",
-                  borderRadius: "4px",
-                }}
+                className="btn btn-primary float-right rounded ml-2"
                 onClick={this.props.changeToView}
               >
                 Cancel
+              </button>
+              <button
+                type="submit"
+                className="btn btn-danger float-right rounded"
+                onClick={this.deleteMeter}
+              >
+                Delete
               </button>
             </div>
             <div>
