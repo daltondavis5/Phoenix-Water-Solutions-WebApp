@@ -12,20 +12,30 @@ export default class MeterReads extends Component {
         read.read_date = new Date(read.read_date);
         return read;
       });
-      alteredData = alteredData.sort((a, b) => b.read_date - a.read_date)
+      alteredData = this.sortByDate(alteredData);
       this.setState({
         reads: alteredData,
       });
     });
   }
 
+  sortByDate = (data) => {
+    return data.sort((a, b) => b.read_date - a.read_date);
+  };
+
+  convertSingleDigitToDoubleDigit = (num) => {
+    return num > 9 ? "" + num : "0" + num;
+  };
+
   formatDate = (isoDate) => {
-    const time = isoDate.getHours() + ":" + isoDate.getMinutes();
+    const time =
+      this.convertSingleDigitToDoubleDigit(isoDate.getHours()) +
+      ":" +
+      this.convertSingleDigitToDoubleDigit(isoDate.getMinutes());
     const date =
-      isoDate.getMonth() +
-      1 +
+      this.convertSingleDigitToDoubleDigit(isoDate.getMonth() + 1) +
       "-" +
-      isoDate.getDate() +
+      this.convertSingleDigitToDoubleDigit(isoDate.getDate()) +
       "-" +
       isoDate.getFullYear();
     return { time, date };
@@ -40,6 +50,7 @@ export default class MeterReads extends Component {
             <th scope="col">Date</th>
             <th scope="col">Time</th>
             <th scope="col">Amount</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody className="bg-light">
@@ -47,9 +58,14 @@ export default class MeterReads extends Component {
             const { date, time } = this.formatDate(read.read_date);
             return (
               <tr key={read.id}>
-                <td style={{width: "33%"}}>{date}</td>
-                <td style={{width: "33%"}}>{time}</td>
-                <td style={{width: "33%"}}>{read.amount}</td>
+                <td style={{ width: "30%" }}>{date}</td>
+                <td style={{ width: "30%" }}>{time}</td>
+                <td style={{ width: "30%" }}>{read.amount}</td>
+                <td style={{ width: "10%" }}>
+                  <button className="btn btn-primary float-right rounded">
+                    Edit
+                  </button>
+                </td>
               </tr>
             );
           })}
