@@ -16,15 +16,15 @@ function Main() {
   return (
     <main>
       <Switch>
-        <Route exact path="/" component={Dashboard} />
+        <PrivateRoute exact path="/" component={Dashboard} />
         <Route exact path="/login" component={Login} />
-        <Route exact path="/provider/add" component={AddProvider} />
-        <Route exact path="/provider/:id" component={ProviderDetails} />
-        <Route exact path="/property/add" component={AddProperty} />
-        <Route path="/property/:id" component={PropertyDetails} />
-        <Route path="/property/:id/units" component={PropertyUnits} />
-        <Route path="/unit/:id" component={UnitDetails} />
-        <Route exact path="/meter/:id" component={MeterDetails} />
+        <PrivateRoute exact path="/provider/add" component={AddProvider} />
+        <PrivateRoute exact path="/provider/:id" component={ProviderDetails} />
+        <PrivateRoute exact path="/property/add" component={AddProperty} />
+        <PrivateRoute path="/property/:id" component={PropertyDetails} />
+        <PrivateRoute path="/property/:id/units" component={PropertyUnits} />
+        <PrivateRoute path="/unit/:id" component={UnitDetails} />
+        <PrivateRoute exact path="/meter/:id" component={MeterDetails} />
       </Switch>
     </main>
   );
