@@ -10,9 +10,18 @@ class MeterPropertiesView extends Component {
     } = this.props.meter;
     return (
       <div>
-        <div className="card rounded mt-5 shadow">
+        <div className="card mt-5 mb-5 shadow" style={{ borderRadius: "10px" }}>
           <div className="card-body">
-            <ul className="list-group list-group-flush">
+            <div className="edit-save-buttons" style={{ height: "25px" }}>
+              <button
+                type="submit"
+                className="btn btn-primary float-right rounded"
+                onClick={this.props.changeToEdit}
+              >
+                Edit Meter
+              </button>
+            </div>
+            <ul className="list-group list-group-flush mt-3">
               <li className="list-group-item">Name: {name}</li>
               <li className="list-group-item">Utility: {utility}</li>
               <li className="list-group-item">
@@ -23,22 +32,6 @@ class MeterPropertiesView extends Component {
               </li>
             </ul>
           </div>
-        </div>
-
-        <div className="edit-save-buttons" style={{ height: "76px" }}>
-          <button
-            type="submit"
-            className="btn btn-primary float-right"
-            style={{
-              marginBottom: "20px",
-              marginTop: "20px",
-              width: "100px",
-              borderRadius: "4px",
-            }}
-            onClick={this.props.changeToEdit}
-          >
-            Edit Meter
-          </button>
         </div>
       </div>
     );

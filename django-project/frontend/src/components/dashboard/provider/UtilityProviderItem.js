@@ -21,7 +21,7 @@ export class UtilityProviderItem extends Component {
       mode,
     } = this.props.utility_provider_item;
     return (
-      <div className="card" style={{ marginBottom: "20px" }}>
+      <div className="card mb-4">
         <div className="card-body">
           <h2 className="text-center">
             {mode === "adding" ? "Add a utility" : "Edit Utility"}
@@ -29,16 +29,14 @@ export class UtilityProviderItem extends Component {
           <div className="edit-save-buttons" style={{ height: "25px" }}>
             <button
               type="submit"
-              className="btn btn-primary float-right"
-              style={{ marginLeft: "10px", width: "60px", borderRadius: "4px" }}
+              className="btn btn-primary float-right rounded ml-2"
               onClick={this.props.saveButton}
             >
               Save
             </button>
             <button
               type="submit"
-              className="btn btn-danger float-right"
-              style={{ marginLeft: "10px", width: "70px", borderRadius: "4px" }}
+              className="btn btn-danger float-right rounded"
               onClick={this.props.deleteButton}
             >
               Delete

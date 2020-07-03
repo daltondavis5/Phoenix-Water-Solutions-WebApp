@@ -216,11 +216,10 @@ export class ProviderDetails extends Component {
           );
         })}
         {this.state.currentMode !== "adding" && (
-          <div className="form-group" style={{ marginTop: "20px" }}>
+          <div className="form-group mt-4">
             <button
               onClick={this.addUtilityProvider}
-              className="btn btn-outline-secondary"
-              style={{ borderRadius: "4px" }}
+              className="btn btn-outline-secondary rounded"
             >
               Add New Utility
             </button>
