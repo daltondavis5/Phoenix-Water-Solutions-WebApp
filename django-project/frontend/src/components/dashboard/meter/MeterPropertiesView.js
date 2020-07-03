@@ -10,16 +10,12 @@ class MeterPropertiesView extends Component {
     } = this.props.meter;
     return (
       <div>
-        <div className="card rounded mt-5 mb-5 shadow">
+        <div className="card mt-5 mb-5 shadow" style={{ borderRadius: "10px" }}>
           <div className="card-body">
             <div className="edit-save-buttons" style={{ height: "25px" }}>
               <button
                 type="submit"
-                className="btn btn-primary float-right"
-                style={{
-                  width: "100px",
-                  borderRadius: "4px",
-                }}
+                className="btn btn-primary float-right rounded"
                 onClick={this.props.changeToEdit}
               >
                 Edit Meter
