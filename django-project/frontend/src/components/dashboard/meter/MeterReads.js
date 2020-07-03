@@ -47,10 +47,23 @@ export default class MeterReads extends Component {
         <caption style={{ captionSide: "top" }}>Readings</caption>
         <thead className="thead-dark">
           <tr>
-            <th scope="col">Date</th>
+            <th>Date</th>
             <th scope="col">Time</th>
             <th scope="col">Amount</th>
-            <th scope="col"></th>
+            <th
+              style={{
+                textAlign: "center",
+                cursor: "pointer",
+              }}
+              scope="col"
+              scope="col"
+            >
+              <i
+                data-toggle="modal"
+                data-target="#meterModal"
+                className="fa fa-plus-circle fa-lg"
+              ></i>
+            </th>
           </tr>
         </thead>
         <tbody className="bg-light">

@@ -46,7 +46,20 @@ export default class MeterErrors extends Component {
             <th scope="col">Date</th>
             <th scope="col">Description</th>
             <th scope="col">Repair Date</th>
-            <th scope="col"></th>
+            <th
+              style={{
+                textAlign: "center",
+                cursor: "pointer",
+              }}
+              scope="col"
+              scope="col"
+            >
+              <i
+                data-toggle="modal"
+                data-target="#meterModal"
+                className="fa fa-plus-circle fa-lg"
+              ></i>
+            </th>
           </tr>
         </thead>
         <tbody className="bg-light">
