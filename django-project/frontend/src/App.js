@@ -20,7 +20,8 @@ const alertOptions = {
 };
 
 class App extends Component {
-  componentDidMount() {
+  constructor() {
+    super();
     store.dispatch(loadUser());
   }
 

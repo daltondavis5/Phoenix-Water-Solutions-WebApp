@@ -21,9 +21,13 @@ function Main() {
         <PrivateRoute exact path="/provider/add" component={AddProvider} />
         <PrivateRoute exact path="/provider/:id" component={ProviderDetails} />
         <PrivateRoute exact path="/property/add" component={AddProperty} />
-        <PrivateRoute path="/property/:id" component={PropertyDetails} />
-        <PrivateRoute path="/property/:id/units" component={PropertyUnits} />
-        <PrivateRoute path="/unit/:id" component={UnitDetails} />
+        <PrivateRoute exact path="/property/:id" component={PropertyDetails} />
+        <PrivateRoute
+          exact
+          path="/property/:id/units"
+          component={PropertyUnits}
+        />
+        <PrivateRoute exact path="/unit/:id" component={UnitDetails} />
         <PrivateRoute exact path="/meter/:id" component={MeterDetails} />
       </Switch>
     </main>
