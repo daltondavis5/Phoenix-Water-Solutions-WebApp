@@ -41,6 +41,7 @@ export class MeterDashboard extends Component {
             position: "fixed",
             bottom: "20px",
             right: "20px",
+            cursor: "pointer",
           }}
         >
           <i
