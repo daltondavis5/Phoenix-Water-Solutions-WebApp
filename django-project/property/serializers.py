@@ -11,13 +11,22 @@ class MeterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Meter
         fields = "__all__"
-        read_only_fields = ['utility']
         validators = [
             serializers.UniqueTogetherValidator(
                 queryset=model.objects.all(),
                 fields=['name', 'unit'],
             )
         ]
+
+    def update(self, instance, validated_data):
+        # prevent utility and installed date from being updated
+        if validated_data.get('installed_date') != instance.installed_date \
+                or validated_data.get('utility') != instance.utility:
+            raise serializers.ValidationError({
+                'Utility & Installed Date': 'You must not change these fields'
+            })
+        else:
+            return super().update(instance, validated_data)
 
 
 class PropertyUtilityProviderInfoSerializer(serializers.ModelSerializer):
@@ -53,13 +62,20 @@ class UnitSerializer(serializers.ModelSerializer):
     class Meta:
         model = Unit
         fields = ['id', 'name', 'property']
-        read_only_fields = ['property']
         validators = [
             serializers.UniqueTogetherValidator(
                 queryset=model.objects.all(),
                 fields=['name', 'property'],
             )
         ]
+
+    def update(self, instance, validated_data):
+        # prevent property from being updated
+        if validated_data.pop('property') != instance.property:
+            raise serializers.ValidationError({
+                'Property': 'You must not change this field.'
+            })
+        return super().update(instance, validated_data)
 
 
 class MeterReadSerializer(serializers.ModelSerializer):
