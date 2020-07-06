@@ -18,6 +18,16 @@ class MeterSerializer(serializers.ModelSerializer):
             )
         ]
 
+    def update(self, instance, validated_data):
+        # prevent utility and installed date from being updated
+        if validated_data.get('installed_date') != instance.installed_date \
+                or validated_data.get('utility') != instance.utility:
+            raise serializers.ValidationError({
+                'Utility & Installed Date': 'You must not change these fields'
+            })
+        else:
+            return super().update(instance, validated_data)
+
 
 class PropertyUtilityProviderInfoSerializer(serializers.ModelSerializer):
     utility_provider = serializers.CharField(
@@ -58,6 +68,14 @@ class UnitSerializer(serializers.ModelSerializer):
                 fields=['name', 'property'],
             )
         ]
+
+    def update(self, instance, validated_data):
+        # prevent property from being updated
+        if validated_data.pop('property') != instance.property:
+            raise serializers.ValidationError({
+                'Property': 'You must not change this field.'
+            })
+        return super().update(instance, validated_data)
 
 
 class MeterReadSerializer(serializers.ModelSerializer):
