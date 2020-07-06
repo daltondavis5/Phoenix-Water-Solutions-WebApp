@@ -1,9 +1,13 @@
 import React, { Component } from "react";
 import axios from "axios";
+import MeterReadEditModal from "./MeterReadEditModal";
+import MeterReadAddModal from "./MeterReadAddModal";
 
 export default class MeterReads extends Component {
   state = {
     reads: [],
+    index: 0,
+    mode: "",
   };
 
   componentDidMount() {
@@ -41,49 +45,86 @@ export default class MeterReads extends Component {
     return { time, date };
   };
 
+  handleEditShow = (index) => () => {
+    this.setState({ index, mode: "edit" });
+  };
+
+  handleAddShow = () => {
+    this.setState({ mode: "add" });
+  };
+
+  addRead = (data) => {
+    const { meter, time, date, amount } = data;
+    console.log(new Date(date, time))
+  };
+
   render() {
     return (
-      <table className="table shadow">
-        <caption style={{ captionSide: "top" }}>Readings</caption>
-        <thead className="thead-dark">
-          <tr>
-            <th>Date</th>
-            <th scope="col">Time</th>
-            <th scope="col">Amount</th>
-            <th
-              style={{
-                textAlign: "center",
-                cursor: "pointer",
-              }}
-              scope="col"
-              scope="col"
-            >
-              <i
-                data-toggle="modal"
-                data-target="#meterModal"
-                className="fa fa-plus-circle fa-lg"
-              ></i>
-            </th>
-          </tr>
-        </thead>
-        <tbody className="bg-light">
-          {this.state.reads.map((read) => {
-            const { date, time } = this.formatDate(read.read_date);
-            return (
-              <tr key={read.id}>
-                <td style={{ width: "30%" }}>{date}</td>
-                <td style={{ width: "30%" }}>{time}</td>
-                <td style={{ width: "30%" }}>{read.amount}</td>
-                <td style={{ width: "10%" }}>
-                  <button className="btn btn-primary float-right rounded">
-                    Edit
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <React.Fragment>
+        <table className="table shadow">
+          <caption style={{ captionSide: "top" }}>Readings</caption>
+          <thead className="thead-dark">
+            <tr>
+              <th>Date</th>
+              <th scope="col">Time</th>
+              <th scope="col">Amount</th>
+              <th
+                style={{
+                  textAlign: "center",
+                  cursor: "pointer",
+                }}
+                scope="col"
+                scope="col"
+              >
+                <i
+                  data-toggle="modal"
+                  data-target="#meterReadAdd"
+                  className="fa fa-plus-circle fa-lg"
+                  onClick={this.handleAddShow}
+                ></i>
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-light">
+            {this.state.reads.map((read, index) => {
+              const { date, time } = this.formatDate(read.read_date);
+              return (
+                <tr key={read.id}>
+                  <td style={{ width: "30%" }}>{date}</td>
+                  <td style={{ width: "30%" }}>{time}</td>
+                  <td style={{ width: "30%" }}>{read.amount}</td>
+                  <td style={{ width: "10%" }}>
+                    <button
+                      className="btn btn-primary float-right rounded"
+                      data-toggle="modal"
+                      data-target="#meterReadEdit"
+                      onClick={this.handleEditShow(index, "edit")}
+                    >
+                      Edit
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        {this.state.mode !== "add" ? (
+          this.state.reads.length > 0 && (
+            <MeterReadEditModal
+              amount={this.state.reads[this.state.index].amount}
+              id={this.state.reads[this.state.index].id}
+              meter={this.state.reads[this.state.index].meter}
+              amount={this.state.reads[this.state.index].amount}
+              isoDate={this.formatDate(
+                this.state.reads[this.state.index].read_date
+              )}
+              mode={this.state.mode}
+            />
+          )
+        ) : (
+          <MeterReadAddModal addRead={this.addRead} />
+        )}
+      </React.Fragment>
     );
   }
 }
