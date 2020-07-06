@@ -66,11 +66,11 @@ export default class MeterErrors extends Component {
           {this.state.errors.map((error) => {
             return (
               <tr key={error.id}>
-                <td style={{ width: "25%" }}>
+                <td style={{ width: "30%" }}>
                   {this.formatDate(new Date(error.error_date))}
                 </td>
-                <td style={{ width: "25%" }}>{error.description}</td>
-                <td style={{ width: "25%" }}>{error.repair_date}</td>
+                <td style={{ width: "30%" }}>{error.description}</td>
+                <td style={{ width: "30%" }}>{error.repair_date}</td>
                 <td style={{ width: "10%" }}>
                   <button className="btn btn-primary float-right rounded">
                     Edit
