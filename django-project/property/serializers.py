@@ -11,7 +11,6 @@ class MeterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Meter
         fields = "__all__"
-        read_only_fields = ['utility']
         validators = [
             serializers.UniqueTogetherValidator(
                 queryset=model.objects.all(),
@@ -53,7 +52,6 @@ class UnitSerializer(serializers.ModelSerializer):
     class Meta:
         model = Unit
         fields = ['id', 'name', 'property']
-        read_only_fields = ['property']
         validators = [
             serializers.UniqueTogetherValidator(
                 queryset=model.objects.all(),

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import axios from "axios";
 import { createMessage, returnErrors } from "../../../actions/messages";
 import PropTypes from "prop-types";
-import { Redirect } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
 class MeterPropertiesEdit extends Component {
   constructor(props) {
@@ -70,12 +70,10 @@ class MeterPropertiesEdit extends Component {
         this.props.createMessage({
           msg: `Successfully deleted`,
         });
-        // redirectly directing to provider details page
-        // this.props.history.push(`/unit/${unit}`);
-        <Redirect to="/unit/:id" />;
+        this.props.history.push(`/unit/${unit}`);
       })
       .catch((err) => {
-        // this.props.returnErrors(err.response.data, err.response.status);
+        this.props.returnErrors(err.response.data, err.response.status);
       });
   };
 
@@ -160,6 +158,6 @@ class MeterPropertiesEdit extends Component {
   }
 }
 
-export default connect(null, { createMessage, returnErrors })(
-  MeterPropertiesEdit
+export default withRouter(
+  connect(null, { createMessage, returnErrors })(MeterPropertiesEdit)
 );
