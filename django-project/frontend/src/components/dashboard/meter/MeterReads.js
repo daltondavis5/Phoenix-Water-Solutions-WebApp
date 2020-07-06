@@ -55,7 +55,8 @@ export default class MeterReads extends Component {
 
   addRead = (data) => {
     const { meter, time, date, amount } = data;
-    console.log(new Date(date, time))
+    var t = date + ", " + time;
+    console.log(new Date(t));
   };
 
   render() {
@@ -118,7 +119,6 @@ export default class MeterReads extends Component {
               isoDate={this.formatDate(
                 this.state.reads[this.state.index].read_date
               )}
-              mode={this.state.mode}
             />
           )
         ) : (

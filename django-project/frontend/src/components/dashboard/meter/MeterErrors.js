@@ -1,9 +1,13 @@
 import React, { Component } from "react";
 import axios from "axios";
+import MeterErrorEditModal from "./MeterErrorEditModal";
+import MeterErrorAddModal from "./MeterErrorAddModal";
 
 export default class MeterErrors extends Component {
   state = {
     errors: [],
+    index: 0,
+    mode: "",
   };
 
   componentDidMount() {
@@ -37,50 +41,81 @@ export default class MeterErrors extends Component {
     return date;
   };
 
+  handleEditShow = (index) => () => {
+    this.setState({ index, mode: "edit" });
+  };
+
+  handleAddShow = () => {
+    this.setState({ mode: "add" });
+  };
+
   render() {
     return (
-      <table className="table shadow">
-        <caption style={{ captionSide: "top" }}>Errors</caption>
-        <thead className="thead-dark">
-          <tr>
-            <th scope="col">Date</th>
-            <th scope="col">Description</th>
-            <th scope="col">Repair Date</th>
-            <th
-              style={{
-                textAlign: "center",
-                cursor: "pointer",
-              }}
-              scope="col"
-              scope="col"
-            >
-              <i
-                data-toggle="modal"
-                data-target="#meterModal"
-                className="fa fa-plus-circle fa-lg"
-              ></i>
-            </th>
-          </tr>
-        </thead>
-        <tbody className="bg-light">
-          {this.state.errors.map((error) => {
-            return (
-              <tr key={error.id}>
-                <td style={{ width: "30%" }}>
-                  {this.formatDate(new Date(error.error_date))}
-                </td>
-                <td style={{ width: "30%" }}>{error.description}</td>
-                <td style={{ width: "30%" }}>{error.repair_date}</td>
-                <td style={{ width: "10%" }}>
-                  <button className="btn btn-primary float-right rounded">
-                    Edit
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <React.Fragment>
+        <table className="table shadow">
+          <caption style={{ captionSide: "top" }}>Errors</caption>
+          <thead className="thead-dark">
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Description</th>
+              <th scope="col">Repair Date</th>
+              <th
+                style={{
+                  textAlign: "center",
+                  cursor: "pointer",
+                }}
+                scope="col"
+                scope="col"
+              >
+                <i
+                  data-toggle="modal"
+                  data-target="#meterErrorAdd"
+                  className="fa fa-plus-circle fa-lg"
+                  onClick={this.handleAddShow}
+                ></i>
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-light">
+            {this.state.errors.map((error, index) => {
+              return (
+                <tr key={error.id}>
+                  <td style={{ width: "30%" }}>
+                    {this.formatDate(new Date(error.error_date))}
+                  </td>
+                  <td style={{ width: "30%" }}>{error.description}</td>
+                  <td style={{ width: "30%" }}>{error.repair_date}</td>
+                  <td style={{ width: "10%" }}>
+                    <button
+                      className="btn btn-primary float-right rounded"
+                      data-toggle="modal"
+                      data-target="#meterErrorEdit"
+                      onClick={this.handleEditShow(index, "edit")}
+                    >
+                      Edit
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        {this.state.mode !== "add" ? (
+          this.state.errors.length > 0 && (
+            <MeterErrorEditModal
+              description={this.state.errors[this.state.index].description}
+              id={this.state.errors[this.state.index].id}
+              meter={this.state.errors[this.state.index].meter}
+              error_date={this.formatDate(
+                new Date(this.state.errors[this.state.index].repair_date)
+              )}
+              repair_date={this.state.errors[this.state.index].repair_date}
+            />
+          )
+        ) : (
+          <MeterErrorAddModal addRead={this.addRead} />
+        )}
+      </React.Fragment>
     );
   }
 }

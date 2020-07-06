@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 
 export default class MeterReadAddModal extends Component {
   state = {
@@ -7,7 +7,6 @@ export default class MeterReadAddModal extends Component {
     meter: "",
     time: "",
     date: "",
-    mode: "",
   };
 
   onChange = (e) => {
@@ -20,9 +19,9 @@ export default class MeterReadAddModal extends Component {
       meter: this.state.meter,
       time: this.state.time,
       date: this.state.date,
-    }
-    this.props.addRead(data)
-  }
+    };
+    this.props.addRead(data);
+  };
 
   render() {
     return (
@@ -75,6 +74,7 @@ export default class MeterReadAddModal extends Component {
                     type="text"
                     className="form-control"
                     name="time"
+                    placeholder="hh:mm:ss"
                     onChange={this.onChange}
                     value={this.state.time}
                   />
@@ -90,7 +90,11 @@ export default class MeterReadAddModal extends Component {
               >
                 Close
               </button>
-              <button type="button" className="btn btn-primary" onClick={this.addRead}>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={this.addRead}
+              >
                 Save changes
               </button>
             </div>

@@ -1,21 +1,21 @@
 import React, { Component } from "react";
 
-export default class MeterReadEditModal extends Component {
+export default class MeterErrorEditModal extends Component {
   state = {
     id: "",
-    amount: "",
+    description: "",
     meter: "",
-    time: "",
-    date: "",
+    error_date: "",
+    repair_date: "",
   };
 
   componentWillReceiveProps(props) {
     this.setState({
       id: props.id,
-      amount: props.amount,
+      description: props.description,
       meter: props.meter,
-      time: props.isoDate.time,
-      date: props.isoDate.date,
+      error_date: props.error_date,
+      repair_date: props.repair_date,
     });
   }
 
@@ -27,7 +27,7 @@ export default class MeterReadEditModal extends Component {
     return (
       <div
         className="modal fade"
-        id="meterReadEdit"
+        id="meterErrorEdit"
         tabIndex="-1"
         role="dialog"
         aria-labelledby="exampleModalCenterTitle"
@@ -48,34 +48,38 @@ export default class MeterReadEditModal extends Component {
             <div className="modal-body">
               <form>
                 <div className="form-group">
-                  <label>Amount</label>
+                  <label>Description</label>
                   <input
                     type="text"
                     className="form-control"
-                    name="amount"
+                    name="description"
                     onChange={this.onChange}
-                    value={this.state.amount}
+                    value={this.state.description}
                   />
                 </div>
                 <div className="form-group">
-                  <label>Date</label>
+                  <label>Error Date</label>
                   <input
                     type="type"
                     className="form-control"
-                    name="date"
+                    name="error_date"
                     placeholder="mm-dd-yyyy"
                     onChange={this.onChange}
-                    value={this.state.date}
+                    value={this.state.error_date}
                   />
                 </div>
                 <div className="form-group">
-                  <label>Time</label>
+                  <label>Repair Date</label>
                   <input
                     type="text"
                     className="form-control"
-                    name="time"
+                    name="repair_date"
                     onChange={this.onChange}
-                    value={this.state.time}
+                    value={
+                      this.state.repair_date !== null
+                        ? this.state.repair_date
+                        : ""
+                    }
                   />
                 </div>
               </form>
@@ -85,7 +89,7 @@ export default class MeterReadEditModal extends Component {
                 type="button"
                 className="btn btn-danger"
                 data-dismiss="modal"
-                onClick={this.deleteRead}
+                onClick={this.deleteError}
               >
                 Delete
               </button>

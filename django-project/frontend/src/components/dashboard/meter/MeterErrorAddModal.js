@@ -1,33 +1,34 @@
 import React, { Component } from "react";
 
-export default class MeterReadEditModal extends Component {
+export default class MeterErrorAddModal extends Component {
   state = {
     id: "",
     amount: "",
     meter: "",
     time: "",
     date: "",
+    mode: "",
   };
-
-  componentWillReceiveProps(props) {
-    this.setState({
-      id: props.id,
-      amount: props.amount,
-      meter: props.meter,
-      time: props.isoDate.time,
-      date: props.isoDate.date,
-    });
-  }
 
   onChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
+  };
+
+  addRead = () => {
+    const data = {
+      amount: this.state.amount,
+      meter: this.state.meter,
+      time: this.state.time,
+      date: this.state.date,
+    };
+    this.props.addRead(data);
   };
 
   render() {
     return (
       <div
         className="modal fade"
-        id="meterReadEdit"
+        id="meterErrorAdd"
         tabIndex="-1"
         role="dialog"
         aria-labelledby="exampleModalCenterTitle"
@@ -83,21 +84,17 @@ export default class MeterReadEditModal extends Component {
             <div className="modal-footer">
               <button
                 type="button"
-                className="btn btn-danger"
-                data-dismiss="modal"
-                onClick={this.deleteRead}
-              >
-                Delete
-              </button>
-              <button
-                type="button"
                 className="btn btn-secondary"
                 data-dismiss="modal"
                 onClick={this.handleClose}
               >
                 Close
               </button>
-              <button type="button" className="btn btn-primary">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={this.addRead}
+              >
                 Save changes
               </button>
             </div>
