@@ -18,15 +18,21 @@ class MeterSerializer(serializers.ModelSerializer):
             )
         ]
 
-    def update(self, instance, validated_data):
-        # prevent utility and installed date from being updated
-        if validated_data.get('installed_date') != instance.installed_date \
-                or validated_data.get('utility') != instance.utility:
-            raise serializers.ValidationError({
-                'Utility & Installed Date': 'You must not change these fields'
-            })
-        else:
-            return super().update(instance, validated_data)
+    def validate(self, data):
+        instance = self.instance
+        utility = data.get('utility')
+        installed_date = data.get('installed_date')
+
+        # if objects exists in db (Update)
+        if instance is not None:
+            if installed_date != instance.installed_date \
+                    or utility != instance.utility:
+                raise serializers.ValidationError({
+                    'Utility & Installed Date':
+                        'You must not change these fields.'
+                })
+
+        return data
 
 
 class PropertyUtilityProviderInfoSerializer(serializers.ModelSerializer):
@@ -69,13 +75,18 @@ class UnitSerializer(serializers.ModelSerializer):
             )
         ]
 
-    def update(self, instance, validated_data):
-        # prevent property from being updated
-        if validated_data.pop('property') != instance.property:
-            raise serializers.ValidationError({
-                'Property': 'You must not change this field.'
-            })
-        return super().update(instance, validated_data)
+    def validate(self, data):
+        instance = self.instance
+        property = data.get('property')
+
+        # if objects exists in db (Update)
+        if instance is not None:
+            if property != instance.property:
+                raise serializers.ValidationError({
+                    'property': 'You must not change this field.'
+                })
+
+        return data
 
 
 class MeterReadSerializer(serializers.ModelSerializer):
