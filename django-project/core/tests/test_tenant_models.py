@@ -33,6 +33,7 @@ class ModelCreateTests(TestCase):
         first_name = "firstname"
         last_name = "lastname"
         email = "test@pws.com"
+        sec_email = "test2@pws.com"
         primary_phone = "9999999999"
         secondary_phone = "8888888888"
         unit = self.unit
@@ -45,7 +46,8 @@ class ModelCreateTests(TestCase):
             account_number=account_number,
             first_name=first_name,
             last_name=last_name,
-            email=email,
+            primary_email=email,
+            secondary_email=sec_email,
             primary_phone_number=primary_phone,
             secondary_phone_number=secondary_phone,
             unit=unit,
@@ -55,13 +57,13 @@ class ModelCreateTests(TestCase):
             late_fee_exemption=late_fee_exemption
         )
 
-        tenant_str = "Tenant Name:" + first_name + " Primary Phone:" + \
-                     primary_phone
+        tenant_str = "Tenant Name:" + first_name + ", Primary Email:" + \
+            email + ", Unit:" + str(self.unit.name)
 
         self.assertEqual(account_number, tenant.account_number)
         self.assertEqual(first_name, tenant.first_name)
         self.assertEqual(last_name, tenant.last_name)
-        self.assertEqual(email, tenant.email)
+        self.assertEqual(email, tenant.primary_email)
         self.assertEqual(primary_phone, tenant.primary_phone_number)
         self.assertEqual(secondary_phone, tenant.secondary_phone_number)
         self.assertEqual(unit, tenant.unit)
@@ -79,7 +81,7 @@ class ModelCreateTests(TestCase):
             account_number="0123456789",
             first_name=first_name,
             last_name="lastname",
-            email="test@pws.com",
+            primary_email="test@pws.com",
             primary_phone_number=phone,
             secondary_phone_number="8888888888",
             unit=self.unit,
@@ -108,8 +110,10 @@ class ModelCreateTests(TestCase):
             created=created,
             batch_id=batch_id
         )
-        tenant_charge_str = "Tenant: " + first_name + ", Phone: " + \
-                            phone + ", Due Date: " + due_date
+        tenant_charge_str = "Tenant: " + first_name + ", Due Date: " + \
+                            due_date + ", Initial Amount: " + \
+                            str(initial_amount) + ", Remaining Amount: " + \
+                            str(remaining_amount)
 
         self.assertEqual(tenant_charge.tenant, tenant)
         self.assertEqual(tenant_charge.initial_amount, initial_amount)
@@ -136,7 +140,7 @@ class ModelCreateTests(TestCase):
             account_number="0123456789",
             first_name="firstname",
             last_name="lastname",
-            email="test@pws.com",
+            primary_email="test@pws.com",
             primary_phone_number="9999999999",
             secondary_phone_number="8888888888",
             unit=self.unit,
@@ -160,8 +164,10 @@ class ModelCreateTests(TestCase):
             applied_amount=applied_amount,
             payment_method=payment_method,
         )
-        payment_str = "Tenant: " + str(tenant.first_name) + \
-                      ", Payment Amount: " + str(payment_amount)
+        payment_str = "Tenant: " + "firstname" + ", Payment Amount: " \
+                      + str(payment_amount) + ", Payment Date:  " + \
+                      payment_date
+
         self.assertEqual(payment.tenant, tenant)
         self.assertEqual(payment.payment_date, payment_date)
         self.assertEqual(payment.payment_amount, payment_amount)
@@ -176,7 +182,7 @@ class ModelCreateTests(TestCase):
             account_number="0123456789",
             first_name="firstname",
             last_name="lastname",
-            email="test@pws.com",
+            primary_email="test@pws.com",
             primary_phone_number="9999999999",
             secondary_phone_number="8888888888",
             unit=self.unit,
@@ -224,7 +230,7 @@ class ModelCreateTests(TestCase):
             account_number="0123456789",
             first_name="firstname",
             last_name="lastname",
-            email="test@pws.com",
+            primary_email="test@pws.com",
             primary_phone_number="9999999999",
             secondary_phone_number="8888888888",
             unit=self.unit,
