@@ -28,16 +28,16 @@ class UnitViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny, ]
 
 
-# class MeterReadViewSet(viewsets.ModelViewSet):
-#     queryset = MeterRead.objects.all()
-#     permission_classes = [permissions.AllowAny, ]
-#     serializer_class = MeterReadSerializer
-#
-#
-# class MeterErrorViewSet(viewsets.ModelViewSet):
-#     queryset = MeterError.objects.all()
-#     permission_classes = [permissions.AllowAny, ]
-#     serializer_class = MeterErrorSerializer
+class MeterReadViewSet(viewsets.ModelViewSet):
+    queryset = MeterRead.objects.all()
+    permission_classes = [permissions.AllowAny, ]
+    serializer_class = MeterReadSerializer
+
+
+class MeterErrorViewSet(viewsets.ModelViewSet):
+    queryset = MeterError.objects.all()
+    permission_classes = [permissions.AllowAny, ]
+    serializer_class = MeterErrorSerializer
 
 
 # custom views here
