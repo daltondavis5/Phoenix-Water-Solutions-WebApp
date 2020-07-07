@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { createMessage, returnErrors } from "../../../actions/messages";
 import PropTypes from "prop-types";
 import MeterDashboard from "./MeterDashboard";
+import TenantDashboard from "../tenant/TenantDashboard";
 
 export class UnitDetails extends Component {
   static propTypes = {
@@ -15,6 +16,20 @@ export class UnitDetails extends Component {
     unit: {},
     meters: [],
     utilities: [],
+    tenant: {
+      id: 1,
+      first_name: "Gourav",
+      last_name: "Agrawal",
+      email: "gourav.agrawal10041996@gmail.com",
+      account_number: "1217212178",
+      primary_phone_number: "4809376076",
+      secondary_phone_number: "",
+      unit: 1,
+      move_in_date: "Apr-10-2020",
+      move_out_date: "",
+      credits: 112.0,
+      late_fee_exemption: "",
+    },
   };
 
   componentDidMount() {
@@ -32,6 +47,17 @@ export class UnitDetails extends Component {
     axios.get("/api/utility/").then((response) => {
       this.setState({ utilities: response.data });
     });
+
+    /* axios
+      .get(`/api/unit/${this.props.match.params.id}/tenant`)
+      .then((response) => {
+        this.setState({
+          tenant: response.data,
+        });
+      })
+      .catch((err) => {
+        this.props.returnErrors(err.response.data, err.response.status);
+      }); */
 
     this.getMetersList();
   }
@@ -145,7 +171,7 @@ export class UnitDetails extends Component {
                   role="tabpanel"
                   aria-labelledby="v-pills-tenants-tab"
                 >
-                  Tenant Details
+                  <TenantDashboard tenant={this.state.tenant} />
                 </div>
               </div>
             </div>

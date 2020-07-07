@@ -5,9 +5,13 @@ import Property from "./property/Property";
 export class Dashboard extends Component {
   render() {
     return (
-      <div>
-        <Provider></Provider>
-        <Property></Property>
+      <div className="row w-75 m-auto">
+        <div className="col-sm-12">
+          <Provider></Provider>
+        </div>
+        <div className="col-sm-12">
+          <Property></Property>
+        </div>
       </div>
     );
   }
