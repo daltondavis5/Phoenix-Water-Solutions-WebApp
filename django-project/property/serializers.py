@@ -1,4 +1,3 @@
-from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 from core.models.property import Meter, Property, Unit, \
     PropertyUtilityProviderInfo, MeterRead, MeterError
