@@ -4,7 +4,6 @@ export default class MeterReadAddModal extends Component {
   state = {
     id: "",
     amount: "",
-    meter: "",
     time: "",
     date: "",
   };
@@ -16,9 +15,8 @@ export default class MeterReadAddModal extends Component {
   addRead = () => {
     const data = {
       amount: this.state.amount,
-      meter: this.state.meter,
-      time: this.state.time,
-      date: this.state.date,
+      meter: this.props.meter,
+      read_date: new Date(this.state.date + ", " + this.state.time),
     };
     this.props.addRead(data);
   };
@@ -94,6 +92,7 @@ export default class MeterReadAddModal extends Component {
                 type="button"
                 className="btn btn-primary"
                 onClick={this.addRead}
+                data-dismiss="modal"
               >
                 Save changes
               </button>

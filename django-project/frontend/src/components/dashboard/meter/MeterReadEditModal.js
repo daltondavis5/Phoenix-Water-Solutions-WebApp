@@ -23,6 +23,16 @@ export default class MeterReadEditModal extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+  editChanges = () => {
+    const data = {
+      id: this.state.id,
+      amount: this.state.amount,
+      meter: this.props.meter,
+      read_date: new Date(this.state.date + ", " + this.state.time),
+    };
+    this.props.editRead(data);
+  };
+
   render() {
     return (
       <div
@@ -85,7 +95,7 @@ export default class MeterReadEditModal extends Component {
                 type="button"
                 className="btn btn-danger"
                 data-dismiss="modal"
-                onClick={this.deleteRead}
+                onClick={this.props.deleteRead(this.state.id)}
               >
                 Delete
               </button>
@@ -97,7 +107,12 @@ export default class MeterReadEditModal extends Component {
               >
                 Close
               </button>
-              <button type="button" className="btn btn-primary">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={this.editChanges}
+                data-dismiss="modal"
+              >
                 Save changes
               </button>
             </div>

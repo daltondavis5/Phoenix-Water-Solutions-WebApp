@@ -54,9 +54,50 @@ export default class MeterReads extends Component {
   };
 
   addRead = (data) => {
-    const { meter, time, date, amount } = data;
-    var t = date + ", " + time;
-    console.log(new Date(t));
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    axios
+      .post(`/api/meterread/`, JSON.stringify(data), config)
+      .then((response) => {
+        data["id"] = response.data.id;
+      });
+    let newData = [...this.state.reads].concat(data);
+    this.sortByDate(newData);
+    this.setState({ reads: newData });
+  };
+
+  editRead = (data) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    axios
+      .put(`/api/meterread/${data.id}/`, JSON.stringify(data), config)
+      .then((response) => {
+        const newreads = [...this.state.reads];
+        newreads.map((read) => {
+          if (read.id == data.id) read.amount = data.amount;
+          read.read_date = data.read_date;
+        });
+        this.setState({ reads: newreads });
+      });
+  };
+
+  deleteRead = (id) => () => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    axios.delete(`/api/meterread/${id}/`, config).then((response) => {
+      let newreads = [...this.state.reads];
+      newreads.filter((read) => read.id !== id);
+      this.setState({ reads: newreads });
+    });
   };
 
   render() {
@@ -119,10 +160,15 @@ export default class MeterReads extends Component {
               isoDate={this.formatDate(
                 this.state.reads[this.state.index].read_date
               )}
+              editRead={this.editRead}
+              deleteRead={this.deleteRead}
             />
           )
         ) : (
-          <MeterReadAddModal addRead={this.addRead} />
+          <MeterReadAddModal
+            meter={this.state.reads[0].meter}
+            addRead={this.addRead}
+          />
         )}
       </React.Fragment>
     );
