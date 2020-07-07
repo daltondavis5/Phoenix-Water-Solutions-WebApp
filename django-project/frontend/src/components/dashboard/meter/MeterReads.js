@@ -112,9 +112,8 @@ export class MeterReads extends Component {
     axios
       .delete(`/api/meterread/${id}/`, config)
       .then((response) => {
-        let newreads = [...this.state.reads];
-        newreads.filter((read) => read.id !== id);
-        this.setState({ reads: newreads });
+        let filteredData = this.state.reads.filter((read) => read.id !== id);
+        this.setState({ reads: filteredData, index: 0 });
         this.props.createMessage({ msg: "Success!" });
         this.props.updateMeter(body);
       })

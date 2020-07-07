@@ -109,9 +109,8 @@ export class MeterErrors extends Component {
     axios
       .delete(`/api/metererror/${id}/`, config)
       .then((response) => {
-        let newerrors = [...this.state.errors];
-        newerrors.filter((error) => error.id !== id);
-        this.setState({ errors: newerrors });
+        let filteredDate = this.state.errors.filter((error) => error.id !== id);
+        this.setState({ errors: filteredDate, index: 0 });
         this.props.createMessage({ msg: "Success!" });
         this.props.updateMeter(body);
       })
