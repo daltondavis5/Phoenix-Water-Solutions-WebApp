@@ -16,11 +16,18 @@ export default class MeterErrorAddModal extends Component {
     const data = {
       description: this.state.description,
       meter: this.props.meter,
-      error_date: this.state.error_date,
+      error_date: this.formatDate(this.state.error_date),
       repair_date:
-        this.state.repair_date === "" ? null : this.state.repair_date,
+        this.state.repair_date === "" || this.state.repair_date === null
+          ? null
+          : this.formatDate(this.state.repair_date),
     };
     this.props.addError(data);
+  };
+
+  formatDate = (date) => {
+    const dateArr = date.split("-");
+    return dateArr[2] + "-" + dateArr[0] + "-" + dateArr[1];
   };
 
   render() {

@@ -2,12 +2,20 @@ import React, { Component } from "react";
 import axios from "axios";
 import MeterErrorEditModal from "./MeterErrorEditModal";
 import MeterErrorAddModal from "./MeterErrorAddModal";
+import { connect } from "react-redux";
+import { createMessage, returnErrors } from "../../../actions/messages";
+import PropTypes from "prop-types";
 
-export default class MeterErrors extends Component {
+export class MeterErrors extends Component {
   state = {
     errors: [],
     index: 0,
     mode: "",
+  };
+
+  static propTypes = {
+    createMessage: PropTypes.func.isRequired,
+    returnErrors: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -59,10 +67,13 @@ export default class MeterErrors extends Component {
       .post(`/api/metererror/`, JSON.stringify(data), config)
       .then((response) => {
         data["id"] = response.data.id;
-      });
-    let newData = [...this.state.errors].concat(data);
-    this.sortByDate(newData);
-    this.setState({ errors: newData });
+        let newData = [...this.state.errors].concat(data);
+        this.sortByDate(newData);
+        this.setState({ errors: newData });
+        this.props.createMessage({ msg: "Success!" });
+        this.props.updateMeter(body);
+      })
+      .catch((err) => {});
   };
 
   editError = (data) => {
@@ -83,7 +94,10 @@ export default class MeterErrors extends Component {
           }
         });
         this.setState({ errors: newerrors });
-      });
+        this.props.createMessage({ msg: "Success!" });
+        this.props.updateMeter(body);
+      })
+      .catch((err) => {});
   };
 
   deleteError = (id) => () => {
@@ -92,11 +106,16 @@ export default class MeterErrors extends Component {
         "Content-Type": "application/json",
       },
     };
-    axios.delete(`/api/metererror/${id}/`, config).then((response) => {
-      let newerrors = [...this.state.errors];
-      newerrors.filter((error) => error.id !== id);
-      this.setState({ errors: newerrors });
-    });
+    axios
+      .delete(`/api/metererror/${id}/`, config)
+      .then((response) => {
+        let newerrors = [...this.state.errors];
+        newerrors.filter((error) => error.id !== id);
+        this.setState({ errors: newerrors });
+        this.props.createMessage({ msg: "Success!" });
+        this.props.updateMeter(body);
+      })
+      .catch((err) => {});
   };
 
   render() {
@@ -174,3 +193,5 @@ export default class MeterErrors extends Component {
     );
   }
 }
+
+export default connect(null, { createMessage, returnErrors })(MeterErrors);

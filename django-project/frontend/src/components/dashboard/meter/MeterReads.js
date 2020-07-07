@@ -77,9 +77,7 @@ export class MeterReads extends Component {
         this.props.createMessage({ msg: "Success!" });
         this.props.updateMeter(body);
       })
-      .catch((err) => {
-        this.props.returnErrors(err.response.data, err.response.status);
-      });
+      .catch((err) => {});
   };
 
   editRead = (data) => {
@@ -102,9 +100,7 @@ export class MeterReads extends Component {
         this.props.createMessage({ msg: "Success!" });
         this.props.updateMeter(body);
       })
-      .catch((err) => {
-        this.props.returnErrors(err.response.data, err.response.status);
-      });
+      .catch((err) => {});
   };
 
   deleteRead = (id) => () => {
@@ -122,9 +118,7 @@ export class MeterReads extends Component {
         this.props.createMessage({ msg: "Success!" });
         this.props.updateMeter(body);
       })
-      .catch((err) => {
-        this.props.returnErrors(err.response.data, err.response.status);
-      });
+      .catch((err) => {});
   };
 
   render() {
