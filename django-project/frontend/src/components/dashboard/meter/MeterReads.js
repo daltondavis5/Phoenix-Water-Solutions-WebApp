@@ -2,12 +2,20 @@ import React, { Component } from "react";
 import axios from "axios";
 import MeterReadEditModal from "./MeterReadEditModal";
 import MeterReadAddModal from "./MeterReadAddModal";
+import { connect } from "react-redux";
+import { createMessage, returnErrors } from "../../../actions/messages";
+import PropTypes from "prop-types";
 
-export default class MeterReads extends Component {
+export class MeterReads extends Component {
   state = {
     reads: [],
     index: 0,
     mode: "",
+  };
+
+  static propTypes = {
+    createMessage: PropTypes.func.isRequired,
+    returnErrors: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -63,10 +71,15 @@ export default class MeterReads extends Component {
       .post(`/api/meterread/`, JSON.stringify(data), config)
       .then((response) => {
         data["id"] = response.data.id;
+        let newData = [...this.state.reads].concat(data);
+        this.sortByDate(newData);
+        this.setState({ reads: newData });
+        this.props.createMessage({ msg: "Success!" });
+        this.props.updateMeter(body);
+      })
+      .catch((err) => {
+        this.props.returnErrors(err.response.data, err.response.status);
       });
-    let newData = [...this.state.reads].concat(data);
-    this.sortByDate(newData);
-    this.setState({ reads: newData });
   };
 
   editRead = (data) => {
@@ -86,6 +99,11 @@ export default class MeterReads extends Component {
           }
         });
         this.setState({ reads: newreads });
+        this.props.createMessage({ msg: "Success!" });
+        this.props.updateMeter(body);
+      })
+      .catch((err) => {
+        this.props.returnErrors(err.response.data, err.response.status);
       });
   };
 
@@ -95,11 +113,18 @@ export default class MeterReads extends Component {
         "Content-Type": "application/json",
       },
     };
-    axios.delete(`/api/meterread/${id}/`, config).then((response) => {
-      let newreads = [...this.state.reads];
-      newreads.filter((read) => read.id !== id);
-      this.setState({ reads: newreads });
-    });
+    axios
+      .delete(`/api/meterread/${id}/`, config)
+      .then((response) => {
+        let newreads = [...this.state.reads];
+        newreads.filter((read) => read.id !== id);
+        this.setState({ reads: newreads });
+        this.props.createMessage({ msg: "Success!" });
+        this.props.updateMeter(body);
+      })
+      .catch((err) => {
+        this.props.returnErrors(err.response.data, err.response.status);
+      });
   };
 
   render() {
@@ -176,3 +201,5 @@ export default class MeterReads extends Component {
     );
   }
 }
+
+export default connect(null, { createMessage, returnErrors })(MeterReads);
