@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from core.models.tenant import Tenant, TenantCharge
+from core.models.tenant import Tenant, TenantCharge, Payment, \
+    PaymentMethod
 import tenant.services as services
 
 
@@ -30,6 +31,24 @@ class TenantSerializer(serializers.ModelSerializer):
                 })
 
         return data
+
+
+class TenantChargeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TenantCharge
+        fields = "__all__"
+
+
+class PaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Payment
+        fields = "__all__"
+
+
+class PaymentMethodSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PaymentMethod
+        fields = "__all__"
 
 
 class TenantUsageSerializer(serializers.ModelSerializer):

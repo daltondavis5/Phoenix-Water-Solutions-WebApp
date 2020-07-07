@@ -1,9 +1,11 @@
 from rest_framework import viewsets, permissions
 
-from core.models.tenant import Tenant
+from core.models.tenant import Tenant, TenantCharge,\
+    Payment, PaymentMethod
 from core.models.property import Unit
 from property.serializers import UnitSerializer
-from tenant.serializers import TenantSerializer, TenantUsageSerializer
+from tenant.serializers import TenantSerializer, TenantUsageSerializer,\
+    TenantChargeSerializer, PaymentSerializer, PaymentMethodSerializer
 
 import tenant.services as services
 
@@ -12,6 +14,24 @@ import tenant.services as services
 class TenantViewSet(viewsets.ModelViewSet):
     queryset = Tenant.objects.all()
     serializer_class = TenantSerializer
+    permission_classes = [permissions.AllowAny, ]
+
+
+class TenantChargeViewSet(viewsets.ModelViewSet):
+    queryset = TenantCharge.objects.all()
+    serializer_class = TenantChargeSerializer
+    permission_classes = [permissions.AllowAny, ]
+
+
+class PaymentViewSet(viewsets.ModelViewSet):
+    queryset = Payment.objects.all()
+    serializer_class = PaymentSerializer
+    permission_classes = [permissions.AllowAny, ]
+
+
+class PaymentMethodViewSet(viewsets.ModelViewSet):
+    queryset = PaymentMethod.objects.all()
+    serializer_class = PaymentMethodSerializer
     permission_classes = [permissions.AllowAny, ]
 
 

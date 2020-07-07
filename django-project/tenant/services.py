@@ -27,7 +27,8 @@ def get_current_balance_for_tenant(tenant_id):
     try:
         curr_bal = 0
         tenants = TenantCharge.objects.filter(
-            tenant=tenant_id, remaining_amount__gt=0).values('remaining_amount')
+            tenant=tenant_id, remaining_amount__gt=0).\
+            values('remaining_amount')
         if tenants:
             curr_bal = sum([tenants[i].get('remaining_amount')
                             for i in range(len(tenants))])
