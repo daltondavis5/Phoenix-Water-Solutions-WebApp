@@ -49,6 +49,56 @@ export default class MeterErrors extends Component {
     this.setState({ mode: "add" });
   };
 
+  addError = (data) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    console.log(JSON.stringify(data))
+    axios
+      .post(`/api/metererror/`, JSON.stringify(data), config)
+      .then((response) => {
+        data["id"] = response.data.id;
+      });
+    let newData = [...this.state.errors].concat(data);
+    this.sortByDate(newData);
+    this.setState({ errors: newData });
+  };
+
+  editError = (data) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    console.log(JSON.stringify(data));
+    axios
+      .put(`/api/metererror/${data.id}/`, JSON.stringify(data), config)
+      .then((response) => {
+        const newerrors = [...this.state.errors];
+        newerrors.map((error) => {
+          if (error.id == data.id) error.description = data.description;
+          error.error_date = data.error_date;
+          error.repair_date = data.repair_date;
+        });
+        this.setState({ errors: newerrors });
+      });
+  };
+
+  deleteError = (id) => () => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    axios.delete(`/api/metererror/${id}/`, config).then((response) => {
+      let newerrors = [...this.state.errors];
+      newerrors.filter((error) => error.id !== id);
+      this.setState({ errors: newerrors });
+    });
+  };
+
   render() {
     return (
       <React.Fragment>
@@ -107,13 +157,18 @@ export default class MeterErrors extends Component {
               id={this.state.errors[this.state.index].id}
               meter={this.state.errors[this.state.index].meter}
               error_date={this.formatDate(
-                new Date(this.state.errors[this.state.index].repair_date)
+                new Date(this.state.errors[this.state.index].error_date)
               )}
               repair_date={this.state.errors[this.state.index].repair_date}
+              editError={this.editError}
+              deleteError={this.deleteError}
             />
           )
         ) : (
-          <MeterErrorAddModal addRead={this.addRead} />
+          <MeterErrorAddModal
+            meter={this.state.errors[0].meter}
+            addError={this.addError}
+          />
         )}
       </React.Fragment>
     );

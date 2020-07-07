@@ -3,25 +3,24 @@ import React, { Component } from "react";
 export default class MeterErrorAddModal extends Component {
   state = {
     id: "",
-    amount: "",
-    meter: "",
-    time: "",
-    date: "",
-    mode: "",
+    description: "",
+    error_date: "",
+    repair_date: "",
   };
 
   onChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };
 
-  addRead = () => {
+  addError = () => {
     const data = {
-      amount: this.state.amount,
-      meter: this.state.meter,
-      time: this.state.time,
-      date: this.state.date,
+      description: this.state.description,
+      meter: this.props.meter,
+      error_date: this.state.error_date,
+      repair_date:
+        this.state.repair_date === "" ? null : this.state.repair_date,
     };
-    this.props.addRead(data);
+    this.props.addError(data);
   };
 
   render() {
@@ -49,34 +48,34 @@ export default class MeterErrorAddModal extends Component {
             <div className="modal-body">
               <form>
                 <div className="form-group">
-                  <label>Amount</label>
+                  <label>Description</label>
                   <input
                     type="text"
                     className="form-control"
-                    name="amount"
+                    name="description"
                     onChange={this.onChange}
-                    value={this.state.amount}
+                    value={this.state.description}
                   />
                 </div>
                 <div className="form-group">
-                  <label>Date</label>
+                  <label>Error Date</label>
                   <input
                     type="type"
                     className="form-control"
-                    name="date"
+                    name="error_date"
                     placeholder="mm-dd-yyyy"
                     onChange={this.onChange}
-                    value={this.state.date}
+                    value={this.state.error_date}
                   />
                 </div>
                 <div className="form-group">
-                  <label>Time</label>
+                  <label>Repair Date</label>
                   <input
                     type="text"
                     className="form-control"
-                    name="time"
+                    name="repair_date"
                     onChange={this.onChange}
-                    value={this.state.time}
+                    value={this.state.repair_date}
                   />
                 </div>
               </form>
@@ -93,7 +92,8 @@ export default class MeterErrorAddModal extends Component {
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={this.addRead}
+                onClick={this.addError}
+                data-dismiss="modal"
               >
                 Save changes
               </button>

@@ -23,6 +23,25 @@ export default class MeterErrorEditModal extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+  editChanges = () => {
+    const data = {
+      id: this.state.id,
+      description: this.state.description,
+      error_date: this.formatDate(this.state.error_date),
+      meter: this.props.meter,
+      repair_date:
+        this.state.repair_date === "" || this.state.repair_date === null
+          ? null
+          : this.formatDate(this.state.repair_date),
+    };
+    this.props.editError(data);
+  };
+
+  formatDate = (date) => {
+    const dateArr = date.split("-");
+    return dateArr[2] + "-" + dateArr[0] + "-" + dateArr[1];
+  };
+
   render() {
     return (
       <div
@@ -89,7 +108,7 @@ export default class MeterErrorEditModal extends Component {
                 type="button"
                 className="btn btn-danger"
                 data-dismiss="modal"
-                onClick={this.deleteError}
+                onClick={this.props.deleteError(this.state.id)}
               >
                 Delete
               </button>
@@ -101,7 +120,12 @@ export default class MeterErrorEditModal extends Component {
               >
                 Close
               </button>
-              <button type="button" className="btn btn-primary">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={this.editChanges}
+                data-dismiss="modal"
+              >
                 Save changes
               </button>
             </div>
