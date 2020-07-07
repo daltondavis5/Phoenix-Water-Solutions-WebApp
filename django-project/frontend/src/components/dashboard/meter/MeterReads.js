@@ -80,8 +80,10 @@ export default class MeterReads extends Component {
       .then((response) => {
         const newreads = [...this.state.reads];
         newreads.map((read) => {
-          if (read.id == data.id) read.amount = data.amount;
-          read.read_date = data.read_date;
+          if (read.id == data.id) {
+            read.amount = data.amount;
+            read.read_date = data.read_date;
+          }
         });
         this.setState({ reads: newreads });
       });
@@ -131,7 +133,7 @@ export default class MeterReads extends Component {
             {this.state.reads.map((read, index) => {
               const { date, time } = this.formatDate(read.read_date);
               return (
-                <tr key={read.id}>
+                <tr key={index}>
                   <td style={{ width: "30%" }}>{date}</td>
                   <td style={{ width: "30%" }}>{time}</td>
                   <td style={{ width: "30%" }}>{read.amount}</td>

@@ -55,7 +55,6 @@ export default class MeterErrors extends Component {
         "Content-Type": "application/json",
       },
     };
-    console.log(JSON.stringify(data))
     axios
       .post(`/api/metererror/`, JSON.stringify(data), config)
       .then((response) => {
@@ -72,15 +71,16 @@ export default class MeterErrors extends Component {
         "Content-Type": "application/json",
       },
     };
-    console.log(JSON.stringify(data));
     axios
       .put(`/api/metererror/${data.id}/`, JSON.stringify(data), config)
       .then((response) => {
         const newerrors = [...this.state.errors];
         newerrors.map((error) => {
-          if (error.id == data.id) error.description = data.description;
-          error.error_date = data.error_date;
-          error.repair_date = data.repair_date;
+          if (error.id == data.id) {
+            error.description = data.description;
+            error.error_date = data.error_date;
+            error.repair_date = data.repair_date;
+          }
         });
         this.setState({ errors: newerrors });
       });
@@ -129,7 +129,7 @@ export default class MeterErrors extends Component {
           <tbody className="bg-light">
             {this.state.errors.map((error, index) => {
               return (
-                <tr key={error.id}>
+                <tr key={index}>
                   <td style={{ width: "30%" }}>
                     {this.formatDate(new Date(error.error_date))}
                   </td>
