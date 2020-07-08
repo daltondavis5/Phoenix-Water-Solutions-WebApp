@@ -44,3 +44,14 @@ class ListTenantsForUnit(viewsets.generics.ListAPIView):
         unit_id = self.kwargs['id']
         queryset = services.get_tenants_for_unit(unit_id)
         return queryset
+
+
+class ListChargesForTenant(viewsets.generics.ListAPIView):
+    serializer_class = TenantChargeSerializer
+    permission_classes = [permissions.AllowAny, ]
+
+    def get_queryset(self):
+        tenant_id = self.kwargs['id']
+        queryset = services.get_charges_for_tenant(tenant_id)
+
+        return queryset
