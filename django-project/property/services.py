@@ -26,7 +26,7 @@ def get_meters_for_unit(unit_id):
     try:
         queryset = Meter.objects.filter(unit=unit_id)
         return queryset
-    except ObjectDoesNotExist:
+    except (ObjectDoesNotExist, ValueError):
         return None
 
 
@@ -39,7 +39,7 @@ def get_meter_reads_for_meter(meter_id):
     try:
         queryset = MeterRead.objects.filter(meter=meter_id)
         return queryset
-    except ObjectDoesNotExist:
+    except (ObjectDoesNotExist, ValueError):
         return None
 
 
@@ -52,5 +52,18 @@ def get_meter_errors_for_meter(meter_id):
     try:
         queryset = MeterError.objects.filter(meter=meter_id)
         return queryset
-    except ObjectDoesNotExist:
+    except (ObjectDoesNotExist, ValueError):
+        return None
+
+
+def get_units_for_property(property_id):
+    """
+    Method to retrieve all units of a property
+    :param property_id: property_id
+    :return: queryset of all units of a property
+    """
+    try:
+        queryset = Unit.objects.filter(property=property_id)
+        return queryset
+    except (ObjectDoesNotExist, ValueError):
         return None
