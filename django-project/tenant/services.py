@@ -66,25 +66,37 @@ def get_tenant_usage_info(tenant_id):
     :param tenant_id: tenant id
     :return tenant_usage_info: tenant usage info
     """
-    curr_balance = get_current_balance_for_tenant(tenant_id)
-    overdue_balance = get_overdue_balance_for_tenant(tenant_id)
-    tenant_usage_info = ["current_balance:" + str(curr_balance),
-                         "overdue_balance:" + str(overdue_balance)]
-    return tenant_usage_info
+    try:
+        tenant = Tenant.objects.get(pk=tenant_id)
+        curr_balance = get_current_balance_for_tenant(tenant.id)
+        overdue_balance = get_overdue_balance_for_tenant(tenant.id)
+        tenant_usage_info = ["current_balance:" + str(curr_balance),
+                             "overdue_balance:" + str(overdue_balance)]
+        return tenant_usage_info
+    except (ObjectDoesNotExist):
+        return Exception("Enter a valid ID")
+    except(ValueError):
+        return Exception("Enter a numerical value for ID")
 
 
 def get_charges_for_tenant(tenant_id):
     try:
-        queryset = TenantCharge.objects.filter(tenant=tenant_id)
+        tenant = Tenant.objects.get(pk=tenant_id)
+        queryset = TenantCharge.objects.filter(tenant=tenant)
         return queryset
-    except (ObjectDoesNotExist, ValueError):
-        return None
+    except (ObjectDoesNotExist):
+        return Exception("Enter a valid ID")
+    except(ValueError):
+        return Exception("Enter a numerical value for ID")
 
 
 def get_payments_for_tenant(tenant_id):
     try:
+        tenant = Tenant.objects.get(pk=tenant_id)
         queryset = Payment.objects.filter(
-            tenant=tenant_id).order_by('-payment_date')
+            tenant=tenant).order_by('-payment_date')
         return queryset
-    except (ObjectDoesNotExist, ValueError):
-        return None
+    except (ObjectDoesNotExist):
+        return Exception("Enter a valid ID")
+    except(ValueError):
+        return Exception("Enter a numerical value for ID")

@@ -220,16 +220,20 @@ class TenantServicesTestCase(APITestCase):
         self.assertEqual(services.get_tenant_usage_info(tenant_id2),
                          usage2)
 
-    def test_fail_get_tenant_usage_info(self):
-        """ Test case to fail get tenant usage info """
+    def test_fail_get_tenant_usage_info_id(self):
+        """ Test fail when id entered does not exist """
         tenant_id1 = 0
-        tenant_id2 = "s"
-        usage1 = ["current_balance:" + str(0.0),
-                  "overdue_balance:" + str(0.0)]
-        self.assertEqual(services.get_tenant_usage_info(tenant_id1),
-                         usage1)
-        self.assertEqual(services.get_tenant_usage_info(tenant_id2),
-                         usage1)
+        # tenant_id2 = "s"
+        services.get_tenant_usage_info(tenant_id1)
+        # usage1 = ["current_balance:" + str(0.0),
+        #           "overdue_balance:" + str(0.0)]
+        self.assertRaises(Exception, 'Enter a valid ID')
+
+    def test_fail_get_tenant_usage_info_id_type(self):
+        """ Test fail when id is non integer """
+        tenant_id = "s"
+        services.get_tenant_usage_info(tenant_id)
+        self.assertRaises(Exception, 'Enter a numerical value for ID')
 
     def test_get_payment_tenant(self):
         """Test case to get tenant payments sorted by most recent"""
@@ -240,11 +244,14 @@ class TenantServicesTestCase(APITestCase):
         self.assertEqual(self.payment3, query[2])
         self.assertNotIn(self.payment4, query)
 
-    def test_fail_get_payment_tenant(self):
-        """Test fail get payment for tenant"""
+    def test_fail_get_payment_tenant_id(self):
+        """Test fail when id entered does not exist"""
         tenant_id1 = 0
-        tenant_id2 = "s"
-        queryset1 = services.get_payments_for_tenant(tenant_id1)
-        queryset2 = services.get_payments_for_tenant(tenant_id2)
-        self.assertEqual(len(queryset1), 0)
-        self.assertFalse(queryset2)
+        services.get_payments_for_tenant(tenant_id1)
+        self.assertRaises(Exception, 'Enter a valid ID')
+
+    def test_fail_get_payment_tenant_id_type(self):
+        """Test fail when id is non integer"""
+        tenant_id1 = "s"
+        services.get_payments_for_tenant(tenant_id1)
+        self.assertRaises(Exception, 'Enter a numerical value for ID')
