@@ -12,7 +12,7 @@ def get_tenants_for_unit(unit_id):
     try:
         queryset = Tenant.objects.filter(unit=unit_id)
         return queryset
-    except ObjectDoesNotExist:
+    except (ObjectDoesNotExist, ValueError):
         return None
 
 
@@ -25,16 +25,16 @@ def get_current_balance_for_tenant(tenant_id):
     :return curr_bal: current balance
     """
     try:
-        curr_bal = 0
+        curr_bal = 0.0
         tenants = TenantCharge.objects.filter(
-            tenant=tenant_id, remaining_amount__gt=0).\
+            tenant=tenant_id, remaining_amount__gt=0). \
             values('remaining_amount')
         if tenants:
             curr_bal = sum([tenants[i].get('remaining_amount')
                             for i in range(len(tenants))])
         return curr_bal
-    except ObjectDoesNotExist:
-        return 0
+    except (ObjectDoesNotExist, ValueError):
+        return 0.0
 
 
 def get_overdue_balance_for_tenant(tenant_id):
@@ -46,17 +46,17 @@ def get_overdue_balance_for_tenant(tenant_id):
     :return overdue_bal: overdue balance
     """
     try:
-        overdue_bal = 0
+        overdue_bal = 0.0
         today = timezone.now().date()
         tenants = TenantCharge.objects.filter(
-            tenant=tenant_id, remaining_amount__gt=0, due_date__gte=today).\
+            tenant=tenant_id, remaining_amount__gt=0, due_date__gte=today). \
             values('remaining_amount')
         if tenants:
             overdue_bal = sum([tenants[i].get('remaining_amount')
-                            for i in range(len(tenants))])
+                               for i in range(len(tenants))])
         return overdue_bal
-    except ObjectDoesNotExist:
-        return 0
+    except (ObjectDoesNotExist, ValueError):
+        return 0.0
 
 
 def get_tenant_usage_info(tenant_id):
@@ -66,11 +66,8 @@ def get_tenant_usage_info(tenant_id):
     :param tenant_id: tenant id
     :return tenant_usage_info: tenant usage info
     """
-    try:
-        curr_balance = get_current_balance_for_tenant(tenant_id)
-        overdue_balance = get_overdue_balance_for_tenant(tenant_id)
-        tenant_usage_info = ["current_balance:" + str(curr_balance),
-                            "overdue_balance:" + str(overdue_balance)]
-        return tenant_usage_info
-    except ObjectDoesNotExist:
-        return []
+    curr_balance = get_current_balance_for_tenant(tenant_id)
+    overdue_balance = get_overdue_balance_for_tenant(tenant_id)
+    tenant_usage_info = ["current_balance:" + str(curr_balance),
+                         "overdue_balance:" + str(overdue_balance)]
+    return tenant_usage_info
