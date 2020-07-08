@@ -47,7 +47,7 @@ class MeterPropertiesEdit extends Component {
       .put(`/api/meter/${this.state.id}/`, JSON.stringify(body), config)
       .then((response) => {
         this.props.createMessage({ msg: "Success!" });
-        this.props.updateMeter(body);
+        this.props.updateMeter(response.data);
       })
       .catch((err) => {
         this.props.returnErrors(err.response.data, err.response.status);
@@ -56,16 +56,13 @@ class MeterPropertiesEdit extends Component {
 
   deleteMeter = () => {
     const { id, unit } = this.state;
-    const body = {
-      id,
-    };
     const config = {
       headers: {
         "Content-Type": "application/json",
       },
     };
     axios
-      .delete(`/api/meter/${id}/`, JSON.stringify(body), config)
+      .delete(`/api/meter/${id}/`, config)
       .then((res) => {
         this.props.createMessage({
           msg: `Successfully deleted`,

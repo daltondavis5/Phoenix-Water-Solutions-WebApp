@@ -1,24 +1,12 @@
 import React, { Component } from "react";
-import TenantPropertiesView from "./TenantPropertiesView";
 import axios from "axios";
+import TenantPropertiesView from "./TenantPropertiesView";
+import TenantPropertiesEdit from "./TenantPropertiesEdit";
 
 export class TenantProperties extends Component {
   state = {
-    tenant: {
-      id: 1,
-      first_name: "Gourav",
-      last_name: "Agrawal",
-      primary_email: "gourav.agrawal10041996@gmail.com",
-      secondary_email: null,
-      account_number: null,
-      primary_phone_number: "4809376076",
-      secondary_phone_number: null,
-      unit: 1,
-      move_in_date: "Apr-10-2020",
-      move_out_date: null,
-      credits: null,
-      late_fee_exemption: null,
-    },
+    tenant: {},
+    editing: false,
   };
 
   componentDidMount() {
@@ -29,10 +17,37 @@ export class TenantProperties extends Component {
     });
   }
 
+  switchToView = () => {
+    this.setState({ editing: false });
+  };
+
+  switchToEdit = () => {
+    this.setState({ editing: true });
+  };
+
+  updateTenant = (tenant) => {
+    this.setState({ tenant, editing: false });
+  };
+
   render() {
     return (
       <>
-        <TenantPropertiesView tenant={this.state.tenant} />
+        {Object.keys(this.state.tenant).length !== 0 ? (
+          this.state.editing ? (
+            <TenantPropertiesEdit
+              tenant={this.state.tenant}
+              switchToView={this.switchToView}
+              updateTenant={this.updateTenant}
+            />
+          ) : (
+            <TenantPropertiesView
+              tenant={this.state.tenant}
+              switchToEdit={this.switchToEdit}
+            />
+          )
+        ) : (
+          <p>No Tenants found!</p>
+        )}
       </>
     );
   }

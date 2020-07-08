@@ -17,7 +17,6 @@ export class TenantPropertiesView extends Component {
       credits,
       late_fee_exemption,
     } = this.props.tenant;
-    console.log(this.props.tenant);
     return (
       <>
         <div
@@ -28,7 +27,11 @@ export class TenantPropertiesView extends Component {
             <h4 className="card-title text-center">
               Tenant Details
               <sup>
-                <i className="fa fa-pencil-square-o text-primary ml-2"></i>
+                <i
+                  className="fa fa-pencil-square-o text-primary ml-2"
+                  role="button"
+                  onClick={this.props.switchToEdit}
+                ></i>
               </sup>
             </h4>
             <hr />
