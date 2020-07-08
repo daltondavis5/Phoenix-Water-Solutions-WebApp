@@ -2,7 +2,7 @@ from rest_framework import viewsets, permissions
 
 from core.models.property import Meter, Property, Unit, MeterRead,\
     MeterError
-from .serializers import MeterSerializer, \
+from property.serializers import MeterSerializer, \
     PropertySerializer, UnitSerializer, MeterReadSerializer,\
     MeterErrorSerializer, MeterWithLastReadSerializer
 
@@ -28,16 +28,16 @@ class UnitViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny, ]
 
 
-# class MeterReadViewSet(viewsets.ModelViewSet):
-#     queryset = MeterRead.objects.all()
-#     permission_classes = [permissions.AllowAny, ]
-#     serializer_class = MeterReadSerializer
-#
-#
-# class MeterErrorViewSet(viewsets.ModelViewSet):
-#     queryset = MeterError.objects.all()
-#     permission_classes = [permissions.AllowAny, ]
-#     serializer_class = MeterErrorSerializer
+class MeterReadViewSet(viewsets.ModelViewSet):
+    queryset = MeterRead.objects.all()
+    permission_classes = [permissions.AllowAny, ]
+    serializer_class = MeterReadSerializer
+
+
+class MeterErrorViewSet(viewsets.ModelViewSet):
+    queryset = MeterError.objects.all()
+    permission_classes = [permissions.AllowAny, ]
+    serializer_class = MeterErrorSerializer
 
 
 # custom views here
@@ -47,7 +47,8 @@ class ListUnitsForProperty(viewsets.generics.ListAPIView):
 
     def get_queryset(self):
         property_id = self.kwargs['id']
-        return Unit.objects.filter(property=property_id)
+        queryset = services.get_units_for_property(property_id)
+        return queryset
 
 
 class ListMetersForUnit(viewsets.generics.ListAPIView):
