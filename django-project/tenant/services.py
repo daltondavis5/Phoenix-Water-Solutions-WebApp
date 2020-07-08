@@ -49,7 +49,7 @@ def get_overdue_balance_for_tenant(tenant_id):
         overdue_bal = 0.0
         today = timezone.now().date()
         tenants = TenantCharge.objects.filter(
-            tenant=tenant_id, remaining_amount__gt=0, due_date__gte=today). \
+            tenant=tenant_id, remaining_amount__gt=0, due_date__lt=today). \
             values('remaining_amount')
         if tenants:
             overdue_bal = sum([tenants[i].get('remaining_amount')
@@ -71,3 +71,11 @@ def get_tenant_usage_info(tenant_id):
     tenant_usage_info = ["current_balance:" + str(curr_balance),
                          "overdue_balance:" + str(overdue_balance)]
     return tenant_usage_info
+
+
+def get_charges_for_tenant(tenant_id):
+    try:
+        queryset = TenantCharge.objects.filter(tenant=tenant_id)
+        return queryset
+    except (ObjectDoesNotExist, ValueError):
+        return None

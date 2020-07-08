@@ -37,10 +37,13 @@ class TenantServicesTestCase(APITestCase):
             primary_phone_number="9999999999",
             secondary_phone_number="8888888888",
             unit=self.unit,
-            move_in_date="2020-01-01",
-            move_out_date="2021-01-01",
+            move_in_date=timezone.now().date() -
+                         timezone.timedelta(days=1),
+            move_out_date=timezone.now().date() +
+                          timezone.timedelta(days=365),
             credits=99.5,
-            late_fee_exemption="2020-01-31",
+            late_fee_exemption=timezone.now().date() +
+                               timezone.timedelta(days=15),
         )
         self.tenant2 = Tenant.objects.create(
             account_number="2",
@@ -51,18 +54,20 @@ class TenantServicesTestCase(APITestCase):
             primary_phone_number="9999999990",
             secondary_phone_number="8888888880",
             unit=self.unit,
-            move_in_date="2020-01-01",
-            move_out_date="2021-01-01",
+            move_in_date=timezone.now().date() - timezone.timedelta(days=1),
+            move_out_date=timezone.now().date() + timezone.timedelta(days=365),
             credits=99.5,
-            late_fee_exemption="2020-01-31",
+            late_fee_exemption=timezone.now().date() +
+                               timezone.timedelta(days=15),
         )
         self.tenant_charge1 = TenantCharge.objects.create(
             tenant=self.tenant1,
             initial_amount=100,
             remaining_amount=20,
             description="Test Desc",
-            bill_period_end_date="2020-12-31",
-            due_date=timezone.now() + timezone.timedelta(days=5),
+            bill_period_end_date=timezone.now().date() +
+                                 timezone.timedelta(days=30),
+            due_date=timezone.now().date() + timezone.timedelta(days=5),
             priority=2,
             created=timezone.now(),
             batch_id=1,
@@ -72,8 +77,9 @@ class TenantServicesTestCase(APITestCase):
             initial_amount=100,
             remaining_amount=25,
             description="Test Desc",
-            bill_period_end_date="2020-12-31",
-            due_date=timezone.now() - timezone.timedelta(days=1),
+            bill_period_end_date=timezone.now().date() +
+                                 timezone.timedelta(days=30),
+            due_date=timezone.now().date() - timezone.timedelta(days=1),
             priority=2,
             created=timezone.now(),
             batch_id=1,
@@ -83,8 +89,10 @@ class TenantServicesTestCase(APITestCase):
             initial_amount=999.50,
             remaining_amount=100.50,
             description="Test Desc",
-            bill_period_end_date="2020-12-31",
-            due_date="2020-01-31",
+            bill_period_end_date=timezone.now().date() +
+                                 timezone.timedelta(days=30),
+            due_date=timezone.now().date() +
+                     timezone.timedelta(days=30),
             priority=2,
             created=timezone.now(),
             batch_id=1,
@@ -95,8 +103,9 @@ class TenantServicesTestCase(APITestCase):
             initial_amount=999.50,
             remaining_amount=100.50,
             description="Test Desc",
-            bill_period_end_date="2020-12-31",
-            due_date="2020-01-31",
+            bill_period_end_date=timezone.now().date() +
+                                 timezone.timedelta(days=30),
+            due_date=timezone.now().date() + timezone.timedelta(days=30),
             priority=2,
             created=timezone.now(),
             batch_id=1,
@@ -142,7 +151,7 @@ class TenantServicesTestCase(APITestCase):
 
     def test_get_overdue_balance_for_tenant(self):
         """ Test case to get overdue balance for a tenant """
-        overdue_bal1 = 20.0
+        overdue_bal1 = 25.0
         overdue_bal2 = 0.0
         tenant_id1 = self.tenant1.id
         tenant_id2 = self.tenant2.id
@@ -162,7 +171,7 @@ class TenantServicesTestCase(APITestCase):
 
     def test_get_tenant_usage_info(self):
         """ Test case to get tenant usage info """
-        overdue_bal1 = 20.0
+        overdue_bal1 = 25.0
         overdue_bal2 = 0.0
         curr_bal1 = 45.0
         curr_bal2 = 201.0
