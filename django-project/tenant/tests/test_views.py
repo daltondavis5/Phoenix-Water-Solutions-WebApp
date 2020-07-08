@@ -3,9 +3,9 @@ from django.urls import reverse
 from core.models.utilityprovider import Utility, Location, Provider, \
     UtilityProvider
 from core.models.property import Unit, Property
-from core.models.tenant import Tenant, TenantCharge
+from core.models.tenant import Tenant, TenantCharge, Payment, PaymentMethod
 from tenant.serializers import TenantUsageSerializer, \
-    TenantChargeSerializer
+    TenantChargeSerializer, PaymentSerializer
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -43,12 +43,12 @@ class TenantViewSetTestCase(APITestCase):
             secondary_phone_number="8888888888",
             unit=self.unit,
             move_in_date=timezone.now().date() -
-                         timezone.timedelta(days=1),
+            timezone.timedelta(days=1),
             move_out_date=timezone.now().date() +
                           timezone.timedelta(days=365),
             credits=99.5,
             late_fee_exemption=timezone.now().date() +
-                               timezone.timedelta(days=15),
+            timezone.timedelta(days=15),
         )
         self.tenant2 = Tenant.objects.create(
             account_number="2",
@@ -63,7 +63,7 @@ class TenantViewSetTestCase(APITestCase):
             move_out_date=timezone.now().date() + timezone.timedelta(days=365),
             credits=99.5,
             late_fee_exemption=timezone.now().date() +
-                               timezone.timedelta(days=15),
+            timezone.timedelta(days=15),
         )
         self.tenant_charge1 = TenantCharge.objects.create(
             tenant=self.tenant1,
@@ -71,7 +71,7 @@ class TenantViewSetTestCase(APITestCase):
             remaining_amount=20,
             description="Test Desc",
             bill_period_end_date=timezone.now().date() +
-                                 timezone.timedelta(days=30),
+            timezone.timedelta(days=30),
             due_date=timezone.now().date() + timezone.timedelta(days=5),
             priority=2,
             created=timezone.now(),
@@ -83,7 +83,7 @@ class TenantViewSetTestCase(APITestCase):
             remaining_amount=25,
             description="Test Desc",
             bill_period_end_date=timezone.now().date() +
-                                 timezone.timedelta(days=30),
+            timezone.timedelta(days=30),
             due_date=timezone.now().date() - timezone.timedelta(days=1),
             priority=2,
             created=timezone.now(),
@@ -95,9 +95,9 @@ class TenantViewSetTestCase(APITestCase):
             remaining_amount=100.50,
             description="Test Desc",
             bill_period_end_date=timezone.now().date() +
-                                 timezone.timedelta(days=30),
+            timezone.timedelta(days=30),
             due_date=timezone.now().date() +
-                     timezone.timedelta(days=30),
+            timezone.timedelta(days=30),
             priority=2,
             created=timezone.now(),
             batch_id=1,
@@ -109,11 +109,29 @@ class TenantViewSetTestCase(APITestCase):
             remaining_amount=100.50,
             description="Test Desc",
             bill_period_end_date=timezone.now().date() +
-                                 timezone.timedelta(days=30),
+            timezone.timedelta(days=30),
             due_date=timezone.now().date() + timezone.timedelta(days=30),
             priority=2,
             created=timezone.now(),
             batch_id=1,
+        )
+
+        self.payment_method = PaymentMethod.objects.create(name="Card")
+
+        self.payment1 = Payment.objects.create(
+            tenant=self.tenant1,
+            payment_date=timezone.now().date(),
+            payment_amount=100,
+            applied_amount=100,
+            payment_method=self.payment_method,
+        )
+
+        self.payment2 = Payment.objects.create(
+            tenant=self.tenant2,
+            payment_date=timezone.now().date(),
+            payment_amount=50,
+            applied_amount=50,
+            payment_method=self.payment_method,
         )
 
     def detail_url_tenant(self, tenant_id):
@@ -124,6 +142,9 @@ class TenantViewSetTestCase(APITestCase):
 
     def get_reverse_url_tenant_charges_list(self, tenant_id):
         return reverse("tenant-charges-list", args=[tenant_id])
+
+    def get_reverse_url_tenant_payment_list(self, tenant_id):
+        return reverse("tenant-payment-list", args=[tenant_id])
 
     def test_tenant_update_move_in_date(self):
         """ Test to not allow to update move in date """
@@ -199,3 +220,16 @@ class TenantViewSetTestCase(APITestCase):
         self.assertIn(serializer2.data, response.data)
         self.assertNotIn(serializer3.data, response.data)
         self.assertNotIn(serializer4.data, response.data)
+
+    def test_tenant_payment_list_for_tenant(self):
+        """Test retrieve all payments of a tenant"""
+
+        serializer1 = PaymentSerializer(self.payment1)
+        serializer2 = PaymentSerializer(self.payment2)
+
+        url = self.get_reverse_url_tenant_payment_list(self.tenant1.id)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertIn(serializer1.data, response.data)
+        self.assertNotIn(serializer2.data, response.data)

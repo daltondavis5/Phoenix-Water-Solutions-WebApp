@@ -1,4 +1,4 @@
-from core.models.tenant import Tenant, TenantCharge
+from core.models.tenant import Tenant, TenantCharge, Payment
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 
@@ -76,6 +76,15 @@ def get_tenant_usage_info(tenant_id):
 def get_charges_for_tenant(tenant_id):
     try:
         queryset = TenantCharge.objects.filter(tenant=tenant_id)
+        return queryset
+    except (ObjectDoesNotExist, ValueError):
+        return None
+
+
+def get_payments_for_tenant(tenant_id):
+    try:
+        queryset = Payment.objects.filter(
+            tenant=tenant_id).order_by('-payment_date')
         return queryset
     except (ObjectDoesNotExist, ValueError):
         return None
