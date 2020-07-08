@@ -109,7 +109,7 @@ export class UnitDetails extends Component {
     const { id, name } = this.state.unit;
     return (
       <>
-        <h2 className="text-center mt-3">{name}</h2>
+        <h2 className="text-center mt-3 border-bottom">{name}</h2>
         <div style={{ marginTop: "30px" }}>
           <div className="row">
             <div className="col-3">

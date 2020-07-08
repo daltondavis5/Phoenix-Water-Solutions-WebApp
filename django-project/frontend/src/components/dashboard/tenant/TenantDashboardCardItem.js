@@ -14,6 +14,10 @@ export class TenantDashboardCardItem extends Component {
       move_out_date,
       credits,
     } = this.props.tenant;
+    const {
+      current_balance = 0.0,
+      overdue_balance = 0.0,
+    } = this.props.tenant.tenant_usage_info;
     return (
       // TODO: Decide what all fields should be shown in the tenant Dashboard
       <>
@@ -43,23 +47,28 @@ export class TenantDashboardCardItem extends Component {
             <div className="row">
               <div className="col-sm-6">
                 <ul className="list-group list-group-flush">
-                  <li className="list-group-item">
+                  {/* <li className="list-group-item">
                     <i className="fa fa-address-book mr-1 text-primary"></i>
                     {account_number}
-                  </li>
+                  </li> */}
                   <li className="list-group-item">
-                    <i className="fa fa-sign-in mr-1 text-primary"></i>{" "}
-                    {move_in_date}
-                  </li>
-                  <li className="list-group-item">
-                    <i className="fa fa-sign-out mr-1 text-primary"></i>{" "}
-                    {move_out_date}
-                  </li>
-                  <li className="list-group-item">
-                    <i className="fa fa-usd mr-1 text-primary"></i>{" "}
                     <span className="text-muted font-italic">
-                      No credit available
+                      Balance Due:{" "}
                     </span>
+                    <i className="fa fa-usd mr-1 text-primary"></i>
+                    {current_balance}
+                  </li>
+                  <li className="list-group-item">
+                    <span className="text-muted font-italic">
+                      Balance OverDue:{" "}
+                    </span>
+                    <i className="fa fa-usd mr-1 text-primary"></i>
+                    {overdue_balance}
+                  </li>
+                  <li className="list-group-item">
+                    <span className="text-muted font-italic">Credits: </span>
+                    <i className="fa fa-usd mr-1 text-primary"></i>
+                    {credits === null ? <p>No credit available</p> : credits}
                   </li>
                 </ul>
               </div>
