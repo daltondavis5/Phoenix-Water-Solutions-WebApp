@@ -62,8 +62,8 @@ class TenantServicesTestCase(APITestCase):
         )
         self.tenant_charge1 = TenantCharge.objects.create(
             tenant=self.tenant1,
-            initial_amount=100,
-            remaining_amount=20,
+            initial_amount=100.0,
+            remaining_amount=20.0,
             description="Test Desc",
             bill_period_end_date=timezone.now().date() +
                                  timezone.timedelta(days=30),
@@ -74,8 +74,8 @@ class TenantServicesTestCase(APITestCase):
         )
         self.tenant_charge2 = TenantCharge.objects.create(
             tenant=self.tenant1,
-            initial_amount=100,
-            remaining_amount=25,
+            initial_amount=100.0,
+            remaining_amount=25.0,
             description="Test Desc",
             bill_period_end_date=timezone.now().date() +
                                  timezone.timedelta(days=30),
@@ -196,3 +196,23 @@ class TenantServicesTestCase(APITestCase):
                          usage1)
         self.assertEqual(services.get_tenant_usage_info(tenant_id2),
                          usage1)
+
+    def test_get_charges_for_tenant(self):
+        """ Test to get all charges for a tenant """
+        tenant_id = self.tenant1.id
+        actual = services.get_charges_for_tenant(tenant_id)
+        actual = [str(actual[0]), str(actual[1])]
+        self.assertIn(str(self.tenant_charge1), actual)
+        self.assertIn(str(self.tenant_charge2), actual)
+        self.assertNotIn(str(self.tenant_charge3), actual)
+        self.assertNotIn(str(self.tenant_charge4), actual)
+
+    def test_fail_get_charges_for_tenant(self):
+        """ Test to fail get charges for tenant """
+        tenant_id1 = 0
+        tenant_id2 = "s"
+        queryset1 = services.get_charges_for_tenant(tenant_id1)
+        queryset2 = services.get_charges_for_tenant(tenant_id2)
+
+        self.assertEqual(len(queryset1), 0)
+        self.assertFalse(queryset2)
