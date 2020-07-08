@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from tenant.views import TenantViewSet, ListTenantsForUnit,\
     TenantChargeViewSet, PaymentViewSet, PaymentMethodViewSet,\
-    ListChargesForTenant
+    ListChargesForTenant, ListPaymentsForTenant
 
 router = DefaultRouter()
 router.register('tenant', TenantViewSet)
@@ -15,5 +15,7 @@ urlpatterns = [
     path('unit/<int:id>/tenants', ListTenantsForUnit.as_view(),
          name='unit-tenants-list'),
     path('tenant/<int:id>/charges', ListChargesForTenant.as_view(),
-         name='tenant-charges-list')
+         name='tenant-charges-list'),
+    path('tenant/<int:id>/payments', ListPaymentsForTenant.as_view(),
+         name='tenant-payment-list'),
 ]

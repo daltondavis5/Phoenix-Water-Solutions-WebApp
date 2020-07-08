@@ -2,8 +2,6 @@ from rest_framework import viewsets, permissions
 
 from core.models.tenant import Tenant, TenantCharge,\
     Payment, PaymentMethod
-from core.models.property import Unit
-from property.serializers import UnitSerializer
 from tenant.serializers import TenantSerializer, TenantUsageSerializer,\
     TenantChargeSerializer, PaymentSerializer, PaymentMethodSerializer
 
@@ -54,4 +52,14 @@ class ListChargesForTenant(viewsets.generics.ListAPIView):
         tenant_id = self.kwargs['id']
         queryset = services.get_charges_for_tenant(tenant_id)
 
+        return queryset
+
+
+class ListPaymentsForTenant(viewsets.generics.ListAPIView):
+    serializer_class = PaymentSerializer
+    permission_classes = [permissions.AllowAny, ]
+
+    def get_queryset(self):
+        tenant_id = self.kwargs['id']
+        queryset = services.get_payments_for_tenant(tenant_id)
         return queryset
