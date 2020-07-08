@@ -11,6 +11,7 @@ import UnitDetails from "./dashboard/units/UnitDetails";
 
 import PrivateRoute from "./common/PrivateRoute";
 import MeterDetails from "./dashboard/meter/MeterDetails";
+import TenantDetails from "./dashboard/tenant/TenantDetails";
 
 function Main() {
   return (
@@ -29,6 +30,7 @@ function Main() {
         />
         <PrivateRoute exact path="/unit/:id" component={UnitDetails} />
         <PrivateRoute exact path="/meter/:id" component={MeterDetails} />
+        <PrivateRoute exact path="/tenant/:id" component={TenantDetails} />
       </Switch>
     </main>
   );

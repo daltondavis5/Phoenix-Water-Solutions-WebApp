@@ -16,20 +16,7 @@ export class UnitDetails extends Component {
     unit: {},
     meters: [],
     utilities: [],
-    tenant: {
-      id: 1,
-      first_name: "Gourav",
-      last_name: "Agrawal",
-      email: "gourav.agrawal10041996@gmail.com",
-      account_number: "1217212178",
-      primary_phone_number: "4809376076",
-      secondary_phone_number: "",
-      unit: 1,
-      move_in_date: "Apr-10-2020",
-      move_out_date: "",
-      credits: 112.0,
-      late_fee_exemption: "",
-    },
+    tenant: {},
   };
 
   componentDidMount() {
@@ -48,26 +35,31 @@ export class UnitDetails extends Component {
       this.setState({ utilities: response.data });
     });
 
-    /* axios
-      .get(`/api/unit/${this.props.match.params.id}/tenant`)
-      .then((response) => {
-        this.setState({
-          tenant: response.data,
-        });
-      })
-      .catch((err) => {
-        this.props.returnErrors(err.response.data, err.response.status);
-      }); */
-
-    this.getMetersList();
+    this.getMetersWithinUnitsList();
+    this.getTenantsWithinUnitsList();
   }
 
-  getMetersList = () => {
+  getMetersWithinUnitsList = () => {
     axios
       .get(`/api/unit/${this.props.match.params.id}/meters`)
       .then((response) => {
         this.setState({
           meters: response.data,
+        });
+      })
+      .catch((err) => {
+        this.props.returnErrors(err.response.data, err.response.status);
+      });
+  };
+
+  getTenantsWithinUnitsList = () => {
+    axios
+      .get(`/api/unit/${this.props.match.params.id}/tenants`)
+      .then((response) => {
+        const tenant = response.data.length !== 0 ? response.data[0] : {};
+        // TODO: Handle array of tenants - currently only assuming one tenant per unit
+        this.setState({
+          tenant,
         });
       })
       .catch((err) => {
@@ -86,7 +78,26 @@ export class UnitDetails extends Component {
     axios
       .post("/api/meter/", JSON.stringify(body), config)
       .then((response) => {
-        this.getMetersList();
+        this.getMetersWithinUnitsList();
+        this.props.createMessage({ msg: "Success!" });
+      })
+      .catch((err) => {
+        this.props.returnErrors(err.response.data, err.response.status);
+      });
+  };
+
+  addTenant = (body) => {
+    body.unit = this.state.unit.id;
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    axios
+      .post("/api/tenant/", JSON.stringify(body), config)
+      .then((response) => {
+        this.getTenantsWithinUnitsList();
         this.props.createMessage({ msg: "Success!" });
       })
       .catch((err) => {
@@ -171,7 +182,10 @@ export class UnitDetails extends Component {
                   role="tabpanel"
                   aria-labelledby="v-pills-tenants-tab"
                 >
-                  <TenantDashboard tenant={this.state.tenant} />
+                  <TenantDashboard
+                    tenant={this.state.tenant}
+                    addTenant={this.addTenant}
+                  />
                 </div>
               </div>
             </div>
