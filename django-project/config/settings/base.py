@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'accounts',
     'property',
     'utilityprovider',
+    'tenant',
 ]
 
 REST_FRAMEWORK = {
