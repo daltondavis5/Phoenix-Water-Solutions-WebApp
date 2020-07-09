@@ -5,6 +5,7 @@ from core.models.utilityprovider import Utility, Location, Provider, \
 from core.models.property import Unit, Meter, Property, MeterRead,\
     MeterError
 from django.utils import timezone
+from unittest import mock
 from rest_framework import status
 from rest_framework.test import APITestCase
 from property.serializers import MeterSerializer, UnitSerializer, \
@@ -217,3 +218,42 @@ class MeterViewSetTestCase(APITestCase):
         self.assertIn(serializer3.data, response.data)
         self.assertIn(serializer2.data, response.data)
         self.assertNotIn(serializer1.data, response.data)
+
+
+class PropertyAmountUsageTestCase(APITestCase):
+    PROPERTY_AMOUNT_USAGE_URL = reverse("property-utility-usage-amount")
+
+    @mock.patch('property.services.get_utility_usage_amount_for_property',
+                mock.MagicMock(return_value={"amount": 30}))
+    def test_get_property_amount_pass(self):
+        payload = {
+            "property_id": 1,
+            "from_date": "2020-07-01",
+            "to_date": "2020-07-02",
+            "utility_type": "Water"
+        }
+        response = self.client.post(self.PROPERTY_AMOUNT_USAGE_URL, payload)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['amount'], 30)
+        pass
+
+    def test_get_property_amount_fail_date_validation(self):
+        payload = {
+            "property_id": 1,
+            "from_date": "This should fail.",
+            "to_date": "2020-07-02",
+            "utility_type": "Water"
+        }
+        response = self.client.post(self.PROPERTY_AMOUNT_USAGE_URL, payload)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        pass
+
+    def test_get_property_amount_fail_date_greater(self):
+        payload = {
+            "property_id": 1,
+            "from_date": "2020-07-05",
+            "to_date": "2020-07-02",
+            "utility_type": "Water"
+        }
+        response = self.client.post(self.PROPERTY_AMOUNT_USAGE_URL, payload)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

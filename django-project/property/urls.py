@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from property.views import MeterViewSet, PropertyViewSet, UnitViewSet,\
     ListUnitsForProperty, ListMetersForUnit, ListMeterReadsForMeter, \
-    ListMeterErrorsForMeter, get_property_amount
+    ListMeterErrorsForMeter, get_property_utility_usage_amount
 
 
 router = DefaultRouter()
@@ -14,8 +14,8 @@ router.register('unit', UnitViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('property-meter-amount', get_property_amount,
-         name="property-meter-amount"),
+    path('property-utility-usage-amount', get_property_utility_usage_amount,
+         name="property-utility-usage-amount"),
     path('property/<int:id>/units', ListUnitsForProperty.as_view(),
          name="property-unit-list"),
     path('unit/<int:id>/meters', ListMetersForUnit.as_view(),
