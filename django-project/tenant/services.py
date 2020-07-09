@@ -92,6 +92,12 @@ def get_tenant_usage_info(tenant_id):
 
 
 def get_charges_for_tenant(tenant_id):
+    """
+    Method to retrieve tenant charges info which
+    includes all the charges of the tenant.
+    :param tenant_id: tenant id
+    :return charges: tenant charge info
+    """
     try:
         tenant = Tenant.objects.get(pk=tenant_id)
         queryset = TenantCharge.objects.filter(tenant=tenant)
@@ -103,6 +109,12 @@ def get_charges_for_tenant(tenant_id):
 
 
 def get_payments_for_tenant(tenant_id):
+    """
+    Method to retrieve tenant payment info which
+    includes all the payments of the tenant.
+    :param tenant_id: tenant id
+    :return payments: tenant payment info
+    """
     try:
         tenant = Tenant.objects.get(pk=tenant_id)
         queryset = Payment.objects.filter(
