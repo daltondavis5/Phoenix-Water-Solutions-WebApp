@@ -1,28 +1,28 @@
 import React, { Component } from "react";
 import axios from "axios";
-import ProviderItem from "./ProviderItem";
+import PropertyItem from "./PropertyItem";
 import { Link } from "react-router-dom";
 
-export class Provider extends Component {
+export class Property extends Component {
   state = {
-    providers: [],
+    properties: [],
   };
 
   componentWillMount() {
-    this.getProviders();
+    this.getProperties();
   }
 
-  getProviders = () => {
+  getProperties = () => {
     axios
-      .get("/api/provider")
+      .get("/api/property")
       .then((response) => {
-        this.setState({ providers: response.data });
+        this.setState({ properties: response.data });
       })
       .catch((err) => console.log(err));
   };
   render() {
-    const providerItems = this.state.providers.map((provider, i) => (
-      <ProviderItem key={i} provider={provider}></ProviderItem>
+    const propertyItems = this.state.properties.map((property, i) => (
+      <PropertyItem key={i} property={property}></PropertyItem>
     ));
 
     return (
@@ -35,14 +35,14 @@ export class Provider extends Component {
               "radial-gradient( circle 592px at 48.2% 50%,  rgba(255,255,249,0.6) 0%, rgba(160,199,254,1) 74.6% )",
           }}
         >
-          <h1 className="text-center mb-4">Provider List</h1>
-          <ul className="list-group">{providerItems}</ul>
+          <h1 className="text-center mb-4">Property List</h1>
+          <ul className="list-group">{propertyItems}</ul>
           <div className="btn btn-primary mt-4 rounded d-flex justify-content-center">
             <Link
               className="text-white text-decoration-none"
-              to="/provider/add"
+              to="/property/add"
             >
-              Add Provider
+              Add Property
             </Link>
           </div>
         </div>
@@ -51,4 +51,4 @@ export class Provider extends Component {
   }
 }
 
-export default Provider;
+export default Property;

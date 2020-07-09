@@ -6,8 +6,7 @@ export class ViewProvider extends Component {
       <React.Fragment>
         <button
           type="submit"
-          className="btn btn-primary float-right"
-          style={{ marginLeft: "10px", width: "100px", borderRadius: "4px" }}
+          className="btn btn-primary float-right rounded"
           onClick={this.props.changeMode}
         >
           Edit Name

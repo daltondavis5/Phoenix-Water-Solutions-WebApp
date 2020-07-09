@@ -22,24 +22,18 @@ export class EditProvider extends Component {
       <React.Fragment>
         <button
           type="submit"
-          className="btn btn-primary float-right"
-          style={{
-            marginLeft: "10px",
-            width: "100px",
-            borderRadius: "4px",
-            marginBottom: "10px",
-          }}
+          className="btn btn-primary float-right rounded"
           onClick={() => this.props.updateName(this.state.name)}
         >
           Save name
         </button>
         <input
           type="text"
-          className="form-control"
+          className="form-control mb-2"
           name="name"
           onChange={this.handleChange}
           value={this.state.name}
-          style={{ marginBottom: "10px", width: "80%" }}
+          style={{ width: "80%" }}
         />
       </React.Fragment>
     );

@@ -99,7 +99,7 @@ export class ProviderDetails extends Component {
 
     if (utility_provider.mode == "adding") {
       axios
-        .post("/api/utility_provider/", JSON.stringify(body), config)
+        .post("/api/utilityprovider/", JSON.stringify(body), config)
         .then((response) => {
           utility_provider["id"] = response.data.id;
           this.props.createMessage({ msg: "Success!" });
@@ -111,7 +111,7 @@ export class ProviderDetails extends Component {
     if (utility_provider.mode == "editing") {
       axios
         .put(
-          `/api/utility_provider/${utility_provider["id"]}/`,
+          `/api/utilityprovider/${utility_provider["id"]}/`,
           JSON.stringify(body),
           config
         )
@@ -139,7 +139,7 @@ export class ProviderDetails extends Component {
     };
     if (utility_provider.mode == "editing") {
       axios
-        .delete(`/api/utility_provider/${utility_provider["id"]}/`, config)
+        .delete(`/api/utilityprovider/${utility_provider["id"]}/`, config)
         .then((response) => {});
     }
     let utility_providers = [
@@ -216,11 +216,10 @@ export class ProviderDetails extends Component {
           );
         })}
         {this.state.currentMode !== "adding" && (
-          <div className="form-group" style={{ marginTop: "20px" }}>
+          <div className="form-group mt-4">
             <button
               onClick={this.addUtilityProvider}
-              className="btn btn-outline-secondary"
-              style={{ borderRadius: "4px" }}
+              className="btn btn-outline-secondary rounded"
             >
               Add New Utility
             </button>

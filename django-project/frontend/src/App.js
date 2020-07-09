@@ -5,6 +5,8 @@ import { Provider } from "react-redux";
 import { Provider as AlertProvider } from "react-alert";
 import AlertTemplate from "react-alert-template-basic";
 
+import "./styles.css";
+
 import store from "./store";
 import Alerts from "./components/common/Alerts";
 import Header from "./components/layout/Header";
@@ -18,7 +20,8 @@ const alertOptions = {
 };
 
 class App extends Component {
-  componentDidMount() {
+  constructor() {
+    super();
     store.dispatch(loadUser());
   }
 

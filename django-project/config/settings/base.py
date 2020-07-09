@@ -55,8 +55,9 @@ INSTALLED_APPS = [
     'knox',
     'core',
     'frontend',
-    'main',
     'accounts',
+    'property',
+    'utilityprovider',
 ]
 
 REST_FRAMEWORK = {

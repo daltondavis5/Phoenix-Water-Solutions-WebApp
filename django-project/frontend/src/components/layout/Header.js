@@ -55,7 +55,7 @@ export class Header extends Component {
           </button>
           <div className="collapse navbar-collapse" id="navbarToggler">
             <a className="navbar-brand" href="#">
-              PWS Web App
+              <span className="border rounded shadow p-1 lead">PWS</span>
             </a>
           </div>
           {isAuthenticated ? authLinks : guestLinks}

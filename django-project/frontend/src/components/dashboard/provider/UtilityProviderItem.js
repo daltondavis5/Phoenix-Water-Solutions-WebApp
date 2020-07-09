@@ -21,79 +21,79 @@ export class UtilityProviderItem extends Component {
       mode,
     } = this.props.utility_provider_item;
     return (
-      <div style={{ marginBottom: "20px" }}>
-        <h2 className="text-center">
-          {mode === "adding" ? "Add a utility" : "Edit a utility"}
-        </h2>
-        <div className="edit-save-buttons" style={{ height: "25px" }}>
-          <button
-            type="submit"
-            className="btn btn-primary float-right"
-            style={{ marginLeft: "10px", width: "60px", borderRadius: "4px" }}
-            onClick={this.props.saveButton}
-          >
-            Save
-          </button>
-          <button
-            type="submit"
-            className="btn btn-danger float-right"
-            style={{ marginLeft: "10px", width: "70px", borderRadius: "4px" }}
-            onClick={this.props.deleteButton}
-          >
-            Delete
-          </button>
-        </div>
-        <div>
-          <div className="form-group">
-            <label>Utility Type</label>
-            <select
-              className="form-control"
-              name="utility_type"
-              onChange={this.props.onChange}
-              value={utility_type}
-              disabled={mode == "editing"}
+      <div className="card mb-4">
+        <div className="card-body">
+          <h2 className="text-center">
+            {mode === "adding" ? "Add a utility" : "Edit Utility"}
+          </h2>
+          <div className="edit-save-buttons" style={{ height: "25px" }}>
+            <button
+              type="submit"
+              className="btn btn-primary float-right rounded ml-2"
+              onClick={this.props.saveButton}
             >
-              <option value="Default">Choose a utility</option>
-              {this.state.utilities.map((utility) => {
-                return (
-                  <option key={utility["type"]} value={utility["type"]}>
-                    {utility["type"]}
-                  </option>
-                );
-              })}
-            </select>
+              Save
+            </button>
+            <button
+              type="submit"
+              className="btn btn-danger float-right rounded"
+              onClick={this.props.deleteButton}
+            >
+              Delete
+            </button>
           </div>
-          <div className="form-group">
-            <label>State</label>
-            <input
-              type="text"
-              className="form-control"
-              name="state"
-              onChange={this.props.onChange}
-              value={state}
-              disabled={mode == "editing"}
-            />
-          </div>
-          <div className="form-group">
-            <label>City</label>
-            <input
-              type="text"
-              className="form-control"
-              name="city"
-              onChange={this.props.onChange}
-              value={city}
-              disabled={mode == "editing"}
-            />
-          </div>
-          <div className="form-group">
-            <label>Unit Measurement</label>
-            <input
-              type="text"
-              className="form-control"
-              name="unit_measurement"
-              onChange={this.props.onChange}
-              value={unit_measurement}
-            />
+          <div>
+            <div className="form-group">
+              <label>Utility Type</label>
+              <select
+                className="form-control"
+                name="utility_type"
+                onChange={this.props.onChange}
+                value={utility_type}
+                disabled={mode == "editing"}
+              >
+                <option value="Default">Choose a utility</option>
+                {this.state.utilities.map((utility) => {
+                  return (
+                    <option key={utility["type"]} value={utility["type"]}>
+                      {utility["type"]}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+            <div className="form-group">
+              <label>State</label>
+              <input
+                type="text"
+                className="form-control"
+                name="state"
+                onChange={this.props.onChange}
+                value={state}
+                disabled={mode == "editing"}
+              />
+            </div>
+            <div className="form-group">
+              <label>City</label>
+              <input
+                type="text"
+                className="form-control"
+                name="city"
+                onChange={this.props.onChange}
+                value={city}
+                disabled={mode == "editing"}
+              />
+            </div>
+            <div className="form-group">
+              <label>Unit Measurement</label>
+              <input
+                type="text"
+                className="form-control"
+                name="unit_measurement"
+                onChange={this.props.onChange}
+                value={unit_measurement}
+              />
+            </div>
           </div>
         </div>
       </div>
