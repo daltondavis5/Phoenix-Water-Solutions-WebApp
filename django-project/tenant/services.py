@@ -1,3 +1,4 @@
+from core.models.property import Unit
 from core.models.tenant import Tenant, TenantCharge, Payment
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
@@ -10,10 +11,13 @@ def get_tenants_for_unit(unit_id):
     :return queryset: all tenants for a unit
     """
     try:
-        queryset = Tenant.objects.filter(unit=unit_id)
+        unit = Unit.objects.get(pk=unit_id)
+        queryset = Tenant.objects.filter(unit=unit)
         return queryset
-    except (ObjectDoesNotExist, ValueError):
-        return None
+    except (ObjectDoesNotExist):
+        return Exception("Enter a valid ID")
+    except(ValueError):
+        return Exception("Enter a numerical value for ID")
 
 
 def get_current_balance_for_tenant(tenant_id):
@@ -70,8 +74,8 @@ def get_tenant_usage_info(tenant_id):
         tenant = Tenant.objects.get(pk=tenant_id)
         curr_balance = get_current_balance_for_tenant(tenant.id)
         overdue_balance = get_overdue_balance_for_tenant(tenant.id)
-        tenant_usage_info = ["current_balance:" + str(curr_balance),
-                             "overdue_balance:" + str(overdue_balance)]
+        tenant_usage_info = [{"current_balance": curr_balance,
+                              "overdue_balance": overdue_balance}]
         return tenant_usage_info
     except (ObjectDoesNotExist):
         return Exception("Enter a valid ID")
