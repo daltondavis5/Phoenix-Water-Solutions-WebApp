@@ -30,16 +30,19 @@ def get_current_balance_for_tenant(tenant_id):
     :return curr_bal: current balance
     """
     try:
+        tenant = Tenant.objects.get(pk=tenant_id)
         curr_bal = 0.0
-        tenants = TenantCharge.objects.filter(
-            tenant=tenant_id, remaining_amount__gt=0). \
+        charges = TenantCharge.objects.filter(
+            tenant=tenant.id, remaining_amount__gt=0). \
             values('remaining_amount')
-        if tenants:
-            curr_bal = sum([tenants[i].get('remaining_amount')
-                            for i in range(len(tenants))])
+        if charges:
+            curr_bal = sum([charges[i].get('remaining_amount')
+                            for i in range(len(charges))])
         return curr_bal
-    except (ObjectDoesNotExist, ValueError):
-        return 0.0
+    except ObjectDoesNotExist:
+        raise Exception("Enter a valid ID")
+    except ValueError:
+        raise Exception("Enter a numerical value for ID")
 
 
 def get_overdue_balance_for_tenant(tenant_id):
@@ -51,17 +54,20 @@ def get_overdue_balance_for_tenant(tenant_id):
     :return overdue_bal: overdue balance
     """
     try:
+        tenant = Tenant.objects.get(pk=tenant_id)
         overdue_bal = 0.0
         today = timezone.now().date()
-        tenants = TenantCharge.objects.filter(
-            tenant=tenant_id, remaining_amount__gt=0, due_date__lt=today). \
+        charges = TenantCharge.objects.filter(
+            tenant=tenant.id, remaining_amount__gt=0, due_date__lt=today). \
             values('remaining_amount')
-        if tenants:
-            overdue_bal = sum([tenants[i].get('remaining_amount')
-                               for i in range(len(tenants))])
+        if charges:
+            overdue_bal = sum([charges[i].get('remaining_amount')
+                               for i in range(len(charges))])
         return overdue_bal
-    except (ObjectDoesNotExist, ValueError):
-        return 0.0
+    except ObjectDoesNotExist:
+        raise Exception("Enter a valid ID")
+    except ValueError:
+        raise Exception("Enter a numerical value for ID")
 
 
 def get_tenant_usage_info(tenant_id):
@@ -78,10 +84,10 @@ def get_tenant_usage_info(tenant_id):
         tenant_usage_info = [{"current_balance": curr_balance,
                               "overdue_balance": overdue_balance}]
         return tenant_usage_info
-    except (ObjectDoesNotExist):
-        return Exception("Enter a valid ID")
-    except(ValueError):
-        return Exception("Enter a numerical value for ID")
+    except ObjectDoesNotExist:
+        raise Exception("Enter a valid ID")
+    except ValueError:
+        raise Exception("Enter a numerical value for ID")
 
 
 def get_charges_for_tenant(tenant_id):
@@ -89,10 +95,10 @@ def get_charges_for_tenant(tenant_id):
         tenant = Tenant.objects.get(pk=tenant_id)
         queryset = TenantCharge.objects.filter(tenant=tenant)
         return queryset
-    except (ObjectDoesNotExist):
-        return Exception("Enter a valid ID")
-    except(ValueError):
-        return Exception("Enter a numerical value for ID")
+    except ObjectDoesNotExist:
+        raise Exception("Enter a valid ID")
+    except ValueError:
+        raise Exception("Enter a numerical value for ID")
 
 
 def get_payments_for_tenant(tenant_id):
@@ -101,7 +107,7 @@ def get_payments_for_tenant(tenant_id):
         queryset = Payment.objects.filter(
             tenant=tenant).order_by('-payment_date')
         return queryset
-    except (ObjectDoesNotExist):
-        return Exception("Enter a valid ID")
-    except(ValueError):
-        return Exception("Enter a numerical value for ID")
+    except ObjectDoesNotExist:
+        raise Exception("Enter a valid ID")
+    except ValueError:
+        raise Exception("Enter a numerical value for ID")
