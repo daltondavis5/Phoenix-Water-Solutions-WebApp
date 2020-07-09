@@ -25,6 +25,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     permission_classes = [permissions.AllowAny, ]
+    http_method_names = ['get', 'post', 'delete']
 
 
 class PaymentMethodViewSet(viewsets.ModelViewSet):
