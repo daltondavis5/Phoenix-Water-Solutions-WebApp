@@ -141,7 +141,7 @@ export class MeterDashboard extends Component {
                   type="button"
                   onClick={this.addMeter}
                   className="btn btn-primary"
-                  data-dismiss="modal"
+                  /* data-dismiss="modal" */
                 >
                   Save
                 </button>

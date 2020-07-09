@@ -42,7 +42,6 @@ class MeterProperties extends Component {
           <MeterPropertiesEdit
             meter={this.state.meter}
             changeToView={this.changeToView}
-            saveButton={this.saveButton}
             updateMeter={this.updateMeter}
           />
         )}
