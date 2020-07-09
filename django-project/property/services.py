@@ -24,10 +24,13 @@ def get_meters_for_unit(unit_id):
     :return: queryset of all meters in a unit.
     """
     try:
-        queryset = Meter.objects.filter(unit=unit_id)
+        unit = Unit.objects.get(id=unit_id)
+        queryset = Meter.objects.filter(unit=unit.id)
         return queryset
-    except (ObjectDoesNotExist, ValueError):
-        return None
+    except ObjectDoesNotExist:
+        raise Exception("Enter a valid ID")
+    except ValueError:
+        raise Exception("Enter a numerical value for ID")
 
 
 def get_meter_reads_for_meter(meter_id):
@@ -37,10 +40,13 @@ def get_meter_reads_for_meter(meter_id):
     :return: queryset of all meter reads of a meter
     """
     try:
-        queryset = MeterRead.objects.filter(meter=meter_id)
+        meter = Meter.objects.get(id=meter_id)
+        queryset = MeterRead.objects.filter(meter=meter.id)
         return queryset
-    except (ObjectDoesNotExist, ValueError):
-        return None
+    except ObjectDoesNotExist:
+        raise Exception("Enter a valid ID")
+    except ValueError:
+        raise Exception("Enter a numerical value for ID")
 
 
 def get_meter_errors_for_meter(meter_id):
@@ -50,10 +56,13 @@ def get_meter_errors_for_meter(meter_id):
     :return: queryset of all meter reads of a meter
     """
     try:
-        queryset = MeterError.objects.filter(meter=meter_id)
+        meter = Meter.objects.get(id=meter_id)
+        queryset = MeterError.objects.filter(meter=meter.id)
         return queryset
-    except (ObjectDoesNotExist, ValueError):
-        return None
+    except ObjectDoesNotExist:
+        raise Exception("Enter a valid ID")
+    except ValueError:
+        raise Exception("Enter a numerical value for ID")
 
 
 def get_units_for_property(property_id):
@@ -63,7 +72,10 @@ def get_units_for_property(property_id):
     :return: queryset of all units of a property
     """
     try:
-        queryset = Unit.objects.filter(property=property_id)
+        property = Property.objects.get(id=property_id)
+        queryset = Unit.objects.filter(property=property.id)
         return queryset
-    except (ObjectDoesNotExist, ValueError):
-        return None
+    except ObjectDoesNotExist:
+        raise Exception("Enter a valid ID")
+    except ValueError:
+        raise Exception("Enter a numerical value for ID")
