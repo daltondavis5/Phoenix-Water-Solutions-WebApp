@@ -3,7 +3,7 @@ from rest_framework import status
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from . import PropertyService as PS
+from . import services
 from core.models.property import Meter, Property, Unit, MeterRead,\
     MeterError
 from .serializers import MeterSerializer, \
@@ -71,21 +71,20 @@ class ListMeterReadsForMeter(viewsets.generics.ListAPIView):
         return MeterRead.objects.filter(meter=meter_id)
 
 
-@api_view(['GET'])
-def get_property_amount(request):
-    """API to calculate meter amount for all Units in a Property"""
-    if request.method == "GET":
-
+@api_view(["POST"])
+def get_property_utility_usage_amount(request):
+    """API to calculate meter usage amount for all Units in a Property"""
+    if request.method == "POST":
         serializer = PropertyMeterReadSerializer(data=request.data)
-        if serializer.is_valid():
-            pid = serializer.validated_data.get("provider_id")
+        if serializer.is_valid(raise_exception=True):
+            pid = serializer.validated_data.get("property_id")
             from_date = serializer.validated_data.get("from_date")
             to_date = serializer.validated_data.get("to_date")
             utility_type = serializer.validated_data.get("utility_type")
 
-            print(pid, type(from_date), to_date, utility_type)
-            amount = PS.get_property_amount(pid, from_date, to_date, utility_type)
-            return Response(data={"amount": 1}, status=status.HTTP_200_OK)
+            resp = services.get_utility_usage_amount_for_property(
+                pid, from_date, to_date, utility_type)
+            return Response(data=resp, status=status.HTTP_200_OK)
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
