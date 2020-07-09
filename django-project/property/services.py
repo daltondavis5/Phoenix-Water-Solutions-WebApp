@@ -1,6 +1,8 @@
 from core.models.property import Meter, Property, Unit, \
-    PropertyUtilityProviderInfo, MeterRead, MeterError
+    MeterRead, MeterError
 from django.core.exceptions import ObjectDoesNotExist
+from core.exceptions.exceptions import NonNumericalValueException,\
+    InvalidIDException
 
 
 def get_last_read_info_for_meter(meter_obj):
@@ -28,9 +30,9 @@ def get_meters_for_unit(unit_id):
         queryset = Meter.objects.filter(unit=unit.id)
         return queryset
     except ObjectDoesNotExist:
-        raise Exception("Enter a valid ID")
+        raise InvalidIDException
     except ValueError:
-        raise Exception("Enter a numerical value for ID")
+        raise NonNumericalValueException
 
 
 def get_meter_reads_for_meter(meter_id):
@@ -44,9 +46,9 @@ def get_meter_reads_for_meter(meter_id):
         queryset = MeterRead.objects.filter(meter=meter.id)
         return queryset
     except ObjectDoesNotExist:
-        raise Exception("Enter a valid ID")
+        raise InvalidIDException
     except ValueError:
-        raise Exception("Enter a numerical value for ID")
+        raise NonNumericalValueException
 
 
 def get_meter_errors_for_meter(meter_id):
@@ -60,9 +62,9 @@ def get_meter_errors_for_meter(meter_id):
         queryset = MeterError.objects.filter(meter=meter.id)
         return queryset
     except ObjectDoesNotExist:
-        raise Exception("Enter a valid ID")
+        raise InvalidIDException
     except ValueError:
-        raise Exception("Enter a numerical value for ID")
+        raise NonNumericalValueException
 
 
 def get_units_for_property(property_id):
@@ -76,6 +78,6 @@ def get_units_for_property(property_id):
         queryset = Unit.objects.filter(property=property.id)
         return queryset
     except ObjectDoesNotExist:
-        raise Exception("Enter a valid ID")
+        raise InvalidIDException
     except ValueError:
-        raise Exception("Enter a numerical value for ID")
+        raise NonNumericalValueException
