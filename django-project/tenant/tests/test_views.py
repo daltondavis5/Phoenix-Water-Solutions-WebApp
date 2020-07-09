@@ -146,6 +146,9 @@ class TenantViewSetTestCase(APITestCase):
     def get_reverse_url_tenant_payment_list(self, tenant_id):
         return reverse("tenant-payment-list", args=[tenant_id])
 
+    def get_reverse_url_payment_detail(self, payment_id):
+        return reverse("payment-detail", args=[payment_id])
+
     def test_tenant_update_move_in_date(self):
         """ Test to not allow to update move in date """
         tenant = self.tenant1
@@ -233,3 +236,10 @@ class TenantViewSetTestCase(APITestCase):
         self.assertEqual(len(response.data), 1)
         self.assertIn(serializer1.data, response.data)
         self.assertNotIn(serializer2.data, response.data)
+
+    def test_put_not_allowed_payment(self):
+        """Test payment update is disabled"""
+        url = self.get_reverse_url_payment_detail(self.payment1.id)
+        response = self.client.put(url)
+        self.assertEqual(response.status_code,
+                         status.HTTP_405_METHOD_NOT_ALLOWED)
