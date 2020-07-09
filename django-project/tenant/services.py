@@ -2,6 +2,7 @@ from core.models.property import Unit
 from core.models.tenant import Tenant, TenantCharge, Payment
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
+from core.exceptions.exceptions import NonNumericalException, NonValidID
 
 
 def get_tenants_for_unit(unit_id):
@@ -15,9 +16,9 @@ def get_tenants_for_unit(unit_id):
         queryset = Tenant.objects.filter(unit=unit)
         return queryset
     except (ObjectDoesNotExist):
-        return Exception("Enter a valid ID")
+        raise NonValidID
     except(ValueError):
-        return Exception("Enter a numerical value for ID")
+        raise NonNumericalException
 
 
 def get_current_balance_for_tenant(tenant_id):

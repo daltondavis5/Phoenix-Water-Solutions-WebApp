@@ -5,6 +5,7 @@ from core.models.tenant import Tenant, TenantCharge, Payment, PaymentMethod
 from django.utils import timezone
 import tenant.services as services
 from rest_framework.test import APITestCase
+from core.exceptions.exceptions import NonNumericalException, NonValidID
 
 
 class TenantServicesTestCase(APITestCase):
@@ -156,14 +157,13 @@ class TenantServicesTestCase(APITestCase):
     def test_fail_get_tenants_for_unit_id(self):
         """ Test case to fail get all tenants for a unit """
         unit_id1 = 0
-        services.get_tenants_for_unit(unit_id1)
-        self.assertRaises(Exception, 'Enter a valid ID')
+        self.assertRaises(NonValidID, services.get_tenants_for_unit, unit_id1)
 
     def test_fail_get_tenants_for_unit_id_type(self):
         """ Test case to fail get all tenants for a unit """
         unit_id2 = "s"
-        services.get_tenants_for_unit(unit_id2)
-        self.assertRaises(Exception, 'Enter a numerical value for ID')
+        self.assertRaises(NonNumericalException,
+                          services.get_tenants_for_unit, unit_id2)
 
     def test_get_current_balance_for_tenant(self):
         """ Test case to get current balance for a tenant """
@@ -214,9 +214,9 @@ class TenantServicesTestCase(APITestCase):
         tenant_id1 = self.tenant1.id
         tenant_id2 = self.tenant2.id
         usage1 = [{"current_balance": curr_bal1,
-                  "overdue_balance": overdue_bal1}]
+                   "overdue_balance": overdue_bal1}]
         usage2 = [{"current_balance": curr_bal2,
-                  "overdue_balance": overdue_bal2}]
+                   "overdue_balance": overdue_bal2}]
         self.assertEqual(services.get_tenant_usage_info(tenant_id1),
                          usage1)
         self.assertEqual(services.get_tenant_usage_info(tenant_id2),
