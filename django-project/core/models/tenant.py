@@ -34,7 +34,7 @@ class PaymentMethod(models.Model):
 class TenantCharge(models.Model):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     initial_amount = models.FloatField()
-    remaining_amount = models.FloatField()
+    # remaining_amount = models.FloatField()
     description = models.CharField(max_length=100)
     bill_period_end_date = models.DateField()
     due_date = models.DateField()
@@ -45,15 +45,14 @@ class TenantCharge(models.Model):
     def __str__(self):
         return "Tenant: " + str(self.tenant.first_name) + \
                ", Due Date: " + str(self.due_date) + ", Initial Amount: " \
-               + str(self.initial_amount) + ", Remaining Amount: " + \
-               str(self.remaining_amount)
+               + str(self.initial_amount)
 
 
 class Payment(models.Model):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     payment_date = models.DateField(default=timezone.now)
     payment_amount = models.FloatField()
-    applied_amount = models.FloatField()
+    # applied_amount = models.FloatField()
     payment_method = models.ForeignKey(PaymentMethod,
                                        on_delete=models.CASCADE)
     charges_applied_to = models.ManyToManyField(TenantCharge,
@@ -68,6 +67,12 @@ class Payment(models.Model):
 class TenantChargePayment(models.Model):
     payment = models.ForeignKey(Payment, on_delete=models.CASCADE)
     tenant_charge = models.ForeignKey(TenantCharge, on_delete=models.CASCADE)
+    applied_amount = models.FloatField()
+
+    def __str__(self):
+        return "Payment: " + str(self.payment.id) + \
+               ", Tenant Charge: " + str(self.tenant_charge.id) \
+               + ", Applied Amount: " + str(self.applied_amount)
 
 
 class TenantNotes(models.Model):
