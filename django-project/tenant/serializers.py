@@ -46,6 +46,20 @@ class PaymentSerializer(serializers.ModelSerializer):
         model = Payment
         fields = ['id', 'tenant', 'payment_date', 'payment_amount',
                   'applied_amount', 'payment_method', 'charges_applied_to']
+        read_only_fields = ['payment_method']
+
+    def create(self, validated_data):
+        payment_method = PaymentMethod.objects.get(
+            name=validated_data.get('payment_method').get('name'))
+        payment = Payment.objects.create(
+            tenant=validated_data.get('tenant'),
+            payment_date=validated_data.get('payment_date'),
+            payment_amount=validated_data.get('payment_amount'),
+            applied_amount=validated_data.get('applied_amount'),
+            payment_method=payment_method,
+        )
+        payment.save()
+        return payment
 
 
 class PaymentMethodSerializer(serializers.ModelSerializer):
