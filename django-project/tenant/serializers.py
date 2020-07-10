@@ -40,9 +40,12 @@ class TenantChargeSerializer(serializers.ModelSerializer):
 
 
 class PaymentSerializer(serializers.ModelSerializer):
+    payment_method = serializers.CharField(source='payment_method.name')
+
     class Meta:
         model = Payment
-        fields = "__all__"
+        fields = ['id', 'tenant', 'payment_date', 'payment_amount',
+                  'applied_amount', 'payment_method', 'charges_applied_to']
 
 
 class PaymentMethodSerializer(serializers.ModelSerializer):
