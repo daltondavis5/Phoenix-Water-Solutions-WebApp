@@ -11,6 +11,7 @@ export class TenantCharges extends Component {
     charges: [],
     index: 0,
     mode: "",
+    toggleSort: false,
   };
 
   static propTypes = {
@@ -34,7 +35,6 @@ export class TenantCharges extends Component {
 
   addTenantCharge = (body) => {
     body.tenant = this.props.id;
-    console.log(body);
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -101,19 +101,37 @@ export class TenantCharges extends Component {
       });
   };
 
+  sortByDueDate = () => {
+    const charges = [...this.state.charges];
+    const sorted_charges = charges.sort((a, b) =>
+      this.state.toggleSort
+        ? new Date(b.due_date) - new Date(a.due_date)
+        : new Date(a.due_date) - new Date(b.due_date)
+    );
+    const toggleSort = !this.state.toggleSort;
+    this.setState({ charges: sorted_charges, toggleSort });
+  };
+
   render() {
     return (
       <>
         <div className="table-responsive">
           <table className="table table-hover shadow-sm table-sm table-bordered text-center border-bottom">
             <caption style={{ captionSide: "top" }}>Tenant Charges</caption>
-            <thead className="thead-dark">
+            <thead className="thead-dark p-5">
               <tr>
                 <th scope="col">Initial Amount</th>
                 <th scope="col">Remaining Amount</th>
                 <th scope="col">Description</th>
                 <th scope="col">Bill Period End Date</th>
-                <th scope="col">Due Date</th>
+                <th scope="col">
+                  Due Date{" "}
+                  <i
+                    className="fa fa-sort"
+                    role="button"
+                    onClick={this.sortByDueDate}
+                  ></i>
+                </th>
                 <th scope="col">Priority</th>
                 <th scope="col">Created</th>
                 <th scope="col">Batch Id</th>
@@ -123,6 +141,7 @@ export class TenantCharges extends Component {
                     data-target="#tenantChargeAddModal"
                     className="fa fa-plus-circle fa-lg"
                     title="Add new Charge"
+                    role="button"
                     onClick={this.viewChargeAddModal}
                   ></i>
                 </th>
@@ -151,15 +170,17 @@ export class TenantCharges extends Component {
                     <td>{created}</td>
                     <td>{batch_id}</td>
                     <td style={{ width: "100px" }}>
-                      <button
-                        className="btn btn-outline-primary rounded btn-sm"
-                        data-toggle="modal"
-                        data-target="#tenantChargeEditModal"
-                        title="Edit Charge"
-                        onClick={() => this.viewChargeEditModal(index)}
-                      >
-                        <i className="fa fa-pencil-square-o"></i>
-                      </button>
+                      {(batch_id === null || batch_id === 0) && (
+                        <button
+                          className="btn btn-outline-primary rounded btn-sm"
+                          data-toggle="modal"
+                          data-target="#tenantChargeEditModal"
+                          title="Edit Charge"
+                          onClick={() => this.viewChargeEditModal(index)}
+                        >
+                          <i className="fa fa-pencil-square-o"></i>
+                        </button>
+                      )}
                       <button
                         className="btn btn-outline-danger rounded btn-sm ml-1"
                         title="Delete Charge"

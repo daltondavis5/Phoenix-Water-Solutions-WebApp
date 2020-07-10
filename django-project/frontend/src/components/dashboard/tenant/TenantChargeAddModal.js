@@ -2,14 +2,16 @@ import React, { Component } from "react";
 
 export default class TenantChargeAddModal extends Component {
   state = {
-    initial_amount: 0.0,
-    remaining_amount: 0.0,
+    initial_amount: 0,
+    remaining_amount: 0,
     description: "",
     bill_period_end_date: "",
     due_date: "",
     priority: 0,
-    created: "",
-    batch_id: 0,
+    created: `${new Date()
+      .toISOString()
+      .slice(0, 10)}T${new Date().toLocaleTimeString().slice(0, 5)}`,
+    batch_id: null,
   };
 
   onChange = (e) => {
@@ -43,7 +45,6 @@ export default class TenantChargeAddModal extends Component {
   render() {
     const {
       initial_amount,
-      remaining_amount,
       description,
       bill_period_end_date,
       due_date,
@@ -76,9 +77,7 @@ export default class TenantChargeAddModal extends Component {
             <div className="modal-body">
               <form>
                 <div className="form-group row">
-                  <label className="col-sm-3 col-form-label">
-                    Initial Amount:
-                  </label>
+                  <label className="col-sm-3 col-form-label">Amount:</label>
                   <div className="col-sm-9">
                     <input
                       type="number"
@@ -87,21 +86,6 @@ export default class TenantChargeAddModal extends Component {
                       name="initial_amount"
                       onChange={this.onChange}
                       value={initial_amount}
-                    />
-                  </div>
-                </div>
-                <div className="form-group row">
-                  <label className="col-sm-3 col-form-label">
-                    Remaining Amount:
-                  </label>
-                  <div className="col-sm-9">
-                    <input
-                      type="number"
-                      step="any"
-                      className="form-control"
-                      name="remaining_amount"
-                      onChange={this.onChange}
-                      value={remaining_amount}
                     />
                   </div>
                 </div>
@@ -168,6 +152,7 @@ export default class TenantChargeAddModal extends Component {
                       name="created"
                       onChange={this.onChange}
                       value={created}
+                      disabled
                     />
                   </div>
                 </div>
@@ -179,7 +164,8 @@ export default class TenantChargeAddModal extends Component {
                       className="form-control"
                       name="batch_id"
                       onChange={this.onChange}
-                      value={batch_id}
+                      value={batch_id !== null && batch_id}
+                      disabled
                     />
                   </div>
                 </div>
@@ -197,7 +183,7 @@ export default class TenantChargeAddModal extends Component {
                 type="button"
                 className="btn btn-primary"
                 onClick={this.addTenantCharge}
-                /* data-dismiss="modal" */
+                data-dismiss="modal"
               >
                 Save
               </button>

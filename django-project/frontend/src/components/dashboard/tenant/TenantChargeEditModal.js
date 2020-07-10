@@ -189,7 +189,7 @@ export default class TenantChargeEditModal extends Component {
                       className="form-control"
                       name="batch_id"
                       onChange={this.onChange}
-                      value={batch_id}
+                      value={batch_id !== null && batch_id}
                       disabled
                     />
                   </div>

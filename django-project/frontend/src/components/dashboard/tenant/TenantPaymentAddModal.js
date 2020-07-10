@@ -1,12 +1,20 @@
 import React, { Component } from "react";
+import axios from "axios";
 
 export default class TenantPaymentAddModal extends Component {
   state = {
-    payment_date: "",
-    payment_amount: 0.0,
-    applied_amount: 0.0,
+    payment_date: new Date().toISOString().slice(0, 10),
+    payment_amount: 0,
+    applied_amount: 0,
     payment_method: "",
+    payment_method_list: [],
   };
+
+  componentDidMount() {
+    axios.get("/api/paymentmethod/").then((response) => {
+      this.setState({ payment_method_list: response.data });
+    });
+  }
 
   onChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
@@ -81,25 +89,22 @@ export default class TenantPaymentAddModal extends Component {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Applied Amount</label>
-                  <input
-                    type="number"
-                    step="any"
-                    className="form-control"
-                    name="applied_amount"
-                    onChange={this.onChange}
-                    value={applied_amount}
-                  />
-                </div>
-                <div className="form-group">
                   <label>Payment Method</label>
-                  <input
-                    type="text"
+                  <select
                     className="form-control"
                     name="payment_method"
                     onChange={this.onChange}
                     value={payment_method}
-                  />
+                  >
+                    <option value="Default">Choose a Payment method</option>
+                    {this.state.payment_method_list.map((method) => {
+                      return (
+                        <option key={method["name"]} value={method["name"]}>
+                          {method["name"]}
+                        </option>
+                      );
+                    })}
+                  </select>
                 </div>
               </form>
             </div>
@@ -115,7 +120,7 @@ export default class TenantPaymentAddModal extends Component {
                 type="button"
                 className="btn btn-primary"
                 onClick={this.addTenantPayment}
-                /* data-dismiss="modal" */
+                data-dismiss="modal"
               >
                 Save
               </button>

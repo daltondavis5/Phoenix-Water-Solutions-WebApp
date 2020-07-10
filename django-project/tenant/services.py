@@ -82,8 +82,8 @@ def get_tenant_usage_info(tenant_id):
         tenant = Tenant.objects.get(pk=tenant_id)
         curr_balance = get_current_balance_for_tenant(tenant.id)
         overdue_balance = get_overdue_balance_for_tenant(tenant.id)
-        tenant_usage_info = [{"current_balance": curr_balance,
-                              "overdue_balance": overdue_balance}]
+        tenant_usage_info = {"current_balance": curr_balance,
+                             "overdue_balance": overdue_balance}
         return tenant_usage_info
     except ObjectDoesNotExist:
         raise InvalidIDException
