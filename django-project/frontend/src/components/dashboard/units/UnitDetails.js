@@ -16,7 +16,7 @@ export class UnitDetails extends Component {
     unit: {},
     meters: [],
     utilities: [],
-    tenant: {},
+    tenants: [],
   };
 
   componentDidMount() {
@@ -56,10 +56,8 @@ export class UnitDetails extends Component {
     axios
       .get(`/api/unit/${this.props.match.params.id}/tenants`)
       .then((response) => {
-        const tenant = response.data.length !== 0 ? response.data[0] : {};
-        // TODO: Handle array of tenants - currently only assuming one tenant per unit
         this.setState({
-          tenant,
+          tenants: response.data,
         });
       })
       .catch((err) => {
@@ -106,7 +104,7 @@ export class UnitDetails extends Component {
   };
 
   render() {
-    const { id, name } = this.state.unit;
+    const { name } = this.state.unit;
     return (
       <>
         <h2 className="text-center mt-3 border-bottom">{name}</h2>
@@ -183,7 +181,7 @@ export class UnitDetails extends Component {
                   aria-labelledby="v-pills-tenants-tab"
                 >
                   <TenantDashboard
-                    tenant={this.state.tenant}
+                    tenants={this.state.tenants}
                     addTenant={this.addTenant}
                   />
                 </div>

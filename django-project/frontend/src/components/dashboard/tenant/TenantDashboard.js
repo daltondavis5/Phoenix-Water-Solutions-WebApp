@@ -58,13 +58,13 @@ export class TenantDashboard extends Component {
       late_fee_exemption,
     } = this.state;
 
+    const tenantItems = this.props.tenants.map((tenant, i) => (
+      <TenantDashboardCardItem key={i} tenant={tenant} />
+    ));
+
     return (
       <>
-        {Object.keys(this.props.tenant).length !== 0 ? (
-          <TenantDashboardCardItem tenant={this.props.tenant} />
-        ) : (
-          <p> No Tenants found!</p>
-        )}
+        {tenantItems.length !== 0 ? tenantItems : <p>No Tenants found!</p>}
 
         <span
           className="text-primary display-4"

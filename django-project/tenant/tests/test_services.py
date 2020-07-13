@@ -5,6 +5,8 @@ from core.models.tenant import Tenant, TenantCharge, Payment, PaymentMethod
 from django.utils import timezone
 import tenant.services as services
 from rest_framework.test import APITestCase
+from core.exceptions.exceptions import NonNumericalValueException, \
+    InvalidIDException
 
 
 class TenantServicesTestCase(APITestCase):
@@ -145,23 +147,16 @@ class TenantServicesTestCase(APITestCase):
         self.assertIn(self.tenant2, actual)
 
     def test_fail_get_tenants_for_unit_id(self):
-        """ Test case to fail get all tenants for a unit with
-        an id for which the object does not exist """
-        unit_id = 0
-        with self.assertRaises(Exception) as context:
-            services.get_tenants_for_unit(unit_id)
-
-        self.assertTrue("Enter a valid ID" in str(context.exception))
+        """ Test case to fail get all tenants for a unit """
+        unit_id1 = 0
+        self.assertRaises(
+            InvalidIDException, services.get_tenants_for_unit, unit_id1)
 
     def test_fail_get_tenants_for_unit_id_type(self):
-        """ Test case to fail get all tenants for a unit with
-        and invalid id type """
-        unit_id = "s"
-        with self.assertRaises(Exception) as context:
-            services.get_tenants_for_unit(unit_id)
-
-        self.assertTrue("Enter a numerical value for ID" in
-                        str(context.exception))
+        """ Test case to fail get all tenants for a unit """
+        unit_id2 = "s"
+        self.assertRaises(NonNumericalValueException,
+                          services.get_tenants_for_unit, unit_id2)
 
     def test_get_current_balance_for_tenant(self):
         """ Test case to get current balance for a tenant """
@@ -178,20 +173,15 @@ class TenantServicesTestCase(APITestCase):
         """ Test case to fail get current balance for tenant with
         an id for which the object does not exist"""
         tenant_id = 0
-        with self.assertRaises(Exception) as context:
-            services.get_current_balance_for_tenant(tenant_id)
-
-        self.assertTrue("Enter a valid ID" in str(context.exception))
+        self.assertRaises(InvalidIDException,
+                          services.get_current_balance_for_tenant, tenant_id)
 
     def test_fail_get_current_balance_for_tenant_id(self):
         """ Test case to fail get current balance for tenant with
         and invalid id type """
         tenant_id = "s"
-        with self.assertRaises(Exception) as context:
-            services.get_current_balance_for_tenant(tenant_id)
-
-        self.assertTrue("Enter a numerical value for ID" in
-                        str(context.exception))
+        self.assertRaises(NonNumericalValueException,
+                          services.get_current_balance_for_tenant, tenant_id)
 
     def test_get_overdue_balance_for_tenant(self):
         """ Test case to get overdue balance for a tenant """
@@ -208,20 +198,15 @@ class TenantServicesTestCase(APITestCase):
         """ Test case to fail get current balance for tenant with
         an id for which the object does not exist"""
         tenant_id = 0
-        with self.assertRaises(Exception) as context:
-            services.get_overdue_balance_for_tenant(tenant_id)
-
-        self.assertTrue("Enter a valid ID" in str(context.exception))
+        self.assertRaises(InvalidIDException,
+                          services.get_overdue_balance_for_tenant, tenant_id)
 
     def test_fail_get_overdue_balance_for_tenant_id(self):
         """ Test case to fail get current balance for tenant with
         and invalid id type """
         tenant_id = "s"
-        with self.assertRaises(Exception) as context:
-            services.get_overdue_balance_for_tenant(tenant_id)
-
-        self.assertTrue("Enter a numerical value for ID" in
-                        str(context.exception))
+        self.assertRaises(NonNumericalValueException,
+                          services.get_overdue_balance_for_tenant, tenant_id)
 
     def test_get_tenant_usage_info(self):
         """ Test case to get tenant usage info """
@@ -232,9 +217,9 @@ class TenantServicesTestCase(APITestCase):
         tenant_id1 = self.tenant1.id
         tenant_id2 = self.tenant2.id
         usage1 = [{"current_balance": curr_bal1,
-                  "overdue_balance": overdue_bal1}]
+                   "overdue_balance": overdue_bal1}]
         usage2 = [{"current_balance": curr_bal2,
-                  "overdue_balance": overdue_bal2}]
+                   "overdue_balance": overdue_bal2}]
         self.assertEqual(services.get_tenant_usage_info(tenant_id1),
                          usage1)
         self.assertEqual(services.get_tenant_usage_info(tenant_id2),
@@ -244,20 +229,15 @@ class TenantServicesTestCase(APITestCase):
         """ Test fail get tenant usage info with
         an id for which the object does not exist """
         tenant_id = 0
-        with self.assertRaises(Exception) as context:
-            services.get_tenant_usage_info(tenant_id)
-
-        self.assertTrue("Enter a valid ID" in str(context.exception))
+        self.assertRaises(InvalidIDException,
+                          services.get_tenant_usage_info, tenant_id)
 
     def test_fail_get_tenant_usage_info_id_type(self):
         """ Test fail get tenant usage info with
         and invalid id type """
         tenant_id = "s"
-        with self.assertRaises(Exception) as context:
-            services.get_tenant_usage_info(tenant_id)
-
-        self.assertTrue("Enter a numerical value for ID" in
-                        str(context.exception))
+        self.assertRaises(NonNumericalValueException,
+                          services.get_tenant_usage_info, tenant_id)
 
     def test_get_payment_tenant(self):
         """Test case to get tenant payments sorted by most recent"""
@@ -272,20 +252,15 @@ class TenantServicesTestCase(APITestCase):
         """Test fail get payment for tenant with
         an id for which the object does not exist """
         tenant_id = 0
-        with self.assertRaises(Exception) as context:
-            services.get_payments_for_tenant(tenant_id)
-
-        self.assertTrue("Enter a valid ID" in str(context.exception))
+        self.assertRaises(InvalidIDException,
+                          services.get_payments_for_tenant, tenant_id)
 
     def test_fail_get_payment_tenant_id_type(self):
         """Test fail get payment for tenant with
         and invalid id type """
         tenant_id = "s"
-        with self.assertRaises(Exception) as context:
-            services.get_payments_for_tenant(tenant_id)
-
-        self.assertTrue("Enter a numerical value for ID" in
-                        str(context.exception))
+        self.assertRaises(NonNumericalValueException,
+                          services.get_payments_for_tenant, tenant_id)
 
     def test_get_charges_for_tenant(self):
         """ Test to get all charges for a tenant """
@@ -300,17 +275,12 @@ class TenantServicesTestCase(APITestCase):
         """Test fail get charges for tenant with
         an id for which the object does not exist """
         tenant_id = 0
-        with self.assertRaises(Exception) as context:
-            services.get_charges_for_tenant(tenant_id)
-
-        self.assertTrue("Enter a valid ID" in str(context.exception))
+        self.assertRaises(InvalidIDException,
+                          services.get_charges_for_tenant, tenant_id)
 
     def test_fail_get_charges_for_tenant_id_type(self):
         """ Test fail get charges for tenant with
         and invalid id type """
         tenant_id = "s"
-        with self.assertRaises(Exception) as context:
-            services.get_charges_for_tenant(tenant_id)
-
-        self.assertTrue("Enter a numerical value for ID" in
-                        str(context.exception))
+        self.assertRaises(NonNumericalValueException,
+                          services.get_charges_for_tenant, tenant_id)

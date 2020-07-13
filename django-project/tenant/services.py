@@ -4,6 +4,8 @@ from core.models.tenant import Tenant, TenantCharge, Payment, \
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Sum
 from django.utils import timezone
+from core.exceptions.exceptions import NonNumericalValueException, \
+    InvalidIDException
 
 
 def get_tenants_for_unit(unit_id):
@@ -17,9 +19,9 @@ def get_tenants_for_unit(unit_id):
         queryset = Tenant.objects.filter(unit=unit)
         return queryset
     except ObjectDoesNotExist:
-        raise Exception("Enter a valid ID")
+        raise InvalidIDException
     except ValueError:
-        raise Exception("Enter a numerical value for ID")
+        raise NonNumericalValueException
 
 
 def get_current_balance_for_tenant(tenant_id):
@@ -50,9 +52,9 @@ def get_current_balance_for_tenant(tenant_id):
 
         return curr_bal
     except ObjectDoesNotExist:
-        raise Exception("Enter a valid ID")
+        raise InvalidIDException
     except ValueError:
-        raise Exception("Enter a numerical value for ID")
+        raise NonNumericalValueException
 
 
 def get_overdue_balance_for_tenant(tenant_id):
@@ -86,9 +88,9 @@ def get_overdue_balance_for_tenant(tenant_id):
 
         return overdue_bal
     except ObjectDoesNotExist:
-        raise Exception("Enter a valid ID")
+        raise InvalidIDException
     except ValueError:
-        raise Exception("Enter a numerical value for ID")
+        raise NonNumericalValueException
 
 
 def get_tenant_usage_info(tenant_id):
@@ -102,33 +104,45 @@ def get_tenant_usage_info(tenant_id):
         tenant = Tenant.objects.get(pk=tenant_id)
         curr_balance = get_current_balance_for_tenant(tenant.id)
         overdue_balance = get_overdue_balance_for_tenant(tenant.id)
-        tenant_usage_info = [{"current_balance": curr_balance,
-                              "overdue_balance": overdue_balance}]
+        tenant_usage_info = {"current_balance": curr_balance,
+                             "overdue_balance": overdue_balance}
         return tenant_usage_info
     except ObjectDoesNotExist:
-        raise Exception("Enter a valid ID")
+        raise InvalidIDException
     except ValueError:
-        raise Exception("Enter a numerical value for ID")
+        raise NonNumericalValueException
 
 
 def get_charges_for_tenant(tenant_id):
+    """
+    Method to retrieve tenant charges info which
+    includes all the charges of the tenant.
+    :param tenant_id: tenant id
+    :return charges: tenant charge info
+    """
     try:
         tenant = Tenant.objects.get(pk=tenant_id)
         queryset = TenantCharge.objects.filter(tenant=tenant)
         return queryset
     except ObjectDoesNotExist:
-        raise Exception("Enter a valid ID")
+        raise InvalidIDException
     except ValueError:
-        raise Exception("Enter a numerical value for ID")
+        raise NonNumericalValueException
 
 
 def get_payments_for_tenant(tenant_id):
+    """
+    Method to retrieve tenant payment info which
+    includes all the payments of the tenant.
+    :param tenant_id: tenant id
+    :return payments: tenant payment info
+    """
     try:
         tenant = Tenant.objects.get(pk=tenant_id)
         queryset = Payment.objects.filter(
             tenant=tenant).order_by('-payment_date')
         return queryset
     except ObjectDoesNotExist:
-        raise Exception("Enter a valid ID")
+        raise InvalidIDException
     except ValueError:
-        raise Exception("Enter a numerical value for ID")
+        raise NonNumericalValueException

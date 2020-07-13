@@ -155,7 +155,8 @@ class TenantViewSetTestCase(APITestCase):
             "primary_phone_number": "9999999999",
             "secondary_phone_number": "8888888888",
             "move_in_date": timezone.now().date() - timezone.timedelta(days=2),
-            "move_out_date": timezone.now().date() + timezone.timedelta(days=365),
+            "move_out_date": timezone.now().date() +
+                             timezone.timedelta(days=365),
             "credits": 0,
             "late_fee_exemption": timezone.now().date() +
                                timezone.timedelta(days=15),
@@ -178,7 +179,8 @@ class TenantViewSetTestCase(APITestCase):
             "primary_phone_number": "9999999999",
             "secondary_phone_number": "8888888888",
             "move_in_date": timezone.now().date() - timezone.timedelta(days=1),
-            "move_out_date": timezone.now().date() - timezone.timedelta(days=365),
+            "move_out_date": timezone.now().date() -
+                             timezone.timedelta(days=365),
             "credits": 0,
             "late_fee_exemption": timezone.now().date() +
                                timezone.timedelta(days=15),

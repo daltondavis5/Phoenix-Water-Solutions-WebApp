@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-from django.db.models import Sum
 from core.models.tenant import Tenant, TenantCharge, Payment, \
     PaymentMethod, TenantChargePayment
 import tenant.services as services
@@ -38,20 +37,6 @@ class TenantChargeSerializer(serializers.ModelSerializer):
     class Meta:
         model = TenantCharge
         fields = "__all__"
-    #
-    # def calculate_advance_from_payments(self, payment):
-    #     through_table_entries = TenantChargePayment.objects.filter(
-    #         payment=payment)
-    #     print("Through Table entries:", through_table_entries)
-    #     if through_table_entries:
-    #         sum_payment_amount = through_table_entries.aggregate(
-    #             Sum('applied_amount')).get('applied_amount__sum')
-    #         print("Sum payment amount:", sum_payment_amount)
-    #     else:
-    #         sum_payment_amount = 0
-    #     advance_amount = payment.payment_amount - sum_payment_amount
-    #
-    #     return advance_amount
 
     def create(self, validated_data):
         tenant = validated_data.get('tenant')

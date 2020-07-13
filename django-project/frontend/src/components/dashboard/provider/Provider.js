@@ -32,12 +32,12 @@ export class Provider extends Component {
           style={{
             padding: "30px",
             backgroundImage:
-              "radial-gradient( circle 592px at 48.2% 50%,  rgba(255,255,249,0.6) 0%, rgba(160,199,254,1) 74.6% )",
+              "radial-gradient( circle 592px at 48.2% 50%,  rgba(245,247,252,1) 0%, rgba(137,171,245,0.37) 75% )",
           }}
         >
           <h1 className="text-center mb-4">Provider List</h1>
           <ul className="list-group">{providerItems}</ul>
-          <div className="btn btn-primary mt-4 rounded d-flex justify-content-center">
+          <div className="btn btn-primary mt-4 rounded w-25 mx-auto d-flex justify-content-center">
             <Link
               className="text-white text-decoration-none"
               to="/provider/add"
