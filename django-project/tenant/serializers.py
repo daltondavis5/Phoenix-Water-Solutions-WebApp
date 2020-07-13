@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from core.models.tenant import Tenant, TenantCharge, Payment, \
-    PaymentMethod
+    PaymentMethod, TenantChargePayment
 import tenant.services as services
 
 
@@ -38,28 +38,100 @@ class TenantChargeSerializer(serializers.ModelSerializer):
         model = TenantCharge
         fields = "__all__"
 
+    def create(self, validated_data):
+        tenant = validated_data.get('tenant')
+        initial_amount = validated_data.get('initial_amount')
+        description = validated_data.get('description')
+        bill_period_end_date = validated_data.get('bill_period_end_date')
+        due_date = validated_data.get('due_date')
+        priority = validated_data.get('priority')
+        created = validated_data.get('created')
+        batch_id = validated_data.get('batch_id')
+
+        tenant_charge_obj = TenantCharge.objects.create(
+            tenant=tenant,
+            initial_amount=initial_amount,
+            description=description,
+            bill_period_end_date=bill_period_end_date,
+            due_date=due_date,
+            priority=priority,
+            created=created,
+            batch_id=batch_id
+        )
+
+        tenant_id = tenant.id
+        payments_queryset = Payment.objects.filter(tenant=tenant_id)
+
+        for payment in payments_queryset:
+            advance_amount = payment.advance_amount
+            if advance_amount > 0:
+                if 0 < advance_amount <= initial_amount:
+                    TenantChargePayment.objects.create(
+                        payment=payment,
+                        tenant_charge=tenant_charge_obj,
+                        applied_amount=advance_amount
+                    )
+                    advance_amount -= advance_amount
+
+                elif 0 < initial_amount < advance_amount:
+                    TenantChargePayment.objects.create(
+                        payment=payment,
+                        tenant_charge=tenant_charge_obj,
+                        applied_amount=initial_amount
+                    )
+                    advance_amount -= initial_amount
+            else:
+                break
+        return tenant_charge_obj
+
 
 class PaymentSerializer(serializers.ModelSerializer):
-    payment_method = serializers.CharField(source='payment_method.name')
-
     class Meta:
         model = Payment
-        fields = ['id', 'tenant', 'payment_date', 'payment_amount',
-                  'applied_amount', 'payment_method', 'charges_applied_to']
-        read_only_fields = ['payment_method']
+        fields = "__all__"
+        read_only_fields = ['charges_applied_to']
 
     def create(self, validated_data):
-        payment_method = PaymentMethod.objects.get(
-            name=validated_data.get('payment_method').get('name'))
-        payment = Payment.objects.create(
-            tenant=validated_data.get('tenant'),
-            payment_date=validated_data.get('payment_date'),
-            payment_amount=validated_data.get('payment_amount'),
-            applied_amount=validated_data.get('applied_amount'),
+        payment_amount = validated_data.get('payment_amount')
+        payment_date = validated_data.get('payment_date')
+        payment_method = validated_data.get('payment_method')
+        tenant = validated_data.get('tenant')
+        tenant_id = tenant.id
+
+        payment_obj = Payment.objects.create(
             payment_method=payment_method,
+            payment_date=payment_date,
+            payment_amount=payment_amount,
+            tenant=tenant
         )
-        payment.save()
-        return payment
+        charges_queryset = TenantCharge.objects.filter(
+            tenant=tenant_id).order_by('due_date', '-priority')
+        payment_amount_temp = payment_amount
+
+        for charge in charges_queryset:
+            if payment_amount_temp > 0:
+
+                remaining_amount = charge.remaining_amount
+
+                if 0 < remaining_amount <= payment_amount_temp:
+                    TenantChargePayment.objects.create(
+                        payment=payment_obj,
+                        tenant_charge=charge,
+                        applied_amount=remaining_amount
+                    )
+                    payment_amount_temp -= remaining_amount
+
+                elif 0 < payment_amount_temp < remaining_amount:
+                    TenantChargePayment.objects.create(
+                        payment=payment_obj,
+                        tenant_charge=charge,
+                        applied_amount=payment_amount_temp
+                    )
+                    payment_amount_temp -= payment_amount_temp  # became 0
+            else:
+                break
+
+        return payment_obj
 
 
 class PaymentMethodSerializer(serializers.ModelSerializer):
