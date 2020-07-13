@@ -3,7 +3,7 @@ from django.urls import reverse
 from core.models.utilityprovider import Utility, Location, Provider, \
     UtilityProvider
 from core.models.property import Unit, Meter, Property, MeterRead, \
-    MeterError
+    MeterError, Priority
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -134,6 +134,15 @@ class UnitViewSetTestCase(APITestCase):
         response = self.client.put(url, payload)
         unit1.refresh_from_db()
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+class PriorityDataTest(APITestCase):
+    PRIORITY_DATA_URL = reverse("property-priority-data")
+
+    def test_unit_update_property(self):
+        response = self.client.get(self.PRIORITY_DATA_URL)
+        self.assertEqual(response.data, Priority.choices)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class MeterViewSetTestCase(APITestCase):

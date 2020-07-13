@@ -1,10 +1,13 @@
 from rest_framework import viewsets, permissions
-
+from rest_framework.response import Response
 from core.models.property import Meter, Property, Unit, MeterRead,\
     MeterError
+from rest_framework.decorators import api_view
+from rest_framework import status
 from property.serializers import MeterSerializer, \
     PropertySerializer, UnitSerializer, MeterReadSerializer,\
     MeterErrorSerializer, MeterWithLastReadSerializer
+from core.models.property import Priority
 
 import property.services as services
 
@@ -79,3 +82,9 @@ class ListMeterErrorsForMeter(viewsets.generics.ListAPIView):
         meter_id = self.kwargs['id']
         queryset = services.get_meter_errors_for_meter(meter_id)
         return queryset
+
+
+@api_view(["GET"])
+def get_priority_data(request):
+    if request.method == "GET":
+        return Response(data=Priority.choices, status=status.HTTP_200_OK)
