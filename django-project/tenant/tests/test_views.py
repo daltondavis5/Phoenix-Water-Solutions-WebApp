@@ -68,7 +68,6 @@ class TenantViewSetTestCase(APITestCase):
         self.tenant_charge1 = TenantCharge.objects.create(
             tenant=self.tenant1,
             initial_amount=100,
-            remaining_amount=20,
             description="Test Desc",
             bill_period_end_date=timezone.now().date() +
             timezone.timedelta(days=30),
@@ -80,7 +79,6 @@ class TenantViewSetTestCase(APITestCase):
         self.tenant_charge2 = TenantCharge.objects.create(
             tenant=self.tenant1,
             initial_amount=100,
-            remaining_amount=25,
             description="Test Desc",
             bill_period_end_date=timezone.now().date() +
             timezone.timedelta(days=30),
@@ -92,7 +90,6 @@ class TenantViewSetTestCase(APITestCase):
         self.tenant_charge3 = TenantCharge.objects.create(
             tenant=self.tenant2,
             initial_amount=999.50,
-            remaining_amount=100.50,
             description="Test Desc",
             bill_period_end_date=timezone.now().date() +
             timezone.timedelta(days=30),
@@ -106,7 +103,6 @@ class TenantViewSetTestCase(APITestCase):
         self.tenant_charge4 = TenantCharge.objects.create(
             tenant=self.tenant2,
             initial_amount=999.50,
-            remaining_amount=100.50,
             description="Test Desc",
             bill_period_end_date=timezone.now().date() +
             timezone.timedelta(days=30),
@@ -122,7 +118,6 @@ class TenantViewSetTestCase(APITestCase):
             tenant=self.tenant1,
             payment_date=timezone.now().date(),
             payment_amount=100,
-            applied_amount=100,
             payment_method=self.payment_method,
         )
 
@@ -130,7 +125,6 @@ class TenantViewSetTestCase(APITestCase):
             tenant=self.tenant2,
             payment_date=timezone.now().date(),
             payment_amount=50,
-            applied_amount=50,
             payment_method=self.payment_method,
         )
 

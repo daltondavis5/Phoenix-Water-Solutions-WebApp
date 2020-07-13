@@ -1,6 +1,8 @@
 from core.models.property import Unit
-from core.models.tenant import Tenant, TenantCharge, Payment
+from core.models.tenant import Tenant, TenantCharge, Payment, \
+    TenantChargePayment
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Sum
 from django.utils import timezone
 
 
@@ -30,13 +32,22 @@ def get_current_balance_for_tenant(tenant_id):
     """
     try:
         tenant = Tenant.objects.get(pk=tenant_id)
-        curr_bal = 0.0
-        charges = TenantCharge.objects.filter(
-            tenant=tenant.id, remaining_amount__gt=0). \
-            values('remaining_amount')
-        if charges:
-            curr_bal = sum([charges[i].get('remaining_amount')
-                            for i in range(len(charges))])
+        charge_queryset = TenantCharge.objects.filter(tenant=tenant)
+        payment_queryset = Payment.objects.filter(tenant=tenant)
+
+        """ We calculate the 'remaining balance from all charges (if any)'
+        and 'advance payment balance from all payments (if any)' and take
+        the difference as current outstanding balance."""
+        remaining_amount = 0.0
+        for charge in charge_queryset:
+            remaining_amount += charge.remaining_amount
+
+        advance_amount = 0.0
+        for payment in payment_queryset:
+            advance_amount += payment.advance_amount
+
+        curr_bal = remaining_amount - advance_amount
+
         return curr_bal
     except ObjectDoesNotExist:
         raise Exception("Enter a valid ID")
@@ -54,14 +65,25 @@ def get_overdue_balance_for_tenant(tenant_id):
     """
     try:
         tenant = Tenant.objects.get(pk=tenant_id)
-        overdue_bal = 0.0
         today = timezone.now().date()
-        charges = TenantCharge.objects.filter(
-            tenant=tenant.id, remaining_amount__gt=0, due_date__lt=today). \
-            values('remaining_amount')
-        if charges:
-            overdue_bal = sum([charges[i].get('remaining_amount')
-                               for i in range(len(charges))])
+        charge_queryset = TenantCharge.objects.filter(
+            tenant=tenant, due_date__lt=today)
+        payment_queryset = Payment.objects.filter(tenant=tenant)
+
+        """ We calculate the 'remaining balance from all charges (if any)'
+        and 'advance payment balance from all payments (if any)' and take
+        the difference as overdue balance. Charges which are past due date
+        are only considered. """
+        remaining_amount = 0.0
+        for charge in charge_queryset:
+            remaining_amount += charge.remaining_amount
+
+        advance_amount = 0.0
+        for payment in payment_queryset:
+            advance_amount += payment.advance_amount
+
+        overdue_bal = remaining_amount - advance_amount
+
         return overdue_bal
     except ObjectDoesNotExist:
         raise Exception("Enter a valid ID")

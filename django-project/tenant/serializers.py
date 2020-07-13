@@ -38,20 +38,20 @@ class TenantChargeSerializer(serializers.ModelSerializer):
     class Meta:
         model = TenantCharge
         fields = "__all__"
-
-    def calculate_advance_from_payments(self, payment):
-        through_table_entries = TenantChargePayment.objects.filter(
-            payment=payment)
-        print("Through Table entries:", through_table_entries)
-        if through_table_entries:
-            sum_payment_amount = through_table_entries.aggregate(
-                Sum('applied_amount')).get('applied_amount__sum')
-            print("Sum payment amount:", sum_payment_amount)
-        else:
-            sum_payment_amount = 0
-        advance_amount = payment.payment_amount - sum_payment_amount
-
-        return advance_amount
+    #
+    # def calculate_advance_from_payments(self, payment):
+    #     through_table_entries = TenantChargePayment.objects.filter(
+    #         payment=payment)
+    #     print("Through Table entries:", through_table_entries)
+    #     if through_table_entries:
+    #         sum_payment_amount = through_table_entries.aggregate(
+    #             Sum('applied_amount')).get('applied_amount__sum')
+    #         print("Sum payment amount:", sum_payment_amount)
+    #     else:
+    #         sum_payment_amount = 0
+    #     advance_amount = payment.payment_amount - sum_payment_amount
+    #
+    #     return advance_amount
 
     def create(self, validated_data):
         tenant = validated_data.get('tenant')
@@ -76,34 +76,27 @@ class TenantChargeSerializer(serializers.ModelSerializer):
 
         tenant_id = tenant.id
         payments_queryset = Payment.objects.filter(tenant=tenant_id)
-        initial_amount_temp = initial_amount
 
-        print("Payments Queryset:", payments_queryset)
         for payment in payments_queryset:
-            if initial_amount_temp > 0:
-
-                advance_amount = self.calculate_advance_from_payments(payment)
-
-                if 0 < advance_amount <= initial_amount_temp:
+            advance_amount = payment.advance_amount
+            if advance_amount > 0:
+                if 0 < advance_amount <= initial_amount:
                     TenantChargePayment.objects.create(
                         payment=payment,
                         tenant_charge=tenant_charge_obj,
                         applied_amount=advance_amount
                     )
-                    initial_amount -= advance_amount
+                    advance_amount -= advance_amount
 
-                elif 0 < initial_amount_temp < advance_amount:
+                elif 0 < initial_amount < advance_amount:
                     TenantChargePayment.objects.create(
                         payment=payment,
                         tenant_charge=tenant_charge_obj,
-                        applied_amount=advance_amount
+                        applied_amount=initial_amount
                     )
-                    advance_amount -= advance_amount  # became 0
+                    advance_amount -= initial_amount
             else:
                 break
-
-        print("Advance Amount left:", initial_amount_temp)
-
         return tenant_charge_obj
 
 
@@ -112,20 +105,6 @@ class PaymentSerializer(serializers.ModelSerializer):
         model = Payment
         fields = "__all__"
         read_only_fields = ['charges_applied_to']
-
-    def calculate_remaining_amount_for_charge(self, tenant_charge):
-        through_table_entries = TenantChargePayment.objects.filter(
-            tenant_charge=tenant_charge)
-        print("Through Table entries:", through_table_entries)
-        if through_table_entries:
-            sum_applied_amount = through_table_entries.aggregate(
-                Sum('applied_amount')).get('applied_amount__sum')
-            print("Sum applied amount:", sum_applied_amount)
-        else:
-            sum_applied_amount = 0
-        remaining_amount = tenant_charge.initial_amount - sum_applied_amount
-
-        return remaining_amount
 
     def create(self, validated_data):
         payment_amount = validated_data.get('payment_amount')
@@ -140,14 +119,14 @@ class PaymentSerializer(serializers.ModelSerializer):
             payment_amount=payment_amount,
             tenant=tenant
         )
-        charges_queryset = TenantCharge.objects.filter(tenant=tenant_id)
+        charges_queryset = TenantCharge.objects.filter(
+            tenant=tenant_id).order_by('due_date', '-priority')
         payment_amount_temp = payment_amount
 
-        print("Charges Queryset:", charges_queryset)
         for charge in charges_queryset:
             if payment_amount_temp > 0:
 
-                remaining_amount = self.calculate_remaining_amount_for_charge(charge)
+                remaining_amount = charge.remaining_amount
 
                 if 0 < remaining_amount <= payment_amount_temp:
                     TenantChargePayment.objects.create(
@@ -167,7 +146,6 @@ class PaymentSerializer(serializers.ModelSerializer):
             else:
                 break
 
-        print("Payment Amount left:", payment_amount_temp)
         return payment_obj
 
 
