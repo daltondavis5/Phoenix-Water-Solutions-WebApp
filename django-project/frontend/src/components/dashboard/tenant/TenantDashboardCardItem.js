@@ -8,20 +8,17 @@ export class TenantDashboardCardItem extends Component {
       first_name,
       last_name,
       primary_email,
-      account_number,
       primary_phone_number,
-      move_in_date,
-      move_out_date,
       credits,
     } = this.props.tenant;
     const {
-      current_balance = 0.0,
-      overdue_balance = 0.0,
+      current_balance,
+      overdue_balance,
     } = this.props.tenant.tenant_usage_info;
+
     return (
-      // TODO: Decide what all fields should be shown in the tenant Dashboard
       <>
-        <div className="card w-75 m-auto rounded shadow">
+        <div className="card w-75 mx-auto mb-3 rounded shadow">
           <div
             className="card-body"
             style={{
@@ -47,10 +44,6 @@ export class TenantDashboardCardItem extends Component {
             <div className="row">
               <div className="col-sm-6">
                 <ul className="list-group list-group-flush">
-                  {/* <li className="list-group-item">
-                    <i className="fa fa-address-book mr-1 text-primary"></i>
-                    {account_number}
-                  </li> */}
                   <li className="list-group-item">
                     <span className="text-muted font-italic">
                       Balance Due:{" "}
@@ -68,7 +61,7 @@ export class TenantDashboardCardItem extends Component {
                   <li className="list-group-item">
                     <span className="text-muted font-italic">Credits: </span>
                     <i className="fa fa-usd mr-1 text-primary"></i>
-                    {credits === null ? <p>No credit available</p> : credits}
+                    {credits === null ? 0 : credits}
                   </li>
                 </ul>
               </div>

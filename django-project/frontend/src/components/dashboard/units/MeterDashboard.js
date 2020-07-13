@@ -29,11 +29,15 @@ export class MeterDashboard extends Component {
     return (
       <>
         <div className="row row-cols-2">
-          {this.props.meters.map((meter, i) => (
-            <div className="col pb-3" key={i}>
-              <MeterSummaryItem meter={meter} />
-            </div>
-          ))}
+          {this.props.meters.length === 0 ? (
+            <p>No Meters found!</p>
+          ) : (
+            this.props.meters.map((meter, i) => (
+              <div className="col pb-3" key={i}>
+                <MeterSummaryItem meter={meter} />
+              </div>
+            ))
+          )}
         </div>
         <span
           className="text-primary display-4"
