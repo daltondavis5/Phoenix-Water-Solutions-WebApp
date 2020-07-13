@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from property.views import MeterViewSet, PropertyViewSet, UnitViewSet,\
     ListUnitsForProperty, ListMetersForUnit, ListMeterReadsForMeter,\
-    ListMeterErrorsForMeter, MeterReadViewSet, MeterErrorViewSet
+    ListMeterErrorsForMeter, MeterReadViewSet, MeterErrorViewSet, get_priority_data
 
 router = DefaultRouter()
 router.register('property', PropertyViewSet)
@@ -13,6 +13,7 @@ router.register('metererror', MeterErrorViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('property-priority-data', get_priority_data, name="property-priority-data"),
     path('property/<int:id>/units', ListUnitsForProperty.as_view(),
          name="property-unit-list"),
     path('unit/<int:id>/meters', ListMetersForUnit.as_view(),
