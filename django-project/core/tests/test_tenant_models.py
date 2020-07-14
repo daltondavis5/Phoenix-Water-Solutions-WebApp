@@ -91,7 +91,6 @@ class ModelCreateTests(TestCase):
             late_fee_exemption="2020-01-31",
         )
         initial_amount = 999.50
-        remaining_amount = 100.50
         description = "Test Desc"
         bill_period_end_date = "2020-12-31"
         due_date = "2020-01-31"
@@ -102,7 +101,6 @@ class ModelCreateTests(TestCase):
         tenant_charge = TenantCharge.objects.create(
             tenant=tenant,
             initial_amount=initial_amount,
-            remaining_amount=remaining_amount,
             description=description,
             bill_period_end_date=bill_period_end_date,
             due_date=due_date,
@@ -112,12 +110,10 @@ class ModelCreateTests(TestCase):
         )
         tenant_charge_str = "Tenant: " + first_name + ", Due Date: " + \
                             due_date + ", Initial Amount: " + \
-                            str(initial_amount) + ", Remaining Amount: " + \
-                            str(remaining_amount)
+                            str(initial_amount)
 
         self.assertEqual(tenant_charge.tenant, tenant)
         self.assertEqual(tenant_charge.initial_amount, initial_amount)
-        self.assertEqual(tenant_charge.remaining_amount, remaining_amount),
         self.assertEqual(tenant_charge.description, description)
         self.assertEqual(tenant_charge.due_date, due_date)
         self.assertEqual(tenant_charge.priority, priority)
@@ -154,14 +150,12 @@ class ModelCreateTests(TestCase):
         )
         payment_date = "2020-07-31"
         payment_amount = 999.50
-        applied_amount = 300.00
         payment_method = method
 
         payment = Payment.objects.create(
             tenant=tenant,
             payment_date=payment_date,
             payment_amount=payment_amount,
-            applied_amount=applied_amount,
             payment_method=payment_method,
         )
         payment_str = "Tenant: " + "firstname" + ", Payment Amount: " \
@@ -171,7 +165,6 @@ class ModelCreateTests(TestCase):
         self.assertEqual(payment.tenant, tenant)
         self.assertEqual(payment.payment_date, payment_date)
         self.assertEqual(payment.payment_amount, payment_amount)
-        self.assertEqual(payment.applied_amount, applied_amount)
         self.assertEqual(payment.payment_method, payment_method)
         self.assertEqual(str(payment), payment_str)
 
@@ -194,7 +187,6 @@ class ModelCreateTests(TestCase):
         tenant_charge = TenantCharge.objects.create(
             tenant=tenant,
             initial_amount=999.50,
-            remaining_amount=100.50,
             description="Test Desc",
             bill_period_end_date="2020-12-31",
             due_date="2020-01-31",
@@ -210,15 +202,16 @@ class ModelCreateTests(TestCase):
             tenant=tenant,
             payment_date="2020-07-31",
             payment_amount=999.50,
-            applied_amount=300.00,
             payment_method=method
         )
         payment_tenant_charge = TenantChargePayment.objects.create(
             payment=payment,
-            tenant_charge=tenant_charge
+            tenant_charge=tenant_charge,
+            applied_amount=999.50
         )
         self.assertEqual(payment_tenant_charge.payment, payment)
         self.assertEqual(payment_tenant_charge.tenant_charge, tenant_charge)
+        self.assertEqual(payment_tenant_charge.applied_amount, 999.50)
         self.assertEqual(str(payment.charges_applied_to.all()[0]),
                          str(tenant_charge))
         self.assertEqual(str(tenant_charge.payment_set.all()[0]),
