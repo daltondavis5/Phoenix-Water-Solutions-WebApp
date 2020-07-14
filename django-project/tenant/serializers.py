@@ -40,7 +40,6 @@ class TenantChargeSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         tenant = validated_data.get('tenant')
-
         tenant_charge_obj = TenantCharge.objects.create(**validated_data)
         payments_queryset = Payment.objects.filter(tenant=tenant.id)
         services.create_tenant_charge_payment_for_charge(
@@ -75,9 +74,9 @@ class PaymentMethodSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class TenantUsageSerializer(serializers.ModelSerializer):
-    tenant_usage_info = serializers.SerializerMethodField(
-        method_name='get_tenant_usage_info'
+class TenantChargeInfoSerializer(serializers.ModelSerializer):
+    tenant_charge_info = serializers.SerializerMethodField(
+        method_name='get_tenant_charge_info'
     )
 
     class Meta:
@@ -86,9 +85,9 @@ class TenantUsageSerializer(serializers.ModelSerializer):
                   'secondary_email', 'account_number', 'primary_phone_number',
                   'secondary_phone_number', 'unit', 'move_in_date',
                   'move_out_date', 'credits', 'late_fee_exemption',
-                  'tenant_usage_info']
+                  'tenant_charge_info']
 
     @staticmethod
-    def get_tenant_usage_info(obj):
+    def get_tenant_charge_info(obj):
         tenant_id = obj.id
-        return services.get_tenant_usage_info(tenant_id)
+        return services.get_tenant_charge_info(tenant_id)

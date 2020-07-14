@@ -93,20 +93,20 @@ def get_overdue_balance_for_tenant(tenant_id):
         raise NonNumericalValueException
 
 
-def get_tenant_usage_info(tenant_id):
+def get_tenant_charge_info(tenant_id):
     """
     Method to retrieve tenant usage info which includes
     current balance and overdue balance.
     :param tenant_id: tenant id
-    :return tenant_usage_info: tenant usage info
+    :return tenant_charge_info: tenant usage info
     """
     try:
         tenant = Tenant.objects.get(pk=tenant_id)
         curr_balance = get_current_balance_for_tenant(tenant.id)
         overdue_balance = get_overdue_balance_for_tenant(tenant.id)
-        tenant_usage_info = {"current_balance": curr_balance,
+        tenant_charge_info = {"current_balance": curr_balance,
                              "overdue_balance": overdue_balance}
-        return tenant_usage_info
+        return tenant_charge_info
     except ObjectDoesNotExist:
         raise InvalidIDException
     except ValueError:
@@ -200,7 +200,6 @@ def create_tenant_charge_payment_for_charge(payments_queryset,
     """
     if not payments_queryset or not tenant_charge_object:
         return
-
     initial_amount = tenant_charge_object.initial_amount
     for payment in payments_queryset:
         advance_amount = payment.advance_amount
@@ -220,5 +219,3 @@ def create_tenant_charge_payment_for_charge(payments_queryset,
                     applied_amount=initial_amount
                 )
                 advance_amount -= initial_amount
-        else:
-            break

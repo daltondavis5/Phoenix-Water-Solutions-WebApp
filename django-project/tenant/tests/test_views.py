@@ -4,19 +4,19 @@ from core.models.utilityprovider import Utility, Location, Provider, \
     UtilityProvider
 from core.models.property import Unit, Property
 from core.models.tenant import Tenant, TenantCharge, Payment, PaymentMethod
-from tenant.serializers import TenantUsageSerializer, \
+from tenant.serializers import TenantChargeInfoSerializer, \
     TenantChargeSerializer, PaymentSerializer
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 
-def get_reverse_url_unit_tenant_list(unit_id):
-    return reverse("unit-tenants-list", args=[unit_id])
-
-
 def get_reverse_url_payment_list():
     return reverse('payment-list')
+
+
+def get_reverse_url_tenant_charge_list():
+    return reverse('tenantcharge-list')
 
 
 def detail_url_tenant(tenant_id):
@@ -72,12 +72,12 @@ class TenantViewSetTestCase(APITestCase):
             secondary_phone_number="8888888888",
             unit=self.unit,
             move_in_date=timezone.now().date() -
-                         timezone.timedelta(days=1),
+            timezone.timedelta(days=1),
             move_out_date=timezone.now().date() +
                           timezone.timedelta(days=365),
             credits=99.5,
             late_fee_exemption=timezone.now().date() +
-                               timezone.timedelta(days=15),
+            timezone.timedelta(days=15),
         )
         self.tenant2 = Tenant.objects.create(
             account_number="2",
@@ -92,14 +92,14 @@ class TenantViewSetTestCase(APITestCase):
             move_out_date=timezone.now().date() + timezone.timedelta(days=365),
             credits=99.5,
             late_fee_exemption=timezone.now().date() +
-                               timezone.timedelta(days=15),
+            timezone.timedelta(days=15),
         )
         self.tenant_charge1 = TenantCharge.objects.create(
             tenant=self.tenant1,
             initial_amount=100,
             description="Test Desc",
             bill_period_end_date=timezone.now().date() +
-                                 timezone.timedelta(days=30),
+            timezone.timedelta(days=30),
             due_date=timezone.now().date() + timezone.timedelta(days=5),
             priority=2,
             created=timezone.now(),
@@ -110,7 +110,7 @@ class TenantViewSetTestCase(APITestCase):
             initial_amount=100,
             description="Test Desc",
             bill_period_end_date=timezone.now().date() +
-                                 timezone.timedelta(days=30),
+            timezone.timedelta(days=30),
             due_date=timezone.now().date() - timezone.timedelta(days=1),
             priority=2,
             created=timezone.now(),
@@ -121,9 +121,9 @@ class TenantViewSetTestCase(APITestCase):
             initial_amount=999.50,
             description="Test Desc",
             bill_period_end_date=timezone.now().date() +
-                                 timezone.timedelta(days=30),
+            timezone.timedelta(days=30),
             due_date=timezone.now().date() +
-                     timezone.timedelta(days=30),
+            timezone.timedelta(days=30),
             priority=2,
             created=timezone.now(),
             batch_id=1,
@@ -134,7 +134,7 @@ class TenantViewSetTestCase(APITestCase):
             initial_amount=999.50,
             description="Test Desc",
             bill_period_end_date=timezone.now().date() +
-                                 timezone.timedelta(days=30),
+            timezone.timedelta(days=30),
             due_date=timezone.now().date() + timezone.timedelta(days=30),
             priority=2,
             created=timezone.now(),
@@ -173,7 +173,7 @@ class TenantViewSetTestCase(APITestCase):
                              timezone.timedelta(days=365),
             "credits": 0,
             "late_fee_exemption": timezone.now().date() +
-                                  timezone.timedelta(days=15),
+            timezone.timedelta(days=15),
             "unit": self.unit.id
         }
         url = detail_url_tenant(tenant.id)
@@ -197,7 +197,7 @@ class TenantViewSetTestCase(APITestCase):
                              timezone.timedelta(days=365),
             "credits": 0,
             "late_fee_exemption": timezone.now().date() +
-                                  timezone.timedelta(days=15),
+            timezone.timedelta(days=15),
             "unit": self.unit.id
         }
         url = detail_url_tenant(tenant.id)
@@ -208,7 +208,7 @@ class TenantViewSetTestCase(APITestCase):
     def test_tenant_get_info(self):
         """ Test to retrieve all the info of a tenant including
         tenant usage info from tenant charge table """
-        serializer1 = TenantUsageSerializer(self.tenant1)
+        serializer1 = TenantChargeInfoSerializer(self.tenant1)
 
         url = get_reverse_url_unit_tenant_list(self.unit.id)
         response = self.client.get(url)
@@ -288,53 +288,150 @@ class PaymentTenantChargeTest(APITestCase):
             secondary_phone_number="8888888888",
             unit=self.unit,
             move_in_date=timezone.now().date() -
-                         timezone.timedelta(days=1),
+            timezone.timedelta(days=1),
             move_out_date=timezone.now().date() +
                           timezone.timedelta(days=365),
             credits=99.5,
             late_fee_exemption=timezone.now().date() +
-                               timezone.timedelta(days=15),
+            timezone.timedelta(days=15),
         )
 
         self.payment_method = PaymentMethod.objects.create(name="Card")
 
+    def test_payment_charge_created(self):
+        charge1_payload = {
+            'tenant': self.tenant1.id,
+            'initial_amount': 100.0,
+            'description': "C1",
+            'bill_period_end_date': timezone.now().date() +
+            timezone.timedelta(days=30),
+            'due_date': timezone.now().date() +
+            timezone.timedelta(days=30),
+            'priority': 2,
+            'created': timezone.now(),
+            'batch_id': 1,
+        }
+        charge1_response = self.client.post(
+            get_reverse_url_tenant_charge_list(), charge1_payload)
+
+        charge1 = TenantCharge.objects.get(id=charge1_response.data['id'])
+        charge1.refresh_from_db()
+
+        self.assertEqual(len(charge1.payment_set.all()), 0)
+
+        payment1_payload = {
+            'tenant': self.tenant1.id,
+            'payment_date': timezone.now().date(),
+            'payment_amount': 50.0,
+            'payment_method': self.payment_method.name,
+        }
+
+        payment1_response = self.client.post(
+            get_reverse_url_payment_list(), payment1_payload)
+        payment1 = Payment.objects.get(id=payment1_response.data['id'])
+        payment1.refresh_from_db()
+        self.assertEqual(payment1.charges_applied_to.all()[
+                         0].id, charge1.id)
+        self.assertEqual(charge1.payment_set.all()[
+                         0].id, payment1_response.data['id'])
+
+        payment2_payload = {
+            'tenant': self.tenant1.id,
+            'payment_date': timezone.now().date(),
+            'payment_amount': 150.0,
+            'payment_method': self.payment_method.name,
+        }
+
+        payment2_response = self.client.post(
+            get_reverse_url_payment_list(), payment2_payload)
+        payment2 = Payment.objects.get(id=payment2_response.data['id'])
+        payment2.refresh_from_db()
+        self.assertEqual(payment2.charges_applied_to.all()[
+                         0].id, charge1_response.data['id'])
+        self.assertEqual(charge1.payment_set.all()[
+                         1].id, payment2_response.data['id'])
+
+        charge2_payload = {
+            'tenant': self.tenant1.id,
+            'initial_amount': 20.0,
+            'description': "C1",
+            'bill_period_end_date': timezone.now().date() +
+            timezone.timedelta(days=30),
+            'due_date': timezone.now().date() +
+            timezone.timedelta(days=30),
+            'priority': 2,
+            'created': timezone.now(),
+            'batch_id': 1,
+        }
+        charge2_response = self.client.post(
+            get_reverse_url_tenant_charge_list(), charge2_payload)
+        charge2 = TenantCharge.objects.get(id=charge2_response.data['id'])
+        charge2.refresh_from_db()
+
+        self.assertEqual(len(charge2.payment_set.all()), 1)
+        self.assertEqual(payment2.charges_applied_to.all()[
+                         1].id, charge2_response.data['id'])
+        self.assertEqual(charge2.payment_set.all()[
+                         0].id, payment2_response.data['id'])
+
+        charge3_payload = {
+            'tenant': self.tenant1.id,
+            'initial_amount': 100.0,
+            'description': "C1",
+            'bill_period_end_date': timezone.now().date() +
+            timezone.timedelta(days=30),
+            'due_date': timezone.now().date() +
+            timezone.timedelta(days=30),
+            'priority': 2,
+            'created': timezone.now(),
+            'batch_id': 1,
+        }
+        charge3_response = self.client.post(
+            get_reverse_url_tenant_charge_list(), charge3_payload)
+        charge3 = TenantCharge.objects.get(id=charge2_response.data['id'])
+        self.assertEqual(len(charge3.payment_set.all()), 1)
+        self.assertEqual(payment2.charges_applied_to.all()[
+                         2].id, charge3_response.data['id'])
+        self.assertEqual(charge3.payment_set.all()[
+                         0].id, payment2_response.data['id'])
+
     def test_get_current_balance_and_overdue_balance_for_tenant(self):
         """ Test case to get current balance and overdue balance
          for a tenant """
-        charge1 = TenantCharge.objects.create(
+        TenantCharge.objects.create(
             tenant=self.tenant1,
             initial_amount=100.0,
             description="C1",
             bill_period_end_date=timezone.now().date() +
-                                 timezone.timedelta(days=30),
+            timezone.timedelta(days=30),
             due_date=timezone.now().date() +
-                     timezone.timedelta(days=30),
+            timezone.timedelta(days=30),
             priority=2,
             created=timezone.now(),
             batch_id=1,
         )
 
-        charge2 = TenantCharge.objects.create(
+        TenantCharge.objects.create(
             tenant=self.tenant1,
             initial_amount=50.0,
             description="C2",
             bill_period_end_date=timezone.now().date() +
-                                 timezone.timedelta(days=30),
+            timezone.timedelta(days=30),
             due_date=timezone.now().date() +
-                     timezone.timedelta(days=30),
+            timezone.timedelta(days=30),
             priority=2,
             created=timezone.now(),
             batch_id=1,
         )
 
-        charge3 = TenantCharge.objects.create(
+        TenantCharge.objects.create(
             tenant=self.tenant1,
             initial_amount=40.0,
             description="C3-due",
             bill_period_end_date=timezone.now().date() +
-                                 timezone.timedelta(days=30),
+            timezone.timedelta(days=30),
             due_date=timezone.now().date() -
-                     timezone.timedelta(days=2),
+            timezone.timedelta(days=2),
             priority=2,
             created=timezone.now(),
             batch_id=1,
@@ -343,7 +440,7 @@ class PaymentTenantChargeTest(APITestCase):
             'tenant': self.tenant1.id,
             'payment_date': timezone.now().date(),
             'payment_amount': 50.0,
-            'payment_method': 'Card',
+            'payment_method': self.payment_method.name,
         }
 
         self.client.post(get_reverse_url_payment_list(),
@@ -355,8 +452,8 @@ class PaymentTenantChargeTest(APITestCase):
         curr_bal = 140.0
         overdue_bal = 0.0
         self.assertEqual(curr_bal,
-                         response.data[0].get('tenant_usage_info').
+                         response.data[0].get('tenant_charge_info').
                          get('current_balance'))
         self.assertEqual(overdue_bal,
-                         response.data[0].get('tenant_usage_info').
+                         response.data[0].get('tenant_charge_info').
                          get('overdue_balance'))
