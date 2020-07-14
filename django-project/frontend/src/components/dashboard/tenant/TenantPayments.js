@@ -83,7 +83,7 @@ export class TenantPayments extends Component {
     return (
       <>
         <div className="table-responsive">
-          <table className="table table-bordered shadow-sm table-sm table-hover text-center border-bottom">
+          <table className="table table-bordered shadow-sm table text-center border-bottom">
             <caption style={{ captionSide: "top" }}>Tenant Payments</caption>
             <thead className="thead-dark">
               <tr>
@@ -96,7 +96,6 @@ export class TenantPayments extends Component {
                   ></i>
                 </th>
                 <th scope="col">Payment Amount</th>
-                <th scope="col">Applied Amount</th>
                 <th scope="col">Payment Method</th>
                 <th scope="col">
                   <i
@@ -115,25 +114,69 @@ export class TenantPayments extends Component {
                 const {
                   payment_date,
                   payment_amount,
-                  applied_amount,
                   payment_method,
+                  charges_applied_to,
                 } = payment;
                 return (
-                  <tr key={index}>
-                    <td>{payment_date}</td>
-                    <td>{payment_amount}</td>
-                    <td>{applied_amount}</td>
-                    <td>{payment_method}</td>
-                    <td style={{ width: "100px" }}>
-                      <button
-                        className="btn btn-outline-danger rounded btn-sm ml-1"
-                        title="Delete Payment"
-                        onClick={() => this.deleteTenantPayment(index)}
-                      >
-                        <i className="fa fa-trash-o"></i>
-                      </button>
-                    </td>
-                  </tr>
+                  <>
+                    <tr key={index}>
+                      <td>{payment_date}</td>
+                      <td>{payment_amount}</td>
+                      <td>{payment_method}</td>
+                      <td style={{ width: "100px" }}>
+                        <button
+                          className="btn btn-outline-danger rounded btn-sm ml-1"
+                          title="Delete Payment"
+                          onClick={() => this.deleteTenantPayment(index)}
+                        >
+                          <i className="fa fa-trash-o"></i>
+                        </button>
+                        <button
+                          className="btn btn-primary rounded btn-sm ml-1"
+                          title="View Details"
+                          data-toggle="collapse"
+                          data-target={`#index${index}`}
+                          aria-expanded="false"
+                        >
+                          <i className="fa fa-chevron-down"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr className="collapse" id={`index${index}`}>
+                      <td colSpan="5">
+                        <table className="table table-bordered table-hover table-sm">
+                          <thead className="table-info">
+                            <tr>
+                              <th scope="col">Charge Description</th>
+                              <th scope="col">Charge Amount</th>
+                              <th scope="col">Applied Amount</th>
+                              <th scope="col">Charge Due Date</th>
+                            </tr>
+                          </thead>
+                          <tbody className="table-primary">
+                            {charges_applied_to.map(
+                              (charges, charges_index) => {
+                                const {
+                                  description,
+                                  tenant_charge_amount,
+                                  applied_amount,
+                                  due_date,
+                                } = charges;
+                                return (
+                                  <tr key={charges_index}>
+                                    <td>{description}</td>
+                                    <td>{tenant_charge_amount}</td>
+                                    <td>{applied_amount}</td>
+                                    <td>{due_date}</td>
+                                  </tr>
+                                );
+                              }
+                            )}
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </>
                 );
               })}
             </tbody>

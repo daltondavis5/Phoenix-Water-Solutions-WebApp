@@ -119,7 +119,7 @@ export class TenantPropertiesEdit extends Component {
     } = this.state;
     return (
       <>
-        <div className="card my-3 rounded shadow">
+        <div className="card rounded shadow">
           <div className="card-body">
             <h4 className="card-title">
               Edit Tenant Details

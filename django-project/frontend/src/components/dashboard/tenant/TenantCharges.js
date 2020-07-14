@@ -9,6 +9,7 @@ import TenantChargeEditModal from "./TenantChargeEditModal";
 export class TenantCharges extends Component {
   state = {
     charges: [],
+    priorities: [],
     index: 0,
     mode: "",
     toggleSort: false,
@@ -22,6 +23,10 @@ export class TenantCharges extends Component {
   componentDidMount() {
     axios.get(`/api/tenant/${this.props.id}/charges`).then((response) => {
       this.setState({ charges: response.data });
+    });
+
+    axios.get("/api/priorities").then((response) => {
+      this.setState({ priorities: response.data });
     });
   }
 
@@ -65,7 +70,6 @@ export class TenantCharges extends Component {
         charges.map((charge) => {
           if (charge.id == body.id) {
             charge.initial_amount = body.initial_amount;
-            charge.remaining_amount = body.remaining_amount;
             charge.description = body.description;
             charge.bill_period_end_date = body.bill_period_end_date;
             charge.due_date = body.due_date;
@@ -116,12 +120,11 @@ export class TenantCharges extends Component {
     return (
       <>
         <div className="table-responsive">
-          <table className="table table-hover shadow-sm table-sm table-bordered text-center border-bottom">
+          <table className="table table-hover shadow-sm table table-bordered text-center border-bottom">
             <caption style={{ captionSide: "top" }}>Tenant Charges</caption>
             <thead className="thead-dark p-5">
               <tr>
                 <th scope="col">Initial Amount</th>
-                <th scope="col">Remaining Amount</th>
                 <th scope="col">Description</th>
                 <th scope="col">Bill Period End Date</th>
                 <th scope="col">
@@ -151,7 +154,6 @@ export class TenantCharges extends Component {
               {this.state.charges.map((charge, index) => {
                 const {
                   initial_amount,
-                  remaining_amount,
                   description,
                   bill_period_end_date,
                   due_date,
@@ -162,7 +164,6 @@ export class TenantCharges extends Component {
                 return (
                   <tr key={index}>
                     <td>{initial_amount}</td>
-                    <td>{remaining_amount}</td>
                     <td>{description}</td>
                     <td>{bill_period_end_date}</td>
                     <td>{due_date}</td>
@@ -197,12 +198,16 @@ export class TenantCharges extends Component {
         </div>
 
         {this.state.mode === "add" && (
-          <TenantChargeAddModal addTenantCharge={this.addTenantCharge} />
+          <TenantChargeAddModal
+            addTenantCharge={this.addTenantCharge}
+            priorities={this.state.priorities}
+          />
         )}
         {this.state.mode === "edit" && (
           <TenantChargeEditModal
             charge={this.state.charges[this.state.index]}
             editTenantCharge={this.editTenantCharge}
+            priorities={this.state.priorities}
           />
         )}
       </>

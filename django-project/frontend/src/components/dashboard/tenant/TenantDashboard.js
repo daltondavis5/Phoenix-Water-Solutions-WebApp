@@ -1,8 +1,4 @@
 import React, { Component } from "react";
-import axios from "axios";
-import { connect } from "react-redux";
-import { createMessage, returnErrors } from "../../../actions/messages";
-import PropTypes from "prop-types";
 import TenantDashboardCardItem from "./TenantDashboardCardItem";
 
 export class TenantDashboard extends Component {
@@ -16,7 +12,7 @@ export class TenantDashboard extends Component {
     secondary_phone_number: "",
     move_in_date: "",
     move_out_date: null,
-    credits: 0.0,
+    credits: "",
     late_fee_exemption: null,
   };
 
@@ -297,7 +293,7 @@ export class TenantDashboard extends Component {
                   type="button"
                   onClick={this.addTenant}
                   className="btn btn-primary"
-                  /* data-dismiss="modal" */
+                  data-dismiss="modal"
                 >
                   Save
                 </button>
@@ -310,4 +306,4 @@ export class TenantDashboard extends Component {
   }
 }
 
-export default connect(null, { createMessage, returnErrors })(TenantDashboard);
+export default TenantDashboard;

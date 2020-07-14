@@ -13,7 +13,7 @@ router.register('metererror', MeterErrorViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('property-priority-data', get_priority_data, name="property-priority-data"),
+    path('priorities/', get_priority_data, name="priority-list"),
     path('property/<int:id>/units', ListUnitsForProperty.as_view(),
          name="property-unit-list"),
     path('unit/<int:id>/meters', ListMetersForUnit.as_view(),

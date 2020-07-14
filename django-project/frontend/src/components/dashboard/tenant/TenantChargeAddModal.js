@@ -2,15 +2,12 @@ import React, { Component } from "react";
 
 export default class TenantChargeAddModal extends Component {
   state = {
-    initial_amount: 0,
-    remaining_amount: 0,
+    initial_amount: "",
     description: "",
     bill_period_end_date: "",
     due_date: "",
-    priority: 0,
-    created: `${new Date()
-      .toISOString()
-      .slice(0, 10)}T${new Date().toLocaleTimeString().slice(0, 5)}`,
+    priority: "",
+    created: `${new Date().toISOString().slice(0, 16)}`,
     batch_id: null,
   };
 
@@ -21,7 +18,6 @@ export default class TenantChargeAddModal extends Component {
   addTenantCharge = () => {
     const {
       initial_amount,
-      remaining_amount,
       description,
       bill_period_end_date,
       due_date,
@@ -31,7 +27,6 @@ export default class TenantChargeAddModal extends Component {
     } = this.state;
     const body = {
       initial_amount,
-      remaining_amount,
       description,
       bill_period_end_date,
       due_date,
@@ -132,19 +127,31 @@ export default class TenantChargeAddModal extends Component {
                 <div className="form-group row">
                   <label className="col-sm-3 col-form-label">Priority:</label>
                   <div className="col-sm-9">
-                    <input
-                      type="number"
+                    <select
                       className="form-control"
                       name="priority"
                       onChange={this.onChange}
-                      min="0"
-                      max="2"
                       value={priority}
-                    />
+                    >
+                      <option value="Default">Choose Priority</option>
+                      {this.props.priorities.map((priority) => {
+                        return (
+                          <option key={priority[0]} value={priority[0]}>
+                            {priority[1]}
+                          </option>
+                        );
+                      })}
+                    </select>
                   </div>
                 </div>
                 <div className="form-group row">
-                  <label className="col-sm-3 col-form-label">Created:</label>
+                  <label className="col-sm-3 col-form-label">
+                    Created:
+                    <span className="text-muted">
+                      <br />
+                      (UTC time)
+                    </span>
+                  </label>
                   <div className="col-sm-9">
                     <input
                       type="datetime-local"

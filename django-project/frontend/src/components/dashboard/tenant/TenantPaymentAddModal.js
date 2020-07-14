@@ -4,8 +4,7 @@ import axios from "axios";
 export default class TenantPaymentAddModal extends Component {
   state = {
     payment_date: new Date().toISOString().slice(0, 10),
-    payment_amount: 0,
-    applied_amount: 0,
+    payment_amount: "",
     payment_method: "",
     payment_method_list: [],
   };
@@ -21,28 +20,17 @@ export default class TenantPaymentAddModal extends Component {
   };
 
   addTenantPayment = () => {
-    const {
-      payment_date,
-      payment_amount,
-      applied_amount,
-      payment_method,
-    } = this.state;
+    const { payment_date, payment_amount, payment_method } = this.state;
     const body = {
       payment_date,
       payment_amount,
-      applied_amount,
       payment_method,
     };
     this.props.addTenantPayment(body);
   };
 
   render() {
-    const {
-      payment_date,
-      payment_amount,
-      applied_amount,
-      payment_method,
-    } = this.state;
+    const { payment_date, payment_amount, payment_method } = this.state;
     return (
       <div
         className="modal fade"
