@@ -11,7 +11,36 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 
+def get_reverse_url_unit_tenant_list(unit_id):
+    return reverse("unit-tenants-list", args=[unit_id])
+
+
+def get_reverse_url_payment_list():
+    return reverse('payment-list')
+
+
+def detail_url_tenant(tenant_id):
+    return reverse("tenant-detail", args=[tenant_id])
+
+
+def get_reverse_url_unit_tenant_list(unit_id):
+    return reverse("unit-tenants-list", args=[unit_id])
+
+
+def get_reverse_url_tenant_charges_list(tenant_id):
+    return reverse("tenant-charges-list", args=[tenant_id])
+
+
+def get_reverse_url_tenant_payment_list(tenant_id):
+    return reverse("tenant-payment-list", args=[tenant_id])
+
+
+def get_reverse_url_payment_detail(payment_id):
+    return reverse("payment-detail", args=[payment_id])
+
+
 # Create your tests here.
+
 class TenantViewSetTestCase(APITestCase):
 
     def setUp(self) -> None:
@@ -128,21 +157,6 @@ class TenantViewSetTestCase(APITestCase):
             payment_method=self.payment_method,
         )
 
-    def detail_url_tenant(self, tenant_id):
-        return reverse("tenant-detail", args=[tenant_id])
-
-    def get_reverse_url_unit_tenant_list(self, unit_id):
-        return reverse("unit-tenants-list", args=[unit_id])
-
-    def get_reverse_url_tenant_charges_list(self, tenant_id):
-        return reverse("tenant-charges-list", args=[tenant_id])
-
-    def get_reverse_url_tenant_payment_list(self, tenant_id):
-        return reverse("tenant-payment-list", args=[tenant_id])
-
-    def get_reverse_url_payment_detail(self, payment_id):
-        return reverse("payment-detail", args=[payment_id])
-
     def test_tenant_update_move_in_date(self):
         """ Test to not allow to update move in date """
         tenant = self.tenant1
@@ -162,7 +176,7 @@ class TenantViewSetTestCase(APITestCase):
                                   timezone.timedelta(days=15),
             "unit": self.unit.id
         }
-        url = self.detail_url_tenant(tenant.id)
+        url = detail_url_tenant(tenant.id)
         response = self.client.put(url, payload)
         tenant.refresh_from_db()
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -186,7 +200,7 @@ class TenantViewSetTestCase(APITestCase):
                                   timezone.timedelta(days=15),
             "unit": self.unit.id
         }
-        url = self.detail_url_tenant(tenant.id)
+        url = detail_url_tenant(tenant.id)
         response = self.client.put(url, payload)
         tenant.refresh_from_db()
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -196,7 +210,7 @@ class TenantViewSetTestCase(APITestCase):
         tenant usage info from tenant charge table """
         serializer1 = TenantUsageSerializer(self.tenant1)
 
-        url = self.get_reverse_url_unit_tenant_list(self.unit.id)
+        url = get_reverse_url_unit_tenant_list(self.unit.id)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -211,7 +225,7 @@ class TenantViewSetTestCase(APITestCase):
         serializer3 = TenantChargeSerializer(self.tenant_charge3)
         serializer4 = TenantChargeSerializer(self.tenant_charge4)
 
-        url = self.get_reverse_url_tenant_charges_list(self.tenant1.id)
+        url = get_reverse_url_tenant_charges_list(self.tenant1.id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
@@ -226,7 +240,7 @@ class TenantViewSetTestCase(APITestCase):
         serializer1 = PaymentSerializer(self.payment1)
         serializer2 = PaymentSerializer(self.payment2)
 
-        url = self.get_reverse_url_tenant_payment_list(self.tenant1.id)
+        url = get_reverse_url_tenant_payment_list(self.tenant1.id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
@@ -235,7 +249,7 @@ class TenantViewSetTestCase(APITestCase):
 
     def test_put_not_allowed_payment(self):
         """Test payment update is disabled"""
-        url = self.get_reverse_url_payment_detail(self.payment1.id)
+        url = get_reverse_url_payment_detail(self.payment1.id)
         response = self.client.put(url)
         self.assertEqual(response.status_code,
                          status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -283,12 +297,6 @@ class PaymentTenantChargeTest(APITestCase):
         )
 
         self.payment_method = PaymentMethod.objects.create(name="Card")
-
-    def get_reverse_url_unit_tenant_list(self, unit_id):
-        return reverse("unit-tenants-list", args=[unit_id])
-
-    def get_reverse_url_payment_list(self):
-        return reverse('payment-list')
 
     def test_get_current_balance_and_overdue_balance_for_tenant(self):
         """ Test case to get current balance and overdue balance
@@ -338,15 +346,17 @@ class PaymentTenantChargeTest(APITestCase):
             'payment_method': 'Card',
         }
 
-        post_payment = self.client.post(self.get_reverse_url_payment_list(),
-                                        payload)
+        self.client.post(get_reverse_url_payment_list(),
+                         payload)
 
-        url = self.get_reverse_url_unit_tenant_list(self.unit.id)
+        url = get_reverse_url_unit_tenant_list(self.unit.id)
         response = self.client.get(url)
 
         curr_bal = 140.0
         overdue_bal = 0.0
         self.assertEqual(curr_bal,
-                         response.data.tenant_usage_info.current_balance)
+                         response.data[0].get('tenant_usage_info').
+                         get('current_balance'))
         self.assertEqual(overdue_bal,
-                         response.data.tenant_usage_info.overdue_balance)
+                         response.data[0].get('tenant_usage_info').
+                         get('overdue_balance'))
