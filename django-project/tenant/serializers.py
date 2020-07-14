@@ -85,10 +85,33 @@ class TenantChargeSerializer(serializers.ModelSerializer):
         return tenant_charge_obj
 
 
+class PaymentChargeDetailsSerializer(serializers.ModelSerializer):
+    """
+    Serializer to display information for the charges_applied_to
+    field inside PaymentSerializer
+    """
+    payment = serializers.CharField(source='payment.payment_amount')
+    tenant_charge_amount = serializers.CharField(
+        source='tenant_charge.initial_amount')
+    payment_date = serializers.DateField(source='payment.payment_date')
+    due_date = serializers.DateField(source='tenant_charge.due_date')
+    description = serializers.CharField(source='tenant_charge.description')
+
+    class Meta:
+        model = TenantChargePayment
+        fields = ["tenant_charge_amount", "payment", "applied_amount",
+                  "payment_date", "due_date", "description"]
+
+
 class PaymentSerializer(serializers.ModelSerializer):
+    charges_applied_to = PaymentChargeDetailsSerializer(
+        source="tenantchargepayment_set", many=True,
+        read_only=True)
+
     class Meta:
         model = Payment
-        fields = "__all__"
+        fields = ["id", "payment_date", "payment_amount",
+                  "tenant", "payment_method", "charges_applied_to"]
         read_only_fields = ['charges_applied_to']
 
     def create(self, validated_data):
