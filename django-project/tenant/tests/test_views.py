@@ -43,12 +43,12 @@ class TenantViewSetTestCase(APITestCase):
             secondary_phone_number="8888888888",
             unit=self.unit,
             move_in_date=timezone.now().date() -
-            timezone.timedelta(days=1),
+                         timezone.timedelta(days=1),
             move_out_date=timezone.now().date() +
                           timezone.timedelta(days=365),
             credits=99.5,
             late_fee_exemption=timezone.now().date() +
-            timezone.timedelta(days=15),
+                               timezone.timedelta(days=15),
         )
         self.tenant2 = Tenant.objects.create(
             account_number="2",
@@ -63,14 +63,14 @@ class TenantViewSetTestCase(APITestCase):
             move_out_date=timezone.now().date() + timezone.timedelta(days=365),
             credits=99.5,
             late_fee_exemption=timezone.now().date() +
-            timezone.timedelta(days=15),
+                               timezone.timedelta(days=15),
         )
         self.tenant_charge1 = TenantCharge.objects.create(
             tenant=self.tenant1,
             initial_amount=100,
             description="Test Desc",
             bill_period_end_date=timezone.now().date() +
-            timezone.timedelta(days=30),
+                                 timezone.timedelta(days=30),
             due_date=timezone.now().date() + timezone.timedelta(days=5),
             priority=2,
             created=timezone.now(),
@@ -81,7 +81,7 @@ class TenantViewSetTestCase(APITestCase):
             initial_amount=100,
             description="Test Desc",
             bill_period_end_date=timezone.now().date() +
-            timezone.timedelta(days=30),
+                                 timezone.timedelta(days=30),
             due_date=timezone.now().date() - timezone.timedelta(days=1),
             priority=2,
             created=timezone.now(),
@@ -92,9 +92,9 @@ class TenantViewSetTestCase(APITestCase):
             initial_amount=999.50,
             description="Test Desc",
             bill_period_end_date=timezone.now().date() +
-            timezone.timedelta(days=30),
+                                 timezone.timedelta(days=30),
             due_date=timezone.now().date() +
-            timezone.timedelta(days=30),
+                     timezone.timedelta(days=30),
             priority=2,
             created=timezone.now(),
             batch_id=1,
@@ -105,7 +105,7 @@ class TenantViewSetTestCase(APITestCase):
             initial_amount=999.50,
             description="Test Desc",
             bill_period_end_date=timezone.now().date() +
-            timezone.timedelta(days=30),
+                                 timezone.timedelta(days=30),
             due_date=timezone.now().date() + timezone.timedelta(days=30),
             priority=2,
             created=timezone.now(),
@@ -159,7 +159,7 @@ class TenantViewSetTestCase(APITestCase):
                              timezone.timedelta(days=365),
             "credits": 0,
             "late_fee_exemption": timezone.now().date() +
-                               timezone.timedelta(days=15),
+                                  timezone.timedelta(days=15),
             "unit": self.unit.id
         }
         url = self.detail_url_tenant(tenant.id)
@@ -183,7 +183,7 @@ class TenantViewSetTestCase(APITestCase):
                              timezone.timedelta(days=365),
             "credits": 0,
             "late_fee_exemption": timezone.now().date() +
-                               timezone.timedelta(days=15),
+                                  timezone.timedelta(days=15),
             "unit": self.unit.id
         }
         url = self.detail_url_tenant(tenant.id)
@@ -239,3 +239,114 @@ class TenantViewSetTestCase(APITestCase):
         response = self.client.put(url)
         self.assertEqual(response.status_code,
                          status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+class PaymentTenantChargeTest(APITestCase):
+
+    def setUp(self) -> None:
+        self.utility = Utility.objects.create(type='Water')
+        self.location = Location.objects.create(city='Phoenix',
+                                                state='AZ')
+        self.provider = Provider.objects.create(name='Phoenix supplies')
+        self.utility_provider = UtilityProvider.objects.create(
+            utility=self.utility,
+            provider=self.provider,
+            location=self.location,
+            unit_measurement=500)
+
+        self.property = Property.objects.create(
+            name="Property Test 1",
+            street_address="9999 Test Paradise",
+            attribute=False,
+            zip_code=99999
+        )
+
+        self.unit = Unit.objects.create(name="unit 1",
+                                        property=self.property)
+
+        self.tenant1 = Tenant.objects.create(
+            account_number="1",
+            first_name="test first name",
+            last_name="test last name",
+            primary_email="test@pws.com",
+            secondary_email="test2@pws.com",
+            primary_phone_number="9999999999",
+            secondary_phone_number="8888888888",
+            unit=self.unit,
+            move_in_date=timezone.now().date() -
+                         timezone.timedelta(days=1),
+            move_out_date=timezone.now().date() +
+                          timezone.timedelta(days=365),
+            credits=99.5,
+            late_fee_exemption=timezone.now().date() +
+                               timezone.timedelta(days=15),
+        )
+
+        self.payment_method = PaymentMethod.objects.create(name="Card")
+
+    def get_reverse_url_unit_tenant_list(self, unit_id):
+        return reverse("unit-tenants-list", args=[unit_id])
+
+    def get_reverse_url_payment_list(self):
+        return reverse('payment-list')
+
+    def test_get_current_balance_and_overdue_balance_for_tenant(self):
+        """ Test case to get current balance and overdue balance
+         for a tenant """
+        charge1 = TenantCharge.objects.create(
+            tenant=self.tenant1,
+            initial_amount=100.0,
+            description="C1",
+            bill_period_end_date=timezone.now().date() +
+                                 timezone.timedelta(days=30),
+            due_date=timezone.now().date() +
+                     timezone.timedelta(days=30),
+            priority=2,
+            created=timezone.now(),
+            batch_id=1,
+        )
+
+        charge2 = TenantCharge.objects.create(
+            tenant=self.tenant1,
+            initial_amount=50.0,
+            description="C2",
+            bill_period_end_date=timezone.now().date() +
+                                 timezone.timedelta(days=30),
+            due_date=timezone.now().date() +
+                     timezone.timedelta(days=30),
+            priority=2,
+            created=timezone.now(),
+            batch_id=1,
+        )
+
+        charge3 = TenantCharge.objects.create(
+            tenant=self.tenant1,
+            initial_amount=40.0,
+            description="C3-due",
+            bill_period_end_date=timezone.now().date() +
+                                 timezone.timedelta(days=30),
+            due_date=timezone.now().date() -
+                     timezone.timedelta(days=2),
+            priority=2,
+            created=timezone.now(),
+            batch_id=1,
+        )
+        payload = {
+            'tenant': self.tenant1.id,
+            'payment_date': timezone.now().date(),
+            'payment_amount': 50.0,
+            'payment_method': 'Card',
+        }
+
+        post_payment = self.client.post(self.get_reverse_url_payment_list(),
+                                        payload)
+
+        url = self.get_reverse_url_unit_tenant_list(self.unit.id)
+        response = self.client.get(url)
+
+        curr_bal = 140.0
+        overdue_bal = 0.0
+        self.assertEqual(curr_bal,
+                         response.data.tenant_usage_info.current_balance)
+        self.assertEqual(overdue_bal,
+                         response.data.tenant_usage_info.overdue_balance)
