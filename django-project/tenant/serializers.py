@@ -6,6 +6,15 @@ import tenant.services as services
 
 
 class TenantSerializer(serializers.ModelSerializer):
+    tenant_usage_info = serializers.SerializerMethodField(
+        method_name='get_tenant_usage_info'
+    )
+
+    @staticmethod
+    def get_tenant_usage_info(obj):
+        tenant_id = obj.id
+        return services.get_tenant_usage_info(tenant_id)
+
     class Meta:
         model = Tenant
         fields = "__all__"
