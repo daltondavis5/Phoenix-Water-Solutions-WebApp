@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
-from core.models.tenant import Tenant, TenantCharge, Payment, \
-    PaymentMethod, TenantChargePayment
+from core.models.tenant import Tenant, TenantCharge, Payment, PaymentMethod
 import tenant.services as services
 
 

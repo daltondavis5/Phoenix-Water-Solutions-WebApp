@@ -2,7 +2,6 @@ from core.models.property import Unit
 from core.models.tenant import Tenant, TenantCharge, Payment, \
     TenantChargePayment
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Sum
 from django.utils import timezone
 from core.exceptions.exceptions import NonNumericalValueException, \
     InvalidIDException
@@ -105,7 +104,7 @@ def get_tenant_charge_info(tenant_id):
         curr_balance = get_current_balance_for_tenant(tenant.id)
         overdue_balance = get_overdue_balance_for_tenant(tenant.id)
         tenant_charge_info = {"current_balance": curr_balance,
-                             "overdue_balance": overdue_balance}
+                              "overdue_balance": overdue_balance}
         return tenant_charge_info
     except ObjectDoesNotExist:
         raise InvalidIDException
@@ -188,7 +187,7 @@ def create_tenant_charge_payment_for_payment(charges_queryset,
 
 
 def create_tenant_charge_payment_for_charge(payments_queryset,
-                                        tenant_charge_object):
+                                            tenant_charge_object):
     """ This method create row(s) in TenantChargePayment table
         for the given tenant charge, and all those payments for
         which the advance amount > 0.
