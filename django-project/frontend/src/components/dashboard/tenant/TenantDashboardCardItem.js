@@ -14,7 +14,7 @@ export class TenantDashboardCardItem extends Component {
     const {
       current_balance,
       overdue_balance,
-    } = this.props.tenant.tenant_usage_info;
+    } = this.props.tenant.tenant_charge_info;
 
     return (
       <>

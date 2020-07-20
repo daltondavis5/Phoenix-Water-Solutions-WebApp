@@ -2,7 +2,7 @@ from rest_framework import viewsets, permissions
 
 from core.models.tenant import Tenant, TenantCharge,\
     Payment, PaymentMethod
-from tenant.serializers import TenantSerializer, TenantUsageSerializer,\
+from tenant.serializers import TenantSerializer, TenantChargeInfoSerializer,\
     TenantChargeSerializer, PaymentSerializer, PaymentMethodSerializer
 
 import tenant.services as services
@@ -36,7 +36,7 @@ class PaymentMethodViewSet(viewsets.ModelViewSet):
 
 # Create custom views here.
 class ListTenantsForUnit(viewsets.generics.ListAPIView):
-    serializer_class = TenantUsageSerializer
+    serializer_class = TenantChargeInfoSerializer
     permission_classes = [permissions.AllowAny, ]
 
     def get_queryset(self):
