@@ -20,7 +20,7 @@ export class TenantPropertiesView extends Component {
     return (
       <>
         <div
-          className="card my-3 rounded shadow"
+          className="card rounded shadow"
           style={{ borderLeft: "5px solid #2780E3" }}
         >
           <div className="card-body">

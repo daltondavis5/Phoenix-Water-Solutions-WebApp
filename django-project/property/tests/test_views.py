@@ -137,10 +137,10 @@ class UnitViewSetTestCase(APITestCase):
 
 
 class PriorityDataTest(APITestCase):
-    PRIORITY_DATA_URL = reverse("property-priority-data")
+    PRIORITY_LIST_URL = reverse("priority-list")
 
     def test_unit_update_property(self):
-        response = self.client.get(self.PRIORITY_DATA_URL)
+        response = self.client.get(self.PRIORITY_LIST_URL)
         self.assertEqual(response.data, Priority.choices)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -280,7 +280,7 @@ class MeterViewSetTestCase(APITestCase):
         self.assertEqual(payload.get('uninstalled_date'),
                          response.data['uninstalled_date'])
         self.assertEqual(payload.get('installed_date'),
-                        response.data['installed_date'])
+                         response.data['installed_date'])
         self.assertEqual(payload.get('unit'), response.data['unit'])
 
     def test_meter_update_installed_date(self):
